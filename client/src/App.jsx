@@ -21,6 +21,8 @@ import BudgetPlanner from "./pages/BudgetPlanner";
 import Goals from "./pages/Goals";
 import Wallets from "./pages/Wallets";
 import Subscriptions from "./pages/Subscriptions";
+import WhatIfSimulator from "./pages/WhatIfSimulator";
+import Investments from "./pages/Investments";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -72,6 +74,8 @@ const App = () => {
             <Route path="/goals" element={<Goals />} />
             <Route path="/wallets" element={<Wallets />} />
             <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/simulator" element={<WhatIfSimulator />} />
+            <Route path="/investments" element={<Investments />} />
           </Route>
         </Route>
 

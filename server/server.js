@@ -19,6 +19,9 @@ import budgetRoutes from "./routes/budgetRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
+import simulatorRoutes from "./routes/simulatorRoutes.js";
+import investmentRoutes from "./routes/investmentRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import { startDailyChecks } from "./cron/dailyChecks.js";
 import { startSubscriptionCron } from "./cron/subscriptionCron.js";
@@ -62,6 +65,9 @@ app.use("/api/budgets", budgetRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/wallets", walletRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api/simulator", simulatorRoutes);
+app.use("/api/investments", investmentRoutes);
+app.use("/api/reports", reportRoutes);
 
 // Start scheduled daily checks (budget alerts, subscriptions, etc.)
 startDailyChecks();
