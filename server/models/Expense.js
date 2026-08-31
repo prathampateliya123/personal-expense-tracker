@@ -66,6 +66,12 @@ const expenseSchema = new mongoose.Schema(
       ref: "Wallet",
       default: null,
     },
+    tripId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Trip",
+      default: null,
+      index: true,
+    },
   },
   {
     timestamps: true,

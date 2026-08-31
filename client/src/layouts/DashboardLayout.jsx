@@ -20,7 +20,8 @@ const navLinks = [
   { to: "/subscriptions", label: "Subscriptions" },
   { to: "/simulator", label: "Simulator" },
   { to: "/investments", label: "Investments" },
-  { to: "/dashboard/reports", label: "Reports" },
+  { to: "/reports", label: "Reports" },
+  { to: "/timeline", label: "Timeline" },
   { to: "/dashboard/settings", label: "Settings" },
 ];
 

@@ -11,6 +11,7 @@ import {
   PAYMENT_MODES,
 } from "../utils/expenseConstants";
 import { fetchWallets } from "../redux/walletSlice";
+import { fetchTrips } from "../redux/tripSlice";
 
 const defaultFormState = {
   title: "",
@@ -20,17 +21,23 @@ const defaultFormState = {
   date: new Date().toISOString().split("T")[0],
   description: "",
   walletId: "",
+  tripId: "",
 };
 
-const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
+const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading }) => {
   const dispatch = useDispatch();
   const { wallets } = useSelector((state) => state.wallets);
+  const { trips } = useSelector((state) => state.trips);
   const [formData, setFormData] = useState(defaultFormState);
   const isEditing = Boolean(expense);
+  const showTripSelector = !fixedTripId;
 
   useEffect(() => {
     dispatch(fetchWallets());
-  }, [dispatch]);
+    if (showTripSelector) {
+      dispatch(fetchTrips());
+    }
+  }, [dispatch, showTripSelector]);
 
   useEffect(() => {
     if (expense) {
@@ -44,11 +51,15 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
           : defaultFormState.date,
         description: expense.description || "",
         walletId: expense.walletId || "",
+        tripId: expense.tripId || fixedTripId || "",
       });
     } else {
-      setFormData(defaultFormState);
+      setFormData({
+        ...defaultFormState,
+        tripId: fixedTripId || "",
+      });
     }
-  }, [expense]);
+  }, [expense, fixedTripId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,6 +71,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
       ...formData,
       amount: parseFloat(formData.amount),
       walletId: formData.walletId || null,
+      tripId: fixedTripId || formData.tripId || null,
     });
   };
 
@@ -72,7 +84,11 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
       className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
     >
       <h2 className="mb-4 text-lg font-semibold text-gray-900">
-        {isEditing ? "Edit Expense" : "Add Expense"}
+        {isEditing
+          ? "Edit Expense"
+          : fixedTripId
+            ? "Add Expense to Trip"
+            : "Add Expense"}
       </h2>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,6 +182,29 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
             ))}
           </select>
         </div>
+
+        {showTripSelector && (
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Trip
+            </label>
+            <select
+              name="tripId"
+              value={formData.tripId}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="">No trip (optional)</option>
+              {trips
+                .filter((t) => t.status === "ongoing")
+                .map((t) => (
+                  <option key={t._id} value={t._id}>
+                    {t.tripName} — {t.destination}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">

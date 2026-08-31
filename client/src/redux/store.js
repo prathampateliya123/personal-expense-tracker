@@ -15,6 +15,7 @@ import goalReducer from "./goalSlice";
 import walletReducer from "./walletSlice";
 import subscriptionReducer from "./subscriptionSlice";
 import investmentReducer from "./investmentSlice";
+import tripReducer from "./tripSlice";
 
 const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ const store = configureStore({
     wallets: walletReducer,
     subscriptions: subscriptionReducer,
     investments: investmentReducer,
+    trips: tripReducer,
   },
 });
 

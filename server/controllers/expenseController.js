@@ -7,6 +7,7 @@
 import mongoose from "mongoose";
 import Expense, { EXPENSE_CATEGORIES, PAYMENT_MODES } from "../models/Expense.js";
 import { validateUserWallet } from "../utils/walletHelper.js";
+import { validateUserTrip } from "../utils/tripHelper.js";
 
 /**
  * Build aggregation $match stage from query params and authenticated user.
@@ -48,7 +49,7 @@ const buildMatchStage = (userId, query) => {
  */
 export const addExpense = async (req, res, next) => {
   try {
-    const { title, amount, category, paymentMode, date, description, receiptUrl, walletId } =
+    const { title, amount, category, paymentMode, date, description, receiptUrl, walletId, tripId } =
       req.body;
 
     if (!title || amount == null || !category || !paymentMode || !date) {
@@ -67,6 +68,7 @@ export const addExpense = async (req, res, next) => {
     }
 
     await validateUserWallet(walletId, req.user._id);
+    await validateUserTrip(tripId, req.user._id);
 
     const expense = await Expense.create({
       userId: req.user._id,
@@ -78,6 +80,7 @@ export const addExpense = async (req, res, next) => {
       description,
       receiptUrl,
       walletId: walletId || null,
+      tripId: tripId || null,
     });
 
     res.status(201).json({ success: true, expense });
@@ -174,7 +177,7 @@ export const updateExpense = async (req, res, next) => {
       throw new Error("Expense not found");
     }
 
-    const { title, amount, category, paymentMode, date, description, receiptUrl, walletId } =
+    const { title, amount, category, paymentMode, date, description, receiptUrl, walletId, tripId } =
       req.body;
 
     if (category && !EXPENSE_CATEGORIES.includes(category)) {
@@ -191,6 +194,10 @@ export const updateExpense = async (req, res, next) => {
       await validateUserWallet(walletId || null, req.user._id);
     }
 
+    if (tripId !== undefined) {
+      await validateUserTrip(tripId || null, req.user._id);
+    }
+
     if (title !== undefined) expense.title = title;
     if (amount !== undefined) expense.amount = amount;
     if (category !== undefined) expense.category = category;
@@ -199,6 +206,7 @@ export const updateExpense = async (req, res, next) => {
     if (description !== undefined) expense.description = description;
     if (receiptUrl !== undefined) expense.receiptUrl = receiptUrl;
     if (walletId !== undefined) expense.walletId = walletId || null;
+    if (tripId !== undefined) expense.tripId = tripId || null;
 
     await expense.save();
 

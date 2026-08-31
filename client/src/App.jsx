@@ -23,6 +23,8 @@ import Wallets from "./pages/Wallets";
 import Subscriptions from "./pages/Subscriptions";
 import WhatIfSimulator from "./pages/WhatIfSimulator";
 import Investments from "./pages/Investments";
+import Reports from "./pages/Reports";
+import Timeline from "./pages/Timeline";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -76,6 +78,8 @@ const App = () => {
             <Route path="/subscriptions" element={<Subscriptions />} />
             <Route path="/simulator" element={<WhatIfSimulator />} />
             <Route path="/investments" element={<Investments />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/timeline" element={<Timeline />} />
           </Route>
         </Route>
 
