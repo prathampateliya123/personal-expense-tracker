@@ -18,8 +18,10 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
+import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import { startDailyChecks } from "./cron/dailyChecks.js";
+import { startSubscriptionCron } from "./cron/subscriptionCron.js";
 
 // Load environment variables from .env
 dotenv.config();
@@ -59,9 +61,11 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/wallets", walletRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
 
-// Start scheduled daily checks (budget alerts, etc.)
+// Start scheduled daily checks (budget alerts, subscriptions, etc.)
 startDailyChecks();
+startSubscriptionCron();
 
 // Centralized error handler (must be last)
 app.use(errorHandler);

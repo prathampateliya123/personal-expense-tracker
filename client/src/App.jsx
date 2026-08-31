@@ -20,6 +20,7 @@ import Income from "./pages/Income";
 import BudgetPlanner from "./pages/BudgetPlanner";
 import Goals from "./pages/Goals";
 import Wallets from "./pages/Wallets";
+import Subscriptions from "./pages/Subscriptions";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,7 @@ const App = () => {
             <Route path="/budget" element={<BudgetPlanner />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/wallets" element={<Wallets />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
           </Route>
         </Route>
 
