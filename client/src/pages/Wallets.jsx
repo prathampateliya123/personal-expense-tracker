@@ -9,8 +9,8 @@ import toast from "react-hot-toast";
 import {
   WALLET_TYPES,
   WALLET_TYPE_STYLES,
-  WalletTypeIcon,
 } from "../utils/walletConstants";
+import WalletTypeIcon from "../components/WalletTypeIcon";
 import {
   fetchWallets,
   createWallet,
