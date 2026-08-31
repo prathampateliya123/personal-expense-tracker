@@ -6,6 +6,7 @@
 
 import mongoose from "mongoose";
 import Income, { INCOME_SOURCES } from "../models/Income.js";
+import { validateUserWallet } from "../utils/walletHelper.js";
 
 /**
  * Build aggregation $match stage from query params and authenticated user.
@@ -43,7 +44,7 @@ const buildMatchStage = (userId, query) => {
  */
 export const addIncome = async (req, res, next) => {
   try {
-    const { source, amount, date, description } = req.body;
+    const { source, amount, date, description, walletId } = req.body;
 
     if (!source || amount == null || !date) {
       res.status(400);
@@ -55,12 +56,15 @@ export const addIncome = async (req, res, next) => {
       throw new Error("Invalid income source");
     }
 
+    await validateUserWallet(walletId, req.user._id);
+
     const income = await Income.create({
       userId: req.user._id,
       source,
       amount,
       date,
       description,
+      walletId: walletId || null,
     });
 
     res.status(201).json({ success: true, income });
@@ -134,17 +138,22 @@ export const updateIncome = async (req, res, next) => {
       throw new Error("Income not found");
     }
 
-    const { source, amount, date, description } = req.body;
+    const { source, amount, date, description, walletId } = req.body;
 
     if (source && !INCOME_SOURCES.includes(source)) {
       res.status(400);
       throw new Error("Invalid income source");
     }
 
+    if (walletId !== undefined) {
+      await validateUserWallet(walletId || null, req.user._id);
+    }
+
     if (source !== undefined) income.source = source;
     if (amount !== undefined) income.amount = amount;
     if (date !== undefined) income.date = date;
     if (description !== undefined) income.description = description;
+    if (walletId !== undefined) income.walletId = walletId || null;
 
     await income.save();
 

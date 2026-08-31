@@ -18,6 +18,8 @@ import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Income from "./pages/Income";
 import BudgetPlanner from "./pages/BudgetPlanner";
+import Goals from "./pages/Goals";
+import Wallets from "./pages/Wallets";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -66,6 +68,8 @@ const App = () => {
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/income" element={<Income />} />
             <Route path="/budget" element={<BudgetPlanner />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/wallets" element={<Wallets />} />
           </Route>
         </Route>
 

@@ -36,6 +36,11 @@ const incomeSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    walletId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wallet",
+      default: null,
+    },
   },
   {
     timestamps: true,

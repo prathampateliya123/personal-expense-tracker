@@ -61,6 +61,11 @@ const expenseSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    walletId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wallet",
+      default: null,
+    },
   },
   {
     timestamps: true,

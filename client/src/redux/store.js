@@ -11,6 +11,8 @@ import incomeReducer from "./incomeSlice";
 import dashboardReducer from "./dashboardSlice";
 import notificationReducer from "./notificationSlice";
 import budgetReducer from "./budgetSlice";
+import goalReducer from "./goalSlice";
+import walletReducer from "./walletSlice";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +22,8 @@ const store = configureStore({
     dashboard: dashboardReducer,
     notifications: notificationReducer,
     budgets: budgetReducer,
+    goals: goalReducer,
+    wallets: walletReducer,
   },
 });
 

@@ -5,10 +5,12 @@
  */
 
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   EXPENSE_CATEGORIES,
   PAYMENT_MODES,
 } from "../utils/expenseConstants";
+import { fetchWallets } from "../redux/walletSlice";
 
 const defaultFormState = {
   title: "",
@@ -17,11 +19,18 @@ const defaultFormState = {
   paymentMode: "",
   date: new Date().toISOString().split("T")[0],
   description: "",
+  walletId: "",
 };
 
 const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
+  const dispatch = useDispatch();
+  const { wallets } = useSelector((state) => state.wallets);
   const [formData, setFormData] = useState(defaultFormState);
   const isEditing = Boolean(expense);
+
+  useEffect(() => {
+    dispatch(fetchWallets());
+  }, [dispatch]);
 
   useEffect(() => {
     if (expense) {
@@ -34,6 +43,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
           ? new Date(expense.date).toISOString().split("T")[0]
           : defaultFormState.date,
         description: expense.description || "",
+        walletId: expense.walletId || "",
       });
     } else {
       setFormData(defaultFormState);
@@ -49,6 +59,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
     onSubmit({
       ...formData,
       amount: parseFloat(formData.amount),
+      walletId: formData.walletId || null,
     });
   };
 
@@ -132,6 +143,25 @@ const ExpenseForm = ({ expense, onSubmit, onCancel, loading }) => {
             {PAYMENT_MODES.map(({ value, label }) => (
               <option key={value} value={value}>
                 {label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Wallet
+          </label>
+          <select
+            name="walletId"
+            value={formData.walletId}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            <option value="">No wallet (optional)</option>
+            {wallets.map((w) => (
+              <option key={w._id} value={w._id}>
+                {w.walletName}
               </option>
             ))}
           </select>
