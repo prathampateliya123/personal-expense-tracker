@@ -42,37 +42,34 @@ const AddWalletModal = ({ onClose, onSubmit, loading }) => {
     });
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-gray-900">Add Wallet</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+      <div className="card w-full max-w-md p-6">
+        <h3 className="section-heading text-lg">Add Wallet</h3>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Wallet Name
             </label>
             <input
               required
               value={form.walletName}
               onChange={(e) => setForm({ ...form, walletName: e.target.value })}
-              className={inputClass}
+              className="input-field"
               placeholder="Paytm UPI"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Type
             </label>
             <select
               required
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className={inputClass}
+              className="input-field"
             >
               <option value="">Select type</option>
               {WALLET_TYPES.map(({ value, label }) => (
@@ -84,7 +81,7 @@ const AddWalletModal = ({ onClose, onSubmit, loading }) => {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Opening Balance (₹)
             </label>
             <input
@@ -93,24 +90,16 @@ const AddWalletModal = ({ onClose, onSubmit, loading }) => {
               step="0.01"
               value={form.balance}
               onChange={(e) => setForm({ ...form, balance: e.target.value })}
-              className={inputClass}
+              className="input-field"
               placeholder="0"
             />
           </div>
 
           <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 rounded-lg bg-indigo-600 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading} className="btn-primary flex-1">
               {loading ? "Creating..." : "Create Wallet"}
             </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
+            <button type="button" onClick={onClose} className="btn-secondary flex-1">
               Cancel
             </button>
           </div>
@@ -137,17 +126,14 @@ const TransferModal = ({ wallets, onClose, onSubmit, loading }) => {
     });
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-gray-900">Transfer Funds</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+      <div className="card w-full max-w-md p-6">
+        <h3 className="section-heading text-lg">Transfer Funds</h3>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               From Wallet
             </label>
             <select
@@ -156,7 +142,7 @@ const TransferModal = ({ wallets, onClose, onSubmit, loading }) => {
               onChange={(e) =>
                 setForm({ ...form, fromWalletId: e.target.value })
               }
-              className={inputClass}
+              className="input-field"
             >
               <option value="">Select source</option>
               {wallets.map((w) => (
@@ -168,14 +154,14 @@ const TransferModal = ({ wallets, onClose, onSubmit, loading }) => {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               To Wallet
             </label>
             <select
               required
               value={form.toWalletId}
               onChange={(e) => setForm({ ...form, toWalletId: e.target.value })}
-              className={inputClass}
+              className="input-field"
             >
               <option value="">Select destination</option>
               {wallets
@@ -189,7 +175,7 @@ const TransferModal = ({ wallets, onClose, onSubmit, loading }) => {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Amount (₹)
             </label>
             <input
@@ -199,36 +185,28 @@ const TransferModal = ({ wallets, onClose, onSubmit, loading }) => {
               step="0.01"
               value={form.amount}
               onChange={(e) => setForm({ ...form, amount: e.target.value })}
-              className={inputClass}
+              className="input-field"
               placeholder="1000"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Note (optional)
             </label>
             <input
               value={form.note}
               onChange={(e) => setForm({ ...form, note: e.target.value })}
-              className={inputClass}
+              className="input-field"
               placeholder="Moved to savings"
             />
           </div>
 
           <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 rounded-lg bg-indigo-600 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading} className="btn-primary flex-1">
               {loading ? "Transferring..." : "Transfer"}
             </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
+            <button type="button" onClick={onClose} className="btn-secondary flex-1">
               Cancel
             </button>
           </div>
@@ -287,8 +265,8 @@ const Wallets = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Wallets</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="page-heading">Wallets</h1>
+          <p className="page-subheading">
             Manage cash, UPI, bank, and card balances
           </p>
         </div>
@@ -296,38 +274,35 @@ const Wallets = () => {
           <button
             onClick={() => setShowTransferModal(true)}
             disabled={wallets.length < 2}
-            className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primaryGlow transition hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Transfer
           </button>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
-          >
+          <button onClick={() => setShowAddModal(true)} className="btn-primary">
             Add Wallet
           </button>
         </div>
       </div>
 
       {/* Total balance summary */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-medium text-gray-500">Total Balance</p>
-        <p className="mt-1 text-3xl font-bold text-gray-900">
+      <div className="card p-6">
+        <p className="text-sm font-medium text-textSecondary">Total Balance</p>
+        <p className="mt-1 text-3xl font-bold tracking-heading text-textPrimary">
           {formatCurrency(totalBalance)}
         </p>
       </div>
 
       {/* Wallet cards grid */}
       {loading && wallets.length === 0 ? (
-        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+        <div className="card flex h-48 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         </div>
       ) : wallets.length === 0 ? (
-        <div className="flex h-48 flex-col items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <p className="text-sm text-gray-400">No wallets yet</p>
+        <div className="card flex h-48 flex-col items-center justify-center">
+          <p className="text-sm text-textMuted">No wallets yet</p>
           <button
             onClick={() => setShowAddModal(true)}
-            className="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            className="mt-3 text-sm font-medium text-primary hover:text-primaryGlow"
           >
             Add your first wallet
           </button>
@@ -337,10 +312,7 @@ const Wallets = () => {
           {wallets.map((wallet) => {
             const styles = WALLET_TYPE_STYLES[wallet.type] || WALLET_TYPE_STYLES.cash;
             return (
-              <div
-                key={wallet._id}
-                className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-              >
+              <div key={wallet._id} className="card p-5">
                 <div className="flex items-start justify-between">
                   <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${styles.bg} ${styles.text}`}>
                     <WalletTypeIcon type={wallet.type} className="h-6 w-6" />
@@ -348,7 +320,7 @@ const Wallets = () => {
                   <button
                     onClick={() => handleDelete(wallet._id)}
                     title="Delete wallet"
-                    className="rounded-lg p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-1.5 text-textMuted transition hover:bg-expense/10 hover:text-expense"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -356,17 +328,17 @@ const Wallets = () => {
                   </button>
                 </div>
 
-                <h3 className="mt-3 font-semibold text-gray-900">
+                <h3 className="mt-3 font-semibold text-textPrimary">
                   {wallet.walletName}
                 </h3>
                 <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize ${styles.bg} ${styles.text}`}>
                   {wallet.type}
                 </span>
 
-                <p className={`mt-4 text-2xl font-bold ${wallet.currentBalance < 0 ? "text-red-600" : "text-gray-900"}`}>
+                <p className={`mt-4 text-2xl font-bold ${wallet.currentBalance < 0 ? "text-expense" : "text-textPrimary"}`}>
                   {formatCurrency(wallet.currentBalance)}
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-textMuted">
                   Opening: {formatCurrency(wallet.balance)}
                 </p>
               </div>

@@ -117,29 +117,26 @@ const Reports = () => {
 
   const yearOptions = Array.from({ length: 5 }, (_, i) => now.getFullYear() - 2 + i);
 
-  const inputClass =
-    "rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Reports</h1>
+        <p className="page-subheading">
           View monthly summaries and export your financial data
         </p>
       </div>
 
       {/* Month/Year selector + on-screen preview */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="card p-6">
         <div className="mb-6 flex flex-wrap items-end gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Month
             </label>
             <select
               value={month}
               onChange={(e) => setMonth(parseInt(e.target.value, 10))}
-              className={inputClass}
+              className="input-field"
             >
               {MONTHS.map((name, idx) => (
                 <option key={name} value={idx + 1}>
@@ -149,13 +146,13 @@ const Reports = () => {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Year
             </label>
             <select
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value, 10))}
-              className={inputClass}
+              className="input-field"
             >
               {yearOptions.map((y) => (
                 <option key={y} value={y}>
@@ -168,29 +165,29 @@ const Reports = () => {
 
         {summaryLoading ? (
           <div className="flex h-48 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
         ) : summary ? (
           <div className="space-y-6">
             {/* Summary cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div className="rounded-lg border border-green-100 bg-green-50 p-4">
-                <p className="text-sm font-medium text-green-700">Total Income</p>
-                <p className="mt-1 text-2xl font-bold text-green-800">
+              <div className="rounded-lg border border-income/20 bg-income/10 p-4">
+                <p className="text-sm font-medium text-income">Total Income</p>
+                <p className="mt-1 text-2xl font-bold text-income">
                   {formatCurrency(summary.totalIncome)}
                 </p>
               </div>
-              <div className="rounded-lg border border-red-100 bg-red-50 p-4">
-                <p className="text-sm font-medium text-red-700">Total Expenses</p>
-                <p className="mt-1 text-2xl font-bold text-red-800">
+              <div className="rounded-lg border border-expense/20 bg-expense/10 p-4">
+                <p className="text-sm font-medium text-expense">Total Expenses</p>
+                <p className="mt-1 text-2xl font-bold text-expense">
                   {formatCurrency(summary.totalExpense)}
                 </p>
               </div>
-              <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-4">
-                <p className="text-sm font-medium text-indigo-700">Balance</p>
+              <div className="rounded-lg border border-secondary/20 bg-secondary/10 p-4">
+                <p className="text-sm font-medium text-secondary">Balance</p>
                 <p
                   className={`mt-1 text-2xl font-bold ${
-                    summary.balance >= 0 ? "text-indigo-800" : "text-red-800"
+                    summary.balance >= 0 ? "text-secondary" : "text-expense"
                   }`}
                 >
                   {formatCurrency(summary.balance)}
@@ -200,72 +197,66 @@ const Reports = () => {
 
             {/* Category breakdown table */}
             <div>
-              <h3 className="mb-3 text-sm font-semibold text-gray-700">
-                Expense by Category
-              </h3>
+              <h3 className="section-heading mb-3">Expense by Category</h3>
               {summary.categoryBreakdown?.length > 0 ? (
-                <div className="overflow-hidden rounded-lg border border-gray-200">
+                <div className="card overflow-hidden">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-50">
+                    <thead className="table-header">
                       <tr>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Category</th>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Amount</th>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Count</th>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Share</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Category</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Amount</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Count</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Share</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody>
                       {summary.categoryBreakdown.map((cat) => (
-                        <tr key={cat.category} className="hover:bg-gray-50">
-                          <td className="px-4 py-2.5 font-medium text-gray-900">
+                        <tr key={cat.category} className="table-row">
+                          <td className="px-4 py-2.5 font-medium text-textPrimary">
                             {cat.category}
                           </td>
-                          <td className="px-4 py-2.5 text-red-600">
+                          <td className="px-4 py-2.5 text-expense">
                             {formatCurrency(cat.total)}
                           </td>
-                          <td className="px-4 py-2.5 text-gray-500">{cat.count}</td>
-                          <td className="px-4 py-2.5 text-gray-500">{cat.percentage}%</td>
+                          <td className="px-4 py-2.5 text-textMuted">{cat.count}</td>
+                          <td className="px-4 py-2.5 text-textMuted">{cat.percentage}%</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               ) : (
-                <p className="text-sm text-gray-400">No expenses this month</p>
+                <p className="text-sm text-textMuted">No expenses this month</p>
               )}
             </div>
 
             {/* Top 5 expenses */}
             {summary.topExpenses?.length > 0 && (
               <div>
-                <h3 className="mb-3 text-sm font-semibold text-gray-700">
-                  Top 5 Expenses
-                </h3>
-                <div className="overflow-hidden rounded-lg border border-gray-200">
+                <h3 className="section-heading mb-3">Top 5 Expenses</h3>
+                <div className="card overflow-hidden">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-50">
+                    <thead className="table-header">
                       <tr>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Title</th>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Category</th>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Date</th>
-                        <th className="px-4 py-2.5 font-medium text-gray-600">Amount</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Title</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Category</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Date</th>
+                        <th className="px-4 py-2.5 font-medium text-textSecondary">Amount</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody>
                       {summary.topExpenses.map((exp) => (
-                        <tr key={exp._id} className="hover:bg-gray-50">
-                          <td className="px-4 py-2.5 font-medium text-gray-900">
+                        <tr key={exp._id} className="table-row">
+                          <td className="px-4 py-2.5 font-medium text-textPrimary">
                             {exp.title}
                           </td>
                           <td className="px-4 py-2.5">
-                            <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
-                              {exp.category}
-                            </span>
+                            <span className="badge-primary">{exp.category}</span>
                           </td>
-                          <td className="px-4 py-2.5 text-gray-500">
+                          <td className="px-4 py-2.5 text-textMuted">
                             {formatDate(exp.date)}
                           </td>
-                          <td className="px-4 py-2.5 font-medium text-red-600">
+                          <td className="px-4 py-2.5 font-medium text-expense">
                             {formatCurrency(exp.amount)}
                           </td>
                         </tr>
@@ -280,39 +271,39 @@ const Reports = () => {
       </div>
 
       {/* Export section */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Export Data</h2>
+      <div className="card p-6">
+        <h2 className="section-heading mb-4">Export Data</h2>
         <div className="flex flex-wrap items-end gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Start Date
             </label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className={inputClass}
+              className="input-field"
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               End Date
             </label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className={inputClass}
+              className="input-field"
             />
           </div>
           <button
             onClick={handleExportExcel}
             disabled={exportingExcel}
-            className="flex items-center gap-2 rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn-primary flex items-center gap-2"
           >
             {exportingExcel ? (
               <>
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-textPrimary border-t-transparent" />
                 Exporting...
               </>
             ) : (
@@ -322,11 +313,11 @@ const Reports = () => {
           <button
             onClick={handleExportPdf}
             disabled={exportingPdf}
-            className="flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn-danger flex items-center gap-2"
           >
             {exportingPdf ? (
               <>
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-expense border-t-transparent" />
                 Exporting...
               </>
             ) : (

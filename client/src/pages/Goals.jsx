@@ -40,14 +40,14 @@ const ContributionModal = ({ goal, onClose, onSubmit, loading }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-gray-900">Add Contribution</h3>
-        <p className="mt-1 text-sm text-gray-500">{goal.goalName}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+      <div className="card w-full max-w-sm p-6">
+        <h3 className="section-heading text-lg">Add Contribution</h3>
+        <p className="mt-1 text-sm text-textSecondary">{goal.goalName}</p>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Amount (₹)
             </label>
             <input
@@ -57,25 +57,17 @@ const ContributionModal = ({ goal, onClose, onSubmit, loading }) => {
               step="0.01"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+              className="input-field"
               placeholder="1000"
               autoFocus
             />
           </div>
 
           <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 rounded-lg bg-indigo-600 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading} className="btn-primary flex-1">
               {loading ? "Saving..." : "Add"}
             </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-            >
+            <button type="button" onClick={onClose} className="btn-secondary flex-1">
               Cancel
             </button>
           </div>
@@ -91,16 +83,16 @@ const GoalCard = ({ goal, onContribute, onDelete, completed = false }) => {
 
   return (
     <div
-      className={`rounded-xl border bg-white p-5 shadow-sm ${
-        completed ? "border-green-200 bg-green-50/30" : "border-gray-200"
+      className={`card p-5 ${
+        completed ? "border-income/30 bg-income/5" : ""
       }`}
     >
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-gray-900">{goal.goalName}</h3>
+            <h3 className="font-semibold text-textPrimary">{goal.goalName}</h3>
             {completed && (
-              <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+              <span className="flex items-center gap-1 rounded-full bg-income/15 px-2 py-0.5 text-xs font-medium text-income">
                 <svg
                   className="h-3.5 w-3.5"
                   fill="currentColor"
@@ -116,19 +108,17 @@ const GoalCard = ({ goal, onContribute, onDelete, completed = false }) => {
               </span>
             )}
             {goal.status === "paused" && (
-              <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700">
+              <span className="rounded-full bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning">
                 Paused
               </span>
             )}
           </div>
-          <span className="mt-1 inline-block rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
-            {goal.category}
-          </span>
+          <span className="badge-primary mt-1 inline-block">{goal.category}</span>
         </div>
         <button
           onClick={() => onDelete(goal._id)}
           title="Delete goal"
-          className="rounded-lg p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+          className="rounded-lg p-1.5 text-textMuted transition hover:bg-expense/10 hover:text-expense"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -150,36 +140,36 @@ const GoalCard = ({ goal, onContribute, onDelete, completed = false }) => {
       {/* Progress bar */}
       <div className="mt-4">
         <div className="mb-1 flex justify-between text-sm">
-          <span className="font-medium text-gray-700">
+          <span className="font-medium text-textSecondary">
             {formatCurrency(goal.currentAmount)} / {formatCurrency(goal.targetAmount)}
           </span>
           <span
             className={`font-semibold ${
-              completed ? "text-green-600" : "text-indigo-600"
+              completed ? "text-income" : "text-primaryGlow"
             }`}
           >
             {goal.percentage}%
           </span>
         </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-100">
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-background">
           <div
             className={`h-full rounded-full transition-all duration-500 ${
-              completed ? "bg-green-500" : "bg-indigo-500"
+              completed ? "bg-income" : "bg-primary"
             }`}
             style={{ width: `${barWidth}%` }}
           />
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-3 flex items-center justify-between text-xs text-textMuted">
         <span>Target: {formatDate(goal.targetDate)}</span>
         {!completed && (
           <span
             className={
               goal.daysRemaining < 0
-                ? "font-medium text-red-500"
+                ? "font-medium text-expense"
                 : goal.daysRemaining <= 7
-                  ? "font-medium text-yellow-600"
+                  ? "font-medium text-warning"
                   : ""
             }
           >
@@ -193,7 +183,7 @@ const GoalCard = ({ goal, onContribute, onDelete, completed = false }) => {
       {!completed && goal.status !== "paused" && (
         <button
           onClick={() => onContribute(goal)}
-          className="mt-4 w-full rounded-lg border border-indigo-200 bg-indigo-50 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+          className="mt-4 w-full rounded-lg border border-primary/30 bg-primary/10 py-2 text-sm font-semibold text-primaryGlow transition hover:bg-primary/20"
         >
           Add Contribution
         </button>
@@ -273,27 +263,21 @@ const Goals = () => {
     }
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Savings Goals</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Savings Goals</h1>
+        <p className="page-subheading">
           Set targets and track your progress toward financial goals
         </p>
       </div>
 
       {/* Create goal form */}
-      <form
-        onSubmit={handleCreateGoal}
-        className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-      >
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Create Goal</h2>
+      <form onSubmit={handleCreateGoal} className="card p-6">
+        <h2 className="section-heading mb-4">Create Goal</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Goal Name
             </label>
             <input
@@ -302,13 +286,13 @@ const Goals = () => {
               required
               value={formData.goalName}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
               placeholder="Emergency Fund"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Target Amount (₹)
             </label>
             <input
@@ -319,13 +303,13 @@ const Goals = () => {
               step="0.01"
               value={formData.targetAmount}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
               placeholder="50000"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Target Date
             </label>
             <input
@@ -334,12 +318,12 @@ const Goals = () => {
               required
               value={formData.targetDate}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Category
             </label>
             <select
@@ -347,7 +331,7 @@ const Goals = () => {
               required
               value={formData.category}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
             >
               <option value="">Select category</option>
               {EXPENSE_CATEGORIES.map((cat) => (
@@ -359,25 +343,21 @@ const Goals = () => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-4 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className="btn-primary mt-4">
           {loading ? "Creating..." : "Create Goal"}
         </button>
       </form>
 
       {/* Active goals grid */}
       <div>
-        <h2 className="mb-4 text-base font-semibold text-gray-800">Active Goals</h2>
+        <h2 className="section-heading mb-4">Active Goals</h2>
         {loading && goals.length === 0 ? (
-          <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+          <div className="card flex h-48 items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
         ) : activeGoals.length === 0 ? (
-          <div className="flex h-32 items-center justify-center rounded-xl border border-gray-200 bg-white">
-            <p className="text-sm text-gray-400">No active goals yet</p>
+          <div className="card flex h-32 items-center justify-center">
+            <p className="text-sm text-textMuted">No active goals yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -398,15 +378,13 @@ const Goals = () => {
         <div>
           <div className="mb-4 flex items-center gap-2">
             <svg
-              className="h-5 w-5 text-green-500"
+              className="h-5 w-5 text-income"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-            <h2 className="text-base font-semibold text-gray-800">
-              Completed Goals
-            </h2>
+            <h2 className="section-heading">Completed Goals</h2>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {completedGoals.map((goal) => (

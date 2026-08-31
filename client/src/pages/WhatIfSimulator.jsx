@@ -21,6 +21,15 @@ import {
 } from "recharts";
 import axiosInstance from "../utils/axiosInstance";
 import { EXPENSE_CATEGORIES } from "../utils/expenseConstants";
+import {
+  CHART_COLORS,
+  CHART_TOOLTIP_STYLE,
+  CHART_AXIS_TICK,
+  CHART_AXIS_LINE,
+  CHART_GRID,
+  INCOME_LINE_COLOR,
+  EXPENSE_LINE_COLOR,
+} from "../utils/themeConstants";
 
 const PERIOD_OPTIONS = [
   { value: 3, label: "3 months" },
@@ -104,33 +113,25 @@ const WhatIfSimulator = () => {
     }
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">What-If Simulator</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">What-If Simulator</h1>
+        <p className="page-subheading">
           Explore how small changes today can impact your finances tomorrow
         </p>
       </div>
 
       {/* Section 1: Spending cut simulator */}
       <section className="space-y-6">
-        <h2 className="text-lg font-semibold text-gray-800">
-          Spending Cut Simulator
-        </h2>
+        <h2 className="section-heading">Spending Cut Simulator</h2>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Form */}
-          <form
-            onSubmit={handleCutSubmit}
-            className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-          >
+          <form onSubmit={handleCutSubmit} className="card p-6">
             <div className="space-y-5">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-textSecondary">
                   Category
                 </label>
                 <select
@@ -138,7 +139,7 @@ const WhatIfSimulator = () => {
                   onChange={(e) =>
                     setCutForm({ ...cutForm, category: e.target.value })
                   }
-                  className={inputClass}
+                  className="input-field"
                 >
                   <option value="">Select category</option>
                   {EXPENSE_CATEGORIES.map((cat) => (
@@ -151,10 +152,10 @@ const WhatIfSimulator = () => {
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-textSecondary">
                     Daily amount to cut
                   </label>
-                  <span className="text-lg font-bold text-indigo-600">
+                  <span className="text-lg font-bold text-primaryGlow">
                     {formatCurrency(cutForm.dailyCutAmount)}
                   </span>
                 </div>
@@ -170,16 +171,16 @@ const WhatIfSimulator = () => {
                       dailyCutAmount: parseInt(e.target.value, 10),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-indigo-600"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-border accent-primary"
                 />
-                <div className="mt-1 flex justify-between text-xs text-gray-400">
+                <div className="mt-1 flex justify-between text-xs text-textMuted">
                   <span>₹0</span>
                   <span>₹500</span>
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-textSecondary">
                   Time period
                 </label>
                 <select
@@ -190,7 +191,7 @@ const WhatIfSimulator = () => {
                       months: parseInt(e.target.value, 10),
                     })
                   }
-                  className={inputClass}
+                  className="input-field"
                 >
                   {PERIOD_OPTIONS.map(({ value, label }) => (
                     <option key={value} value={value}>
@@ -203,7 +204,7 @@ const WhatIfSimulator = () => {
               <button
                 type="submit"
                 disabled={cutLoading}
-                className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+                className="btn-primary w-full py-2.5"
               >
                 {cutLoading ? "Calculating..." : "Compare with my spending"}
               </button>
@@ -211,53 +212,53 @@ const WhatIfSimulator = () => {
           </form>
 
           {/* Live result card */}
-          <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-6 shadow-sm">
-            <p className="text-sm font-medium text-indigo-600">
+          <div className="card border-primary/30 bg-primary/5 p-6">
+            <p className="text-sm font-medium text-primaryGlow">
               Projected Savings (live)
             </p>
-            <p className="mt-2 text-4xl font-bold text-indigo-700">
+            <p className="mt-2 text-4xl font-bold text-textPrimary">
               {formatCurrency(liveProjectedSavings)}
             </p>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-textSecondary">
               By cutting{" "}
-              <span className="font-semibold">
+              <span className="font-semibold text-textPrimary">
                 {formatCurrency(cutForm.dailyCutAmount)}/day
               </span>{" "}
               for{" "}
-              <span className="font-semibold">
+              <span className="font-semibold text-textPrimary">
                 {PERIOD_OPTIONS.find((p) => p.value === cutForm.months)?.label}
               </span>
             </p>
 
             {cutResult && (
-              <div className="mt-6 space-y-3 border-t border-indigo-100 pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-500">
+              <div className="mt-6 space-y-3 border-t border-border pt-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-primaryGlow">
                   Based on your actual spending
                 </p>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-lg bg-white p-3">
-                    <p className="text-xs text-gray-500">Avg daily spend</p>
-                    <p className="text-lg font-bold text-red-600">
+                  <div className="rounded-lg bg-surface p-3">
+                    <p className="text-xs text-textMuted">Avg daily spend</p>
+                    <p className="text-lg font-bold text-expense">
                       {formatCurrency(cutResult.currentAvgDailySpend)}
                     </p>
                   </div>
-                  <div className="rounded-lg bg-white p-3">
-                    <p className="text-xs text-gray-500">After cut</p>
-                    <p className="text-lg font-bold text-green-600">
+                  <div className="rounded-lg bg-surface p-3">
+                    <p className="text-xs text-textMuted">After cut</p>
+                    <p className="text-lg font-bold text-income">
                       {formatCurrency(cutResult.projectedDailySpend)}
                     </p>
                   </div>
                 </div>
                 {cutResult.percentReduction > 0 && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-textSecondary">
                     That&apos;s a{" "}
-                    <span className="font-semibold text-green-600">
+                    <span className="font-semibold text-income">
                       {cutResult.percentReduction}% reduction
                     </span>{" "}
                     in your {cutResult.category} spending
                   </p>
                 )}
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-textMuted">
                   Based on {cutResult.transactionCount} transactions over the
                   last {cutResult.lookbackDays} days
                 </p>
@@ -269,18 +270,13 @@ const WhatIfSimulator = () => {
 
       {/* Section 2: Savings goal simulator */}
       <section className="space-y-6">
-        <h2 className="text-lg font-semibold text-gray-800">
-          Savings Goal Simulator
-        </h2>
+        <h2 className="section-heading">Savings Goal Simulator</h2>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <form
-            onSubmit={handleSavingsSubmit}
-            className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-          >
+          <form onSubmit={handleSavingsSubmit} className="card p-6">
             <div className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-textSecondary">
                   Monthly Income (₹)
                 </label>
                 <input
@@ -294,13 +290,13 @@ const WhatIfSimulator = () => {
                       monthlyIncome: e.target.value,
                     })
                   }
-                  className={inputClass}
+                  className="input-field"
                   placeholder="50000"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-textSecondary">
                   Monthly Savings (₹)
                 </label>
                 <input
@@ -314,13 +310,13 @@ const WhatIfSimulator = () => {
                       monthlySavingsGoal: e.target.value,
                     })
                   }
-                  className={inputClass}
+                  className="input-field"
                   placeholder="10000"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-textSecondary">
                   Target Amount (₹)
                 </label>
                 <input
@@ -334,17 +330,17 @@ const WhatIfSimulator = () => {
                       targetAmount: e.target.value,
                     })
                   }
-                  className={inputClass}
+                  className="input-field"
                   placeholder="500000"
                 />
               </div>
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-textSecondary">
                     Annual Interest Rate (%)
                   </label>
-                  <span className="text-sm font-bold text-indigo-600">
+                  <span className="text-sm font-bold text-primaryGlow">
                     {savingsForm.interestRate}%
                   </span>
                 </div>
@@ -360,9 +356,9 @@ const WhatIfSimulator = () => {
                       interestRate: parseFloat(e.target.value),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-indigo-600"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-border accent-primary"
                 />
-                <div className="mt-1 flex justify-between text-xs text-gray-400">
+                <div className="mt-1 flex justify-between text-xs text-textMuted">
                   <span>0%</span>
                   <span>15%</span>
                 </div>
@@ -371,7 +367,7 @@ const WhatIfSimulator = () => {
               <button
                 type="submit"
                 disabled={savingsLoading}
-                className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+                className="btn-primary w-full py-2.5"
               >
                 {savingsLoading ? "Calculating..." : "Calculate Timeline"}
               </button>
@@ -382,38 +378,38 @@ const WhatIfSimulator = () => {
           <div className="space-y-4">
             {savingsResult ? (
               <>
-                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                  <p className="text-sm font-medium text-gray-500">
+                <div className="card p-6">
+                  <p className="text-sm font-medium text-textSecondary">
                     Time to reach goal
                   </p>
-                  <p className="mt-1 text-4xl font-bold text-indigo-600">
+                  <p className="mt-1 text-4xl font-bold text-primaryGlow">
                     {savingsResult.monthsRequired} months
                   </p>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-textSecondary">
                     ({(savingsResult.monthsRequired / 12).toFixed(1)} years)
                   </p>
                   <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-gray-500">Savings rate</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-textMuted">Savings rate</p>
+                      <p className="font-semibold text-textPrimary">
                         {savingsResult.savingsRate}% of income
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Without interest</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-textMuted">Without interest</p>
+                      <p className="font-semibold text-textPrimary">
                         {savingsResult.simpleMonths} months
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Final balance</p>
-                      <p className="font-semibold text-green-600">
+                      <p className="text-textMuted">Final balance</p>
+                      <p className="font-semibold text-income">
                         {formatCurrency(savingsResult.finalBalance)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Interest rate</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-textMuted">Interest rate</p>
+                      <p className="font-semibold text-textPrimary">
                         {savingsResult.interestRate}% p.a.
                       </p>
                     </div>
@@ -422,54 +418,55 @@ const WhatIfSimulator = () => {
 
                 {/* Chart */}
                 {savingsResult.projection?.length > 0 && (
-                  <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <h3 className="mb-4 text-sm font-semibold text-gray-700">
+                  <div className="card p-6">
+                    <h3 className="section-heading mb-4">
                       Savings Growth Projection
                     </h3>
                     <ResponsiveContainer width="100%" height={260}>
                       <LineChart data={savingsResult.projection}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                        <CartesianGrid {...CHART_GRID} />
                         <XAxis
                           dataKey="month"
-                          tick={{ fontSize: 12, fill: "#6b7280" }}
+                          tick={CHART_AXIS_TICK}
+                          axisLine={CHART_AXIS_LINE}
+                          tickLine={CHART_AXIS_LINE}
                           label={{
                             value: "Months",
                             position: "insideBottom",
                             offset: -5,
                             fontSize: 12,
+                            fill: "#9CA3AF",
                           }}
                         />
                         <YAxis
-                          tick={{ fontSize: 12, fill: "#6b7280" }}
+                          tick={CHART_AXIS_TICK}
+                          axisLine={CHART_AXIS_LINE}
+                          tickLine={CHART_AXIS_LINE}
                           tickFormatter={(v) =>
                             v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v
                           }
                         />
                         <Tooltip
                           formatter={(value) => formatCurrency(value)}
-                          contentStyle={{
-                            borderRadius: "8px",
-                            border: "1px solid #e5e7eb",
-                            fontSize: "13px",
-                          }}
+                          contentStyle={CHART_TOOLTIP_STYLE}
                         />
                         <Legend />
                         <ReferenceLine
                           y={savingsResult.targetAmount}
-                          stroke="#ef4444"
+                          stroke={EXPENSE_LINE_COLOR}
                           strokeDasharray="5 5"
                           label={{
                             value: "Target",
                             position: "insideTopRight",
                             fontSize: 11,
-                            fill: "#ef4444",
+                            fill: EXPENSE_LINE_COLOR,
                           }}
                         />
                         <Line
                           type="monotone"
                           dataKey="balance"
                           name="Balance"
-                          stroke="#6366f1"
+                          stroke={INCOME_LINE_COLOR}
                           strokeWidth={2}
                           dot={false}
                           activeDot={{ r: 5 }}
@@ -480,10 +477,8 @@ const WhatIfSimulator = () => {
                 )}
 
                 {/* Bar chart comparison: with vs without interest */}
-                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                  <h3 className="mb-4 text-sm font-semibold text-gray-700">
-                    Timeline Comparison
-                  </h3>
+                <div className="card p-6">
+                  <h3 className="section-heading mb-4">Timeline Comparison</h3>
                   <ResponsiveContainer width="100%" height={160}>
                     <BarChart
                       data={[
@@ -498,25 +493,37 @@ const WhatIfSimulator = () => {
                       ]}
                       layout="vertical"
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                      <XAxis type="number" tick={{ fontSize: 12 }} />
+                      <CartesianGrid {...CHART_GRID} />
+                      <XAxis
+                        type="number"
+                        tick={CHART_AXIS_TICK}
+                        axisLine={CHART_AXIS_LINE}
+                        tickLine={CHART_AXIS_LINE}
+                      />
                       <YAxis
                         type="category"
                         dataKey="name"
-                        tick={{ fontSize: 12 }}
+                        tick={CHART_AXIS_TICK}
+                        axisLine={CHART_AXIS_LINE}
+                        tickLine={CHART_AXIS_LINE}
                         width={90}
                       />
                       <Tooltip
                         formatter={(value) => [`${value} months`, "Duration"]}
+                        contentStyle={CHART_TOOLTIP_STYLE}
                       />
-                      <Bar dataKey="months" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                      <Bar
+                        dataKey="months"
+                        fill={CHART_COLORS[0]}
+                        radius={[0, 4, 4, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </>
             ) : (
-              <div className="flex h-64 items-center justify-center rounded-xl border border-gray-200 bg-white">
-                <p className="text-sm text-gray-400">
+              <div className="card flex h-64 items-center justify-center">
+                <p className="text-sm text-textMuted">
                   Enter your details and calculate to see results
                 </p>
               </div>

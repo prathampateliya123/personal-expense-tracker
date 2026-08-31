@@ -31,7 +31,7 @@ const formatDate = (dateStr) =>
 
 const PlaneIcon = () => (
   <svg
-    className="h-6 w-6 text-sky-600"
+    className="h-6 w-6 text-secondary"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -55,9 +55,6 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
     currency: "INR",
   });
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -71,22 +68,22 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+      <div className="card w-full max-w-lg p-6 shadow-xl">
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-100">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/15">
             <PlaneIcon />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Create Trip</h3>
-            <p className="text-sm text-gray-500">Plan and track travel expenses</p>
+            <h3 className="section-heading">Create Trip</h3>
+            <p className="text-sm text-textSecondary">Plan and track travel expenses</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-textSecondary">
                 Trip Name
               </label>
               <input
@@ -94,12 +91,12 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
                 required
                 value={form.tripName}
                 onChange={handleChange}
-                className={inputClass}
+                className="input-field"
                 placeholder="Summer in Goa"
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-textSecondary">
                 Destination
               </label>
               <input
@@ -107,12 +104,12 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
                 required
                 value={form.destination}
                 onChange={handleChange}
-                className={inputClass}
+                className="input-field"
                 placeholder="Goa, India"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-textSecondary">
                 Start Date
               </label>
               <input
@@ -121,11 +118,11 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
                 required
                 value={form.startDate}
                 onChange={handleChange}
-                className={inputClass}
+                className="input-field"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-textSecondary">
                 End Date
               </label>
               <input
@@ -134,11 +131,11 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
                 required
                 value={form.endDate}
                 onChange={handleChange}
-                className={inputClass}
+                className="input-field"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-textSecondary">
                 Budget
               </label>
               <input
@@ -149,19 +146,19 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
                 step="0.01"
                 value={form.budget}
                 onChange={handleChange}
-                className={inputClass}
+                className="input-field"
                 placeholder="50000"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-textSecondary">
                 Currency
               </label>
               <select
                 name="currency"
                 value={form.currency}
                 onChange={handleChange}
-                className={inputClass}
+                className="input-field"
               >
                 <option value="INR">INR</option>
                 <option value="USD">USD</option>
@@ -174,14 +171,14 @@ const CreateTripModal = ({ onClose, onSubmit, loading }) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 rounded-lg bg-indigo-600 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+              className="btn-primary flex-1"
             >
               {loading ? "Creating..." : "Create Trip"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+              className="btn-secondary flex-1"
             >
               Cancel
             </button>
@@ -196,29 +193,29 @@ const TripCard = ({ trip, onClose, onDelete }) => {
   const barWidth = Math.min(trip.percentageUsed, 100);
   const isOverBudget = trip.totalSpent > trip.budget;
   const barColor = isOverBudget
-    ? "bg-red-500"
+    ? "bg-expense"
     : barWidth > 80
-      ? "bg-amber-500"
-      : "bg-sky-500";
+      ? "bg-warning"
+      : "bg-secondary";
 
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
-      <div className="absolute right-0 top-0 h-24 w-24 translate-x-6 -translate-y-6 rounded-full bg-sky-50 opacity-60" />
+    <div className="card group relative overflow-hidden transition hover:shadow-glow">
+      <div className="absolute right-0 top-0 h-24 w-24 translate-x-6 -translate-y-6 rounded-full bg-secondary/10 opacity-60" />
       <div className="relative p-5">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 to-indigo-100">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-secondary/20 to-primary/20">
               <PlaneIcon />
             </div>
             <div>
               <Link
                 to={`/trips/${trip._id}`}
-                className="font-semibold text-gray-900 transition hover:text-indigo-600"
+                className="font-semibold text-textPrimary transition hover:text-primaryGlow"
               >
                 {trip.tripName}
               </Link>
-              <p className="mt-0.5 text-sm text-gray-500">{trip.destination}</p>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-0.5 text-sm text-textSecondary">{trip.destination}</p>
+              <p className="mt-1 text-xs text-textMuted">
                 {formatDate(trip.startDate)} — {formatDate(trip.endDate)}
               </p>
             </div>
@@ -226,8 +223,8 @@ const TripCard = ({ trip, onClose, onDelete }) => {
           <span
             className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
               trip.status === "ongoing"
-                ? "bg-sky-100 text-sky-700"
-                : "bg-gray-100 text-gray-600"
+                ? "bg-secondary/15 text-secondary"
+                : "bg-background text-textMuted"
             }`}
           >
             {trip.status === "ongoing" ? "Ongoing" : "Completed"}
@@ -236,23 +233,23 @@ const TripCard = ({ trip, onClose, onDelete }) => {
 
         <div className="mt-4">
           <div className="mb-1.5 flex justify-between text-sm">
-            <span className="text-gray-600">
+            <span className="text-textSecondary">
               {formatCurrency(trip.totalSpent, trip.currency)} spent
             </span>
-            <span className="font-medium text-gray-800">
+            <span className="font-medium text-textPrimary">
               {formatCurrency(trip.budget, trip.currency)} budget
             </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+          <div className="h-2 overflow-hidden rounded-full bg-background">
             <div
               className={`h-full rounded-full transition-all ${barColor}`}
               style={{ width: `${barWidth}%` }}
             />
           </div>
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-textMuted">
             {trip.percentageUsed}% of budget used
             {isOverBudget && (
-              <span className="ml-1 font-medium text-red-500">— over budget!</span>
+              <span className="ml-1 font-medium text-expense">— over budget!</span>
             )}
           </p>
         </div>
@@ -260,21 +257,21 @@ const TripCard = ({ trip, onClose, onDelete }) => {
         <div className="mt-4 flex gap-2">
           <Link
             to={`/trips/${trip._id}`}
-            className="flex-1 rounded-lg bg-indigo-50 py-1.5 text-center text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
+            className="btn-primary flex-1 py-1.5 text-center text-xs"
           >
             View Details
           </Link>
           {trip.status === "ongoing" && (
             <button
               onClick={() => onClose(trip._id)}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50"
+              className="btn-secondary px-3 py-1.5 text-xs"
             >
               Close Trip
             </button>
           )}
           <button
             onClick={() => onDelete(trip._id)}
-            className="rounded-lg border border-red-100 px-3 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
+            className="btn-danger px-3 py-1.5 text-xs"
           >
             Delete
           </button>
@@ -333,14 +330,14 @@ const Trips = () => {
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Trips</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="page-heading">Trips</h1>
+          <p className="page-subheading">
             Manage travel budgets and track trip expenses
           </p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          className="btn-primary flex items-center gap-2 py-2.5"
         >
           <PlaneIcon />
           Create Trip
@@ -349,20 +346,20 @@ const Trips = () => {
 
       {loading && trips.length === 0 ? (
         <div className="flex h-48 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         </div>
       ) : trips.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white py-16">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-sky-50">
+        <div className="card flex flex-col items-center justify-center border-dashed py-16">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary/15">
             <PlaneIcon />
           </div>
-          <p className="font-medium text-gray-700">No trips yet</p>
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="font-medium text-textPrimary">No trips yet</p>
+          <p className="mt-1 text-sm text-textMuted">
             Create your first trip to start tracking travel expenses
           </p>
           <button
             onClick={() => setShowCreate(true)}
-            className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+            className="btn-primary mt-4"
           >
             Create Trip
           </button>
@@ -371,7 +368,7 @@ const Trips = () => {
         <>
           {ongoingTrips.length > 0 && (
             <section>
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-textMuted">
                 Ongoing
               </h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -389,7 +386,7 @@ const Trips = () => {
 
           {completedTrips.length > 0 && (
             <section>
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-textMuted">
                 Completed
               </h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">

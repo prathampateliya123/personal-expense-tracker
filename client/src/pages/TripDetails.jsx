@@ -29,17 +29,7 @@ import {
   updateExpense,
   deleteExpense,
 } from "../redux/expenseSlice";
-
-const CHART_COLORS = [
-  "#6366f1",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#06b6d4",
-  "#ec4899",
-  "#84cc16",
-];
+import { CHART_COLORS, CHART_TOOLTIP_STYLE } from "../utils/themeConstants";
 
 const formatCurrency = (amount, currency = "INR") =>
   new Intl.NumberFormat("en-IN", {
@@ -141,7 +131,7 @@ const TripDetails = () => {
   if (detailsLoading && !currentTrip) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -149,8 +139,8 @@ const TripDetails = () => {
   if (!currentTrip) {
     return (
       <div className="text-center">
-        <p className="text-gray-500">Trip not found</p>
-        <Link to="/trips" className="mt-2 text-sm text-indigo-600 hover:underline">
+        <p className="text-textSecondary">Trip not found</p>
+        <Link to="/trips" className="mt-2 text-sm text-primaryGlow hover:underline">
           Back to Trips
         </Link>
       </div>
@@ -170,19 +160,19 @@ const TripDetails = () => {
       {/* Back link */}
       <Link
         to="/trips"
-        className="inline-flex items-center gap-1 text-sm text-gray-500 transition hover:text-indigo-600"
+        className="inline-flex items-center gap-1 text-sm text-textSecondary transition hover:text-primaryGlow"
       >
         ← Back to Trips
       </Link>
 
       {/* Trip header */}
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-gradient-to-r from-sky-50 to-indigo-50 shadow-sm">
+      <div className="card overflow-hidden bg-gradient-to-r from-secondary/10 to-primary/10">
         <div className="p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface shadow-sm">
                 <svg
-                  className="h-7 w-7 text-sky-600"
+                  className="h-7 w-7 text-secondary"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -197,21 +187,19 @@ const TripDetails = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-gray-900">
-                    {currentTrip.tripName}
-                  </h1>
+                  <h1 className="page-heading">{currentTrip.tripName}</h1>
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                       currentTrip.status === "ongoing"
-                        ? "bg-sky-100 text-sky-700"
-                        : "bg-gray-200 text-gray-600"
+                        ? "bg-secondary/15 text-secondary"
+                        : "bg-background text-textMuted"
                     }`}
                   >
                     {currentTrip.status === "ongoing" ? "Ongoing" : "Completed"}
                   </span>
                 </div>
-                <p className="mt-1 text-gray-600">{currentTrip.destination}</p>
-                <p className="mt-0.5 text-sm text-gray-400">
+                <p className="mt-1 text-textSecondary">{currentTrip.destination}</p>
+                <p className="mt-0.5 text-sm text-textMuted">
                   {formatDate(currentTrip.startDate)} —{" "}
                   {formatDate(currentTrip.endDate)}
                 </p>
@@ -223,7 +211,7 @@ const TripDetails = () => {
                 <button
                   onClick={handleCloseTrip}
                   disabled={loading}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+                  className="btn-secondary disabled:opacity-60"
                 >
                   Close Trip
                 </button>
@@ -231,7 +219,7 @@ const TripDetails = () => {
               <button
                 onClick={handleDeleteTrip}
                 disabled={loading}
-                className="rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-60"
+                className="btn-danger disabled:opacity-60"
               >
                 Delete
               </button>
@@ -242,23 +230,23 @@ const TripDetails = () => {
 
       {/* Budget summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Spent</p>
-          <p className="mt-1 text-2xl font-bold text-red-600">
+        <div className="card p-5">
+          <p className="text-sm text-textSecondary">Total Spent</p>
+          <p className="mt-1 text-2xl font-bold text-expense">
             {formatCurrency(tripSummary?.totalSpent, tripSummary?.currency)}
           </p>
         </div>
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Budget</p>
-          <p className="mt-1 text-2xl font-bold text-gray-900">
+        <div className="card p-5">
+          <p className="text-sm text-textSecondary">Budget</p>
+          <p className="mt-1 text-2xl font-bold text-textPrimary">
             {formatCurrency(tripSummary?.budget, tripSummary?.currency)}
           </p>
         </div>
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Remaining</p>
+        <div className="card p-5">
+          <p className="text-sm text-textSecondary">Remaining</p>
           <p
             className={`mt-1 text-2xl font-bold ${
-              isOverBudget ? "text-red-600" : "text-green-600"
+              isOverBudget ? "text-expense" : "text-income"
             }`}
           >
             {formatCurrency(tripSummary?.remaining, tripSummary?.currency)}
@@ -267,24 +255,24 @@ const TripDetails = () => {
       </div>
 
       {/* Progress bar */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="card p-5">
         <div className="mb-2 flex justify-between text-sm">
-          <span className="text-gray-600">Budget usage</span>
-          <span className="font-medium text-gray-800">
+          <span className="text-textSecondary">Budget usage</span>
+          <span className="font-medium text-textPrimary">
             {tripSummary?.percentageUsed}%
             {isOverBudget && (
-              <span className="ml-1 text-red-500">(over budget)</span>
+              <span className="ml-1 text-expense">(over budget)</span>
             )}
           </span>
         </div>
-        <div className="h-3 overflow-hidden rounded-full bg-gray-100">
+        <div className="h-3 overflow-hidden rounded-full bg-background">
           <div
             className={`h-full rounded-full transition-all ${
               isOverBudget
-                ? "bg-red-500"
+                ? "bg-expense"
                 : barWidth > 80
-                  ? "bg-amber-500"
-                  : "bg-sky-500"
+                  ? "bg-warning"
+                  : "bg-secondary"
             }`}
             style={{ width: `${barWidth}%` }}
           />
@@ -293,10 +281,8 @@ const TripDetails = () => {
 
       {/* Category pie chart + add expense */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-base font-semibold text-gray-800">
-            Spend by Category
-          </h2>
+        <div className="card p-6">
+          <h2 className="section-heading mb-4">Spend by Category</h2>
           {hasCategoryData ? (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
@@ -321,24 +307,20 @@ const TripDetails = () => {
                   formatter={(value) =>
                     formatCurrency(value, tripSummary?.currency)
                   }
-                  contentStyle={{
-                    borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                    fontSize: "13px",
-                  }}
+                  contentStyle={CHART_TOOLTIP_STYLE}
                 />
                 <Legend
                   verticalAlign="bottom"
                   height={36}
                   formatter={(value) => (
-                    <span className="text-xs text-gray-600">{value}</span>
+                    <span className="text-xs text-textSecondary">{value}</span>
                   )}
                 />
               </PieChart>
             </ResponsiveContainer>
           ) : (
             <div className="flex h-48 items-center justify-center">
-              <p className="text-sm text-gray-400">No expenses yet</p>
+              <p className="text-sm text-textMuted">No expenses yet</p>
             </div>
           )}
         </div>
@@ -347,7 +329,7 @@ const TripDetails = () => {
           {!showForm && !editingExpense && currentTrip.status === "ongoing" && (
             <button
               onClick={() => setShowForm(true)}
-              className="mb-4 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+              className="btn-primary mb-4 w-full py-2.5"
             >
               + Add Expense to Trip
             </button>
@@ -369,7 +351,7 @@ const TripDetails = () => {
 
       {/* Expense list */}
       <div>
-        <h2 className="mb-4 text-base font-semibold text-gray-800">
+        <h2 className="section-heading mb-4">
           Trip Expenses ({tripExpenses.length})
         </h2>
         <ExpenseList
