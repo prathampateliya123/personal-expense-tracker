@@ -15,6 +15,7 @@ import expenseRoutes from "./routes/expenseRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import budgetRoutes from "./routes/budgetRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import { startDailyChecks } from "./cron/dailyChecks.js";
 
@@ -53,6 +54,7 @@ app.use("/api/expenses", expenseRoutes);
 app.use("/api/incomes", incomeRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/budgets", budgetRoutes);
 
 // Start scheduled daily checks (budget alerts, etc.)
 startDailyChecks();

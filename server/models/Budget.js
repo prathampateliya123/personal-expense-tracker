@@ -1,7 +1,7 @@
 /**
  * models/Budget.js
- * Mongoose schema for category-based spending budgets.
- * Used by the daily cron job to detect budgets nearing their limit.
+ * Mongoose schema for monthly category-based spending budgets.
+ * currentSpent is computed on read by aggregating Expense documents.
  */
 
 import mongoose from "mongoose";
@@ -20,19 +20,32 @@ const budgetSchema = new mongoose.Schema(
       required: [true, "Category is required"],
       enum: EXPENSE_CATEGORIES,
     },
-    limitAmount: {
+    monthlyLimit: {
       type: Number,
-      required: [true, "Budget limit is required"],
-      min: [1, "Budget limit must be greater than zero"],
+      required: [true, "Monthly limit is required"],
+      min: [1, "Monthly limit must be greater than zero"],
+    },
+    month: {
+      type: Number,
+      required: [true, "Month is required"],
+      min: 1,
+      max: 12,
+    },
+    year: {
+      type: Number,
+      required: [true, "Year is required"],
+      min: 2000,
     },
   },
   {
     timestamps: true,
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
   }
 );
 
-// One budget per category per user
-budgetSchema.index({ userId: 1, category: 1 }, { unique: true });
+// One budget per category per month per user
+budgetSchema.index({ userId: 1, category: 1, month: 1, year: 1 }, { unique: true });
 
 const Budget = mongoose.model("Budget", budgetSchema);
 

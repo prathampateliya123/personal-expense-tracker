@@ -14,6 +14,7 @@ const navLinks = [
   { to: "/dashboard", label: "Dashboard", end: true },
   { to: "/expenses", label: "Expenses" },
   { to: "/income", label: "Income" },
+  { to: "/budget", label: "Budget" },
   { to: "/dashboard/reports", label: "Reports" },
   { to: "/dashboard/settings", label: "Settings" },
 ];
