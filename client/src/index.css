@@ -1,0 +1,14 @@
+/**
+ * index.css
+ * Global styles — imports TailwindCSS base, components, and utilities layers.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-gray-900;
+  }
+}
