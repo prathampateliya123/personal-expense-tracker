@@ -99,9 +99,9 @@ const investmentSlice = createSlice({
       })
       .addCase(fetchInvestments.fulfilled, (state, action) => {
         state.loading = false;
-        state.investments = action.payload.investments;
-        state.summary = action.payload.summary;
-        state.typeBreakdown = action.payload.typeBreakdown;
+        state.investments = action.payload.investments ?? [];
+        state.summary = action.payload.summary ?? state.summary;
+        state.typeBreakdown = action.payload.typeBreakdown ?? [];
       })
       .addCase(fetchInvestments.rejected, (state, action) => {
         state.loading = false;

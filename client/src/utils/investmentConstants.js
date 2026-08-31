@@ -20,12 +20,3 @@ export const INVESTMENT_FREQUENCIES = [
 export const TYPE_LABELS = Object.fromEntries(
   INVESTMENT_TYPES.map(({ value, label }) => [value, label])
 );
-
-export const CHART_COLORS = [
-  "#6366f1",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#06b6d4",
-];

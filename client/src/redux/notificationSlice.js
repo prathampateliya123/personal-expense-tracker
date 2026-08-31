@@ -59,8 +59,8 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.loading = false;
-        state.notifications = action.payload.notifications;
-        state.unreadCount = action.payload.unreadCount;
+        state.notifications = action.payload.notifications ?? [];
+        state.unreadCount = action.payload.unreadCount ?? 0;
       })
       .addCase(fetchNotifications.rejected, (state, action) => {
         state.loading = false;
@@ -69,7 +69,7 @@ const notificationSlice = createSlice({
 
     builder
       .addCase(markAsRead.fulfilled, (state, action) => {
-        const index = state.notifications.findIndex(
+        const index = (state.notifications ?? []).findIndex(
           (n) => n._id === action.payload._id
         );
         if (index !== -1) {

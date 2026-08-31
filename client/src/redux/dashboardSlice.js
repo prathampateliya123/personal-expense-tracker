@@ -54,9 +54,9 @@ const dashboardSlice = createSlice({
       })
       .addCase(fetchDashboardData.fulfilled, (state, action) => {
         state.loading = false;
-        state.summary = action.payload.summary;
-        state.categoryBreakdown = action.payload.categoryBreakdown;
-        state.monthlyTrend = action.payload.monthlyTrend;
+        state.summary = action.payload.summary ?? null;
+        state.categoryBreakdown = action.payload.categoryBreakdown ?? [];
+        state.monthlyTrend = action.payload.monthlyTrend ?? [];
       })
       .addCase(fetchDashboardData.rejected, (state, action) => {
         state.loading = false;

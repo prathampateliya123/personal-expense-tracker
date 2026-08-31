@@ -19,7 +19,8 @@ const defaultFormState = {
 
 const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
   const dispatch = useDispatch();
-  const { wallets } = useSelector((state) => state.wallets);
+  const { wallets: walletList } = useSelector((state) => state.wallets);
+  const wallets = walletList ?? [];
   const [formData, setFormData] = useState(defaultFormState);
   const isEditing = Boolean(income);
 

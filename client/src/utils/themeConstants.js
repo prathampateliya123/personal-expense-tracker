@@ -1,28 +1,29 @@
 /**
  * themeConstants.js
- * Shared chart colors and Recharts styling for the dark fintech theme.
+ * Shared chart colors and Recharts styling for the light green fintech theme.
  */
 
 export const CHART_COLORS = [
-  "#FF6B6B",
-  "#4ECDC4",
-  "#FFD166",
-  "#A78BFA",
-  "#60D394",
-  "#FF9F1C",
+  "#064E3B",
+  "#10B981",
+  "#34D399",
+  "#065F46",
+  "#6EE7B7",
+  "#062D24",
 ];
 
 export const CHART_TOOLTIP_STYLE = {
   borderRadius: "12px",
-  border: "1px solid #2A2E3D",
-  backgroundColor: "#1A1D29",
-  color: "#FFFFFF",
+  border: "1px solid #E5E7EB",
+  backgroundColor: "#FFFFFF",
+  color: "#062D24",
   fontSize: "13px",
+  boxShadow: "0 4px 16px rgba(6, 78, 59, 0.1)",
 };
 
-export const CHART_AXIS_TICK = { fontSize: 12, fill: "#9CA3AF" };
-export const CHART_AXIS_LINE = { stroke: "#2A2E3D" };
-export const CHART_GRID = { strokeDasharray: "3 3", stroke: "#2A2E3D" };
+export const CHART_AXIS_TICK = { fontSize: 12, fill: "#6B7280" };
+export const CHART_AXIS_LINE = { stroke: "#E5E7EB" };
+export const CHART_GRID = { strokeDasharray: "3 3", stroke: "#E5E7EB" };
 
-export const INCOME_LINE_COLOR = "#00E396";
-export const EXPENSE_LINE_COLOR = "#FF5C7C";
+export const INCOME_LINE_COLOR = "#10B981";
+export const EXPENSE_LINE_COLOR = "#064E3B";

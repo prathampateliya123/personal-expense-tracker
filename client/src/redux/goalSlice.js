@@ -120,7 +120,7 @@ const goalSlice = createSlice({
       })
       .addCase(fetchGoals.fulfilled, (state, action) => {
         state.loading = false;
-        state.goals = action.payload;
+        state.goals = action.payload ?? [];
       })
       .addCase(fetchGoals.rejected, (state, action) => {
         state.loading = false;
@@ -142,7 +142,7 @@ const goalSlice = createSlice({
 
     const upsertGoal = (state, action) => {
       state.loading = false;
-      const index = state.goals.findIndex((g) => g._id === action.payload._id);
+      const index = (state.goals ?? []).findIndex((g) => g._id === action.payload._id);
       if (index !== -1) {
         state.goals[index] = action.payload;
       }
@@ -188,7 +188,7 @@ const goalSlice = createSlice({
       })
       .addCase(deleteGoal.fulfilled, (state, action) => {
         state.loading = false;
-        state.goals = state.goals.filter((g) => g._id !== action.payload);
+        state.goals = (state.goals ?? []).filter((g) => g._id !== action.payload);
       })
       .addCase(deleteGoal.rejected, (state, action) => {
         state.loading = false;

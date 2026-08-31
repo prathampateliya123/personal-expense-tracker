@@ -5,10 +5,10 @@
  */
 
 const INTENSITY_CLASSES = [
-  "bg-background",
-  "bg-primary/20",
-  "bg-primary/40",
-  "bg-primary/70",
+  "bg-border",
+  "bg-secondary/25",
+  "bg-secondary/50",
+  "bg-primary/60",
   "bg-primary",
 ];
 

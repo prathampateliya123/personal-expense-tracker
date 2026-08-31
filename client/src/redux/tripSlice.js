@@ -129,7 +129,7 @@ const tripSlice = createSlice({
       })
       .addCase(fetchTrips.fulfilled, (state, action) => {
         state.loading = false;
-        state.trips = action.payload;
+        state.trips = action.payload ?? [];
       })
       .addCase(fetchTrips.rejected, (state, action) => {
         state.loading = false;
@@ -157,10 +157,10 @@ const tripSlice = createSlice({
       })
       .addCase(fetchTripDetails.fulfilled, (state, action) => {
         state.detailsLoading = false;
-        state.currentTrip = action.payload.trip;
-        state.tripExpenses = action.payload.expenses;
-        state.tripSummary = action.payload.summary;
-        state.categoryBreakdown = action.payload.categoryBreakdown;
+        state.currentTrip = action.payload.trip ?? null;
+        state.tripExpenses = action.payload.expenses ?? [];
+        state.tripSummary = action.payload.summary ?? null;
+        state.categoryBreakdown = action.payload.categoryBreakdown ?? [];
       })
       .addCase(fetchTripDetails.rejected, (state, action) => {
         state.detailsLoading = false;
@@ -169,7 +169,7 @@ const tripSlice = createSlice({
 
     const upsertTrip = (state, action) => {
       state.loading = false;
-      const index = state.trips.findIndex((t) => t._id === action.payload._id);
+      const index = (state.trips ?? []).findIndex((t) => t._id === action.payload._id);
       if (index !== -1) {
         state.trips[index] = action.payload;
       }

@@ -58,13 +58,42 @@ const ChartSkeleton = () => (
   </div>
 );
 
-const SummaryCard = ({ title, value, subtitle, icon, colorClass, iconBg }) => (
-  <div className="card-glow">
-    <div className="card-glow-inner">
+const SummaryCard = ({
+  title,
+  value,
+  subtitle,
+  icon,
+  colorClass,
+  iconBg,
+  featured = false,
+}) => {
+  if (featured) {
+    return (
+      <div className="card-dark p-6">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-secondaryLight/90">{title}</p>
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15"
+          >
+            {icon}
+          </div>
+        </div>
+        <p className="mt-3 text-3xl font-bold tracking-heading text-white">
+          {value}
+        </p>
+        {subtitle && (
+          <p className="mt-1 text-xs text-secondaryLight/80">{subtitle}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="card p-6">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-textSecondary">{title}</p>
         <div
-          className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}
+          className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBg}`}
         >
           {icon}
         </div>
@@ -76,8 +105,9 @@ const SummaryCard = ({ title, value, subtitle, icon, colorClass, iconBg }) => (
         <p className="mt-1 text-xs text-textMuted">{subtitle}</p>
       )}
     </div>
-  </div>
-);
+  );
+};
+
 
 const EmptyChart = ({ message = "No data yet" }) => (
   <div className="flex h-64 items-center justify-center rounded-xl bg-background">
@@ -102,14 +132,16 @@ const Dashboard = () => {
   }, [error, dispatch]);
 
   const monthData = summary?.currentMonth;
+  const categories = categoryBreakdown ?? [];
+  const trends = monthlyTrend ?? [];
   const hasCategoryData =
-    categoryBreakdown.length > 0 &&
-    categoryBreakdown.some((item) => item.total > 0);
+    categories.length > 0 &&
+    categories.some((item) => item.total > 0);
   const hasTrendData =
-    monthlyTrend.length > 0 &&
-    monthlyTrend.some((item) => item.income > 0 || item.expense > 0);
+    trends.length > 0 &&
+    trends.some((item) => item.income > 0 || item.expense > 0);
 
-  const pieData = categoryBreakdown.map((item) => ({
+  const pieData = categories.map((item) => ({
     name: item.category,
     value: item.total,
   }));
@@ -159,11 +191,10 @@ const Dashboard = () => {
               title="Total Expense"
               value={formatCurrency(monthData?.expense)}
               subtitle={`All-time: ${formatCurrency(summary?.allTime?.expense)}`}
-              colorClass="text-expense"
-              iconBg="bg-expense/15"
+              featured
               icon={
                 <svg
-                  className="h-5 w-5 text-expense"
+                  className="h-5 w-5 text-white"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -209,7 +240,7 @@ const Dashboard = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {loading && categoryBreakdown.length === 0 ? (
+        {loading && categories.length === 0 ? (
           <ChartSkeleton />
         ) : (
           <div className="card p-6">
@@ -253,14 +284,14 @@ const Dashboard = () => {
           </div>
         )}
 
-        {loading && monthlyTrend.length === 0 ? (
+        {loading && trends.length === 0 ? (
           <ChartSkeleton />
         ) : (
           <div className="card p-6">
             <h2 className="section-heading mb-4">Income vs Expense Trend</h2>
             {hasTrendData ? (
               <ResponsiveContainer width="100%" height={280}>
-                <LineChart data={monthlyTrend}>
+                <LineChart data={trends}>
                   <CartesianGrid {...CHART_GRID} />
                   <XAxis
                     dataKey="month"

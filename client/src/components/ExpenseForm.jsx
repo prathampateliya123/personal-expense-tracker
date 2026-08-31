@@ -26,8 +26,10 @@ const defaultFormState = {
 
 const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading }) => {
   const dispatch = useDispatch();
-  const { wallets } = useSelector((state) => state.wallets);
-  const { trips } = useSelector((state) => state.trips);
+  const { wallets: walletList } = useSelector((state) => state.wallets);
+  const { trips: tripList } = useSelector((state) => state.trips);
+  const wallets = walletList ?? [];
+  const trips = tripList ?? [];
   const [formData, setFormData] = useState(defaultFormState);
   const isEditing = Boolean(expense);
   const showTripSelector = !fixedTripId;

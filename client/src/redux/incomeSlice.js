@@ -127,8 +127,8 @@ const incomeSlice = createSlice({
       })
       .addCase(fetchIncomes.fulfilled, (state, action) => {
         state.loading = false;
-        state.incomes = action.payload.incomes;
-        state.pagination = action.payload.pagination;
+        state.incomes = action.payload.incomes ?? [];
+        state.pagination = action.payload.pagination ?? state.pagination;
       })
       .addCase(fetchIncomes.rejected, (state, action) => {
         state.loading = false;

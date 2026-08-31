@@ -23,9 +23,10 @@ import {
 
 const Income = () => {
   const dispatch = useDispatch();
-  const { incomes, loading, error, filters, pagination } = useSelector(
-    (state) => state.incomes
-  );
+  const { incomes, loading, error, filters, pagination: paginationState } =
+    useSelector((state) => state.incomes);
+  const pagination = paginationState ?? { page: 1, limit: 10, total: 0, pages: 1 };
+  const incomeList = incomes ?? [];
   const [editingIncome, setEditingIncome] = useState(null);
 
   // Fetch incomes on mount and when page changes
@@ -165,7 +166,7 @@ const Income = () => {
 
       {/* Income list */}
       <IncomeList
-        incomes={incomes}
+        incomes={incomeList}
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}

@@ -194,7 +194,8 @@ const GoalCard = ({ goal, onContribute, onDelete, completed = false }) => {
 
 const Goals = () => {
   const dispatch = useDispatch();
-  const { goals, loading, error } = useSelector((state) => state.goals);
+  const { goals: goalState, loading, error } = useSelector((state) => state.goals);
+  const goals = goalState ?? [];
   const [formData, setFormData] = useState({
     goalName: "",
     targetAmount: "",

@@ -103,7 +103,7 @@ const walletSlice = createSlice({
       })
       .addCase(fetchWallets.fulfilled, (state, action) => {
         state.loading = false;
-        state.wallets = action.payload;
+        state.wallets = action.payload ?? [];
       })
       .addCase(fetchWallets.rejected, (state, action) => {
         state.loading = false;

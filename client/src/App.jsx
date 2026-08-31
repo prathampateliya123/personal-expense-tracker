@@ -45,9 +45,10 @@ const App = () => {
           duration: 3000,
           style: {
             fontSize: "14px",
-            background: "#1A1D29",
-            color: "#FFFFFF",
-            border: "1px solid #2A2E3D",
+            background: "#FFFFFF",
+            color: "#062D24",
+            border: "1px solid #E5E7EB",
+            boxShadow: "0 4px 16px rgba(6, 78, 59, 0.1)",
           },
         }}
       />

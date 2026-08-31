@@ -84,14 +84,14 @@ const Timeline = () => {
           {memories.map((memory) => (
             <div
               key={memory.yearsAgo}
-              className="card border-warning/30 bg-warning/5 p-5"
+              className="card border-secondary/30 bg-secondary/5 p-5"
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-warning/15 text-lg">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary/15 text-lg">
                   🕐
                 </div>
                 <div>
-                  <p className="font-semibold text-warning">
+                  <p className="font-semibold text-primary">
                     {memory.yearsAgo} year{memory.yearsAgo > 1 ? "s" : ""} ago
                     today
                   </p>

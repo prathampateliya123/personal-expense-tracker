@@ -108,9 +108,9 @@ const subscriptionSlice = createSlice({
       })
       .addCase(fetchSubscriptions.fulfilled, (state, action) => {
         state.loading = false;
-        state.subscriptions = action.payload.subscriptions;
-        state.totalMonthlyCost = action.payload.totalMonthlyCost;
-        state.totalYearlyCost = action.payload.totalYearlyCost;
+        state.subscriptions = action.payload.subscriptions ?? [];
+        state.totalMonthlyCost = action.payload.totalMonthlyCost ?? 0;
+        state.totalYearlyCost = action.payload.totalYearlyCost ?? 0;
       })
       .addCase(fetchSubscriptions.rejected, (state, action) => {
         state.loading = false;

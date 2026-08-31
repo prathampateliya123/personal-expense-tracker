@@ -1,6 +1,7 @@
 /**
  * index.css
- * Global styles — dark fintech theme with TailwindCSS layers.
+ * Global styles — light green fintech theme (SpendWise-inspired).
+ * Custom theme tokens use raw CSS / theme() — not @apply — for PostCSS compatibility.
  */
 
 @tailwind base;
@@ -9,55 +10,116 @@
 
 @layer base {
   body {
-    @apply min-h-screen bg-background font-sans antialiased text-textPrimary;
+    @apply min-h-screen font-sans antialiased;
+    background-color: theme("colors.background");
+    color: theme("colors.textPrimary");
   }
 
   h1,
   h2,
   h3 {
-    @apply font-semibold tracking-heading text-textPrimary;
+    @apply font-semibold;
+    letter-spacing: theme("letterSpacing.heading");
+    color: theme("colors.textPrimary");
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-border bg-surface shadow-card;
+    @apply rounded-2xl border;
+    border-color: theme("colors.border");
+    background-color: theme("colors.surface");
+    box-shadow: theme("boxShadow.card");
+  }
+
+  .card-dark {
+    @apply rounded-2xl text-white;
+    background-image: linear-gradient(
+      to bottom right,
+      theme("colors.primary"),
+      theme("colors.primaryGlow")
+    );
+    box-shadow: theme("boxShadow.cardDark");
   }
 
   .card-glow {
-    @apply rounded-2xl bg-gradient-to-br from-primary/50 via-secondary/30 to-primary/20 p-[1px] shadow-glow;
+    @apply rounded-2xl p-px;
+    background-image: linear-gradient(
+      to bottom right,
+      color-mix(in srgb, theme("colors.secondary") 40%, transparent),
+      color-mix(in srgb, theme("colors.secondaryLight") 30%, transparent),
+      color-mix(in srgb, theme("colors.primary") 20%, transparent)
+    );
   }
 
   .card-glow-inner {
-    @apply rounded-2xl bg-surface p-6;
+    @apply rounded-2xl p-6;
+    background-color: theme("colors.surface");
   }
 
   .btn-primary {
-    @apply rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-textPrimary transition hover:bg-primaryGlow hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60;
+    @apply rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60;
+    background-color: theme("colors.primary");
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: theme("colors.primaryGlow");
+    box-shadow: theme("boxShadow.glow");
   }
 
   .btn-secondary {
-    @apply rounded-lg border border-border bg-surface px-5 py-2 text-sm font-medium text-textSecondary transition hover:border-primary/40 hover:text-textPrimary disabled:cursor-not-allowed disabled:opacity-60;
+    @apply rounded-xl border px-5 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60;
+    border-color: theme("colors.border");
+    background-color: theme("colors.surface");
+    color: theme("colors.textSecondary");
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    border-color: color-mix(in srgb, theme("colors.primary") 30%, transparent);
+    background-color: theme("colors.background");
+    color: theme("colors.textPrimary");
   }
 
   .btn-danger {
-    @apply rounded-lg border border-expense/30 px-5 py-2 text-sm font-medium text-expense transition hover:bg-expense/10 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply rounded-xl border px-5 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60;
+    border-color: color-mix(in srgb, theme("colors.warning") 40%, transparent);
+    color: theme("colors.warning");
+  }
+
+  .btn-danger:hover:not(:disabled) {
+    background-color: color-mix(in srgb, theme("colors.warning") 10%, transparent);
   }
 
   .input-field {
-    @apply w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-textPrimary outline-none transition placeholder:text-textMuted focus:border-primary focus:ring-2 focus:ring-primary/20;
+    @apply w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition;
+    border-color: theme("colors.border");
+    background-color: theme("colors.surface");
+    color: theme("colors.textPrimary");
+  }
+
+  .input-field::placeholder {
+    color: theme("colors.textMuted");
+  }
+
+  .input-field:focus {
+    border-color: theme("colors.secondary");
+    box-shadow: 0 0 0 2px color-mix(in srgb, theme("colors.secondary") 20%, transparent);
   }
 
   .page-heading {
-    @apply text-2xl font-bold tracking-heading text-textPrimary;
+    @apply text-2xl font-bold;
+    letter-spacing: theme("letterSpacing.heading");
+    color: theme("colors.textPrimary");
   }
 
   .page-subheading {
-    @apply mt-1 text-sm text-textSecondary;
+    @apply mt-1 text-sm;
+    color: theme("colors.textSecondary");
   }
 
   .section-heading {
-    @apply text-base font-semibold text-textPrimary;
+    @apply text-base font-semibold;
+    color: theme("colors.textPrimary");
   }
 
   .badge {
@@ -65,14 +127,23 @@
   }
 
   .badge-primary {
-    @apply badge bg-primary/15 text-primaryGlow;
+    @apply badge;
+    background-color: color-mix(in srgb, theme("colors.secondary") 15%, transparent);
+    color: theme("colors.primary");
   }
 
   .table-header {
-    @apply border-b border-border bg-background/60;
+    @apply border-b;
+    border-color: theme("colors.border");
+    background-color: theme("colors.background");
   }
 
   .table-row {
-    @apply border-b border-border/60 transition hover:bg-background/40;
+    @apply border-b transition;
+    border-color: color-mix(in srgb, theme("colors.border") 80%, transparent);
+  }
+
+  .table-row:hover {
+    background-color: theme("colors.background");
   }
 }

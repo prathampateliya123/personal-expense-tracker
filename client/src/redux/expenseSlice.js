@@ -129,8 +129,8 @@ const expenseSlice = createSlice({
       })
       .addCase(fetchExpenses.fulfilled, (state, action) => {
         state.loading = false;
-        state.expenses = action.payload.expenses;
-        state.pagination = action.payload.pagination;
+        state.expenses = action.payload.expenses ?? [];
+        state.pagination = action.payload.pagination ?? state.pagination;
       })
       .addCase(fetchExpenses.rejected, (state, action) => {
         state.loading = false;
@@ -179,8 +179,10 @@ const expenseSlice = createSlice({
       })
       .addCase(deleteExpense.fulfilled, (state, action) => {
         state.loading = false;
-        state.expenses = state.expenses.filter((e) => e._id !== action.payload);
-        state.pagination.total = Math.max(0, state.pagination.total - 1);
+        state.expenses = (state.expenses ?? []).filter((e) => e._id !== action.payload);
+        if (state.pagination) {
+          state.pagination.total = Math.max(0, state.pagination.total - 1);
+        }
       })
       .addCase(deleteExpense.rejected, (state, action) => {
         state.loading = false;

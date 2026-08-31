@@ -26,9 +26,10 @@ import {
 
 const Expenses = () => {
   const dispatch = useDispatch();
-  const { expenses, loading, error, filters, pagination } = useSelector(
-    (state) => state.expenses
-  );
+  const { expenses, loading, error, filters, pagination: paginationState } =
+    useSelector((state) => state.expenses);
+  const pagination = paginationState ?? { page: 1, limit: 10, total: 0, pages: 1 };
+  const expenseList = expenses ?? [];
   const [editingExpense, setEditingExpense] = useState(null);
 
   // Fetch expenses on mount and when page changes
@@ -187,7 +188,7 @@ const Expenses = () => {
 
       {/* Expense list */}
       <ExpenseList
-        expenses={expenses}
+        expenses={expenseList}
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}

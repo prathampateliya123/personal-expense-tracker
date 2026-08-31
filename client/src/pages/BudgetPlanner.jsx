@@ -55,9 +55,9 @@ const getProgressColor = (percent) => {
 
 const BudgetPlanner = () => {
   const dispatch = useDispatch();
-  const { budgets, loading, error, selectedMonth, selectedYear } = useSelector(
-    (state) => state.budgets
-  );
+  const { budgets: budgetState, loading, error, selectedMonth, selectedYear } =
+    useSelector((state) => state.budgets);
+  const budgets = budgetState ?? [];
 
   const [formData, setFormData] = useState({
     category: "",

@@ -84,7 +84,7 @@ const budgetSlice = createSlice({
       })
       .addCase(fetchBudgets.fulfilled, (state, action) => {
         state.loading = false;
-        state.budgets = action.payload.budgets;
+        state.budgets = action.payload.budgets ?? [];
       })
       .addCase(fetchBudgets.rejected, (state, action) => {
         state.loading = false;
@@ -111,7 +111,7 @@ const budgetSlice = createSlice({
       })
       .addCase(deleteBudget.fulfilled, (state, action) => {
         state.loading = false;
-        state.budgets = state.budgets.filter((b) => b._id !== action.payload);
+        state.budgets = (state.budgets ?? []).filter((b) => b._id !== action.payload);
       })
       .addCase(deleteBudget.rejected, (state, action) => {
         state.loading = false;
