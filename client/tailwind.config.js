@@ -4,20 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#F8FAFB",
+        // SpendWise-inspired palette
+        background: "#F0FDF4",
         surface: "#FFFFFF",
-        border: "#E5E7EB",
+        border: "#D1FAE5",
         primary: "#064E3B",
-        primaryGlow: "#065F46",
+        primaryDeep: "#022C22",
+        primaryGlow: "#059669",
         secondary: "#10B981",
         secondaryLight: "#34D399",
-        income: "#10B981",
-        expense: "#062D24",
+        accent: "#059669",
+        income: "#059669",
+        expense: "#022C22",
         warning: "#F59E0B",
-        textPrimary: "#062D24",
-        textSecondary: "#6B7280",
-        textMuted: "#9CA3AF",
-        navBar: "#111827",
+        textPrimary: "#022C22",
+        textSecondary: "#64748B",
+        textMuted: "#94A3B8",
+        navBar: "#022C22",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
@@ -25,10 +28,14 @@ export default {
       letterSpacing: {
         heading: "-0.025em",
       },
+      borderRadius: {
+        card: "1.25rem",
+        pill: "9999px",
+      },
       boxShadow: {
-        glow: "0 4px 20px rgba(16, 185, 129, 0.25)",
-        card: "0 1px 3px rgba(6, 78, 59, 0.06), 0 4px 16px rgba(6, 78, 59, 0.04)",
-        cardDark: "0 8px 24px rgba(6, 78, 59, 0.25)",
+        glow: "0 4px 24px rgba(5, 150, 105, 0.28)",
+        card: "0 1px 2px rgba(2, 44, 34, 0.04), 0 8px 24px rgba(2, 44, 34, 0.06)",
+        cardDark: "0 12px 32px rgba(2, 44, 34, 0.35)",
       },
     },
   },

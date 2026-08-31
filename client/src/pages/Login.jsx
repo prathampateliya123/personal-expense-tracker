@@ -49,10 +49,10 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="card p-8">
           <div className="mb-8 text-center">
-            <h1 className="page-heading">Welcome back</h1>
-            <p className="page-subheading">
-              Sign in to your expense tracker
-            </p>
+            <h1 className="page-heading">
+              Spend<span className="text-accent">Wise</span>
+            </h1>
+            <p className="page-subheading">Sign in to your account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">

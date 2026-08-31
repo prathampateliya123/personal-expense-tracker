@@ -26,18 +26,18 @@
 
 @layer components {
   .card {
-    @apply rounded-2xl border;
+    @apply rounded-card border;
     border-color: theme("colors.border");
     background-color: theme("colors.surface");
     box-shadow: theme("boxShadow.card");
   }
 
   .card-dark {
-    @apply rounded-2xl text-white;
+    @apply rounded-card text-white;
     background-image: linear-gradient(
-      to bottom right,
-      theme("colors.primary"),
-      theme("colors.primaryGlow")
+      135deg,
+      theme("colors.primary") 0%,
+      theme("colors.primaryGlow") 100%
     );
     box-shadow: theme("boxShadow.cardDark");
   }
@@ -58,8 +58,8 @@
   }
 
   .btn-primary {
-    @apply rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60;
-    background-color: theme("colors.primary");
+    @apply rounded-card px-5 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60;
+    background-color: theme("colors.primaryDeep");
   }
 
   .btn-primary:hover:not(:disabled) {
@@ -91,7 +91,7 @@
   }
 
   .input-field {
-    @apply w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition;
+    @apply w-full rounded-card border px-3 py-2.5 text-sm outline-none transition;
     border-color: theme("colors.border");
     background-color: theme("colors.surface");
     color: theme("colors.textPrimary");
@@ -102,8 +102,8 @@
   }
 
   .input-field:focus {
-    border-color: theme("colors.secondary");
-    box-shadow: 0 0 0 2px color-mix(in srgb, theme("colors.secondary") 20%, transparent);
+    border-color: theme("colors.accent");
+    box-shadow: 0 0 0 2px color-mix(in srgb, theme("colors.accent") 20%, transparent);
   }
 
   .page-heading {
@@ -128,8 +128,8 @@
 
   .badge-primary {
     @apply badge;
-    background-color: color-mix(in srgb, theme("colors.secondary") 15%, transparent);
-    color: theme("colors.primary");
+    background-color: color-mix(in srgb, theme("colors.accent") 12%, transparent);
+    color: theme("colors.primaryDeep");
   }
 
   .table-header {

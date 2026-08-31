@@ -214,13 +214,13 @@ const Dashboard = () => {
               subtitle={`All-time: ${formatCurrency(summary?.allTime?.balance)}`}
               colorClass={
                 (monthData?.balance ?? 0) >= 0
-                  ? "text-secondary"
+                  ? "text-accent"
                   : "text-warning"
               }
-              iconBg="bg-secondary/15"
+              iconBg="bg-accent/15"
               icon={
                 <svg
-                  className="h-5 w-5 text-secondary"
+                  className="h-5 w-5 text-accent"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

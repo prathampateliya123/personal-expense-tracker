@@ -51,10 +51,10 @@ const Timeline = () => {
           axiosInstance.get("/timeline/memories"),
           axiosInstance.get("/timeline/heatmap", { params: { year: heatmapYear } }),
         ]);
-        setTimeline(timelineRes.data.timeline);
-        setMemories(memoriesRes.data.memories);
-        setHeatmap(heatmapRes.data.heatmap);
-        setMaxAmount(heatmapRes.data.maxAmount);
+        setTimeline(timelineRes.data.timeline ?? []);
+        setMemories(memoriesRes.data.memories ?? []);
+        setHeatmap(heatmapRes.data.heatmap ?? []);
+        setMaxAmount(heatmapRes.data.maxAmount ?? 0);
       } catch (err) {
         toast.error(err.response?.data?.message || "Failed to load timeline");
       } finally {
@@ -100,8 +100,8 @@ const Timeline = () => {
                     <span className="font-bold text-textPrimary">
                       {formatCurrency(memory.totalSpent)}
                     </span>{" "}
-                    on {memory.expenses.length} expense
-                    {memory.expenses.length > 1 ? "s" : ""}
+                    on {(memory.expenses ?? []).length} expense
+                    {(memory.expenses ?? []).length > 1 ? "s" : ""}
                     {memory.topExpense && (
                       <>
                         {" "}
@@ -199,7 +199,7 @@ const Timeline = () => {
 
                 {/* Expense items */}
                 <div className="space-y-2">
-                  {day.expenses.map((exp) => (
+                  {(day.expenses ?? []).map((exp) => (
                     <div
                       key={exp._id}
                       className="flex items-center justify-between rounded-lg bg-background px-4 py-2.5"

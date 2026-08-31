@@ -6,10 +6,10 @@
 
 const INTENSITY_CLASSES = [
   "bg-border",
-  "bg-secondary/25",
-  "bg-secondary/50",
-  "bg-primary/60",
-  "bg-primary",
+  "bg-accent/20",
+  "bg-accent/40",
+  "bg-primary/70",
+  "bg-primaryDeep",
 ];
 
 const getIntensityClass = (amount, maxAmount) => {
