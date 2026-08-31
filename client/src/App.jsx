@@ -25,6 +25,8 @@ import WhatIfSimulator from "./pages/WhatIfSimulator";
 import Investments from "./pages/Investments";
 import Reports from "./pages/Reports";
 import Timeline from "./pages/Timeline";
+import Trips from "./pages/Trips";
+import TripDetails from "./pages/TripDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -43,6 +45,9 @@ const App = () => {
           duration: 3000,
           style: {
             fontSize: "14px",
+            background: "#1A1D29",
+            color: "#FFFFFF",
+            border: "1px solid #2A2E3D",
           },
         }}
       />
@@ -80,6 +85,8 @@ const App = () => {
             <Route path="/investments" element={<Investments />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/timeline" element={<Timeline />} />
+            <Route path="/trips" element={<Trips />} />
+            <Route path="/trips/:id" element={<TripDetails />} />
           </Route>
         </Route>
 

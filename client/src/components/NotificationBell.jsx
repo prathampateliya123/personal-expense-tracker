@@ -12,10 +12,10 @@ import {
 } from "../redux/notificationSlice";
 
 const TYPE_STYLES = {
-  budget_alert: "bg-orange-100 text-orange-700",
-  bill_reminder: "bg-blue-100 text-blue-700",
-  goal_complete: "bg-green-100 text-green-700",
-  general: "bg-gray-100 text-gray-700",
+  budget_alert: "bg-warning/15 text-warning",
+  bill_reminder: "bg-secondary/15 text-secondary",
+  goal_complete: "bg-income/15 text-income",
+  general: "bg-surface text-textSecondary",
 };
 
 const TYPE_LABELS = {
@@ -70,7 +70,7 @@ const NotificationBell = () => {
       {/* Bell button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="relative rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+        className="relative rounded-lg p-2 text-textMuted transition hover:bg-surface hover:text-textSecondary"
         aria-label="Notifications"
       >
         <svg
@@ -88,7 +88,7 @@ const NotificationBell = () => {
           />
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-expense px-1 text-[10px] font-bold text-textPrimary">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -96,25 +96,21 @@ const NotificationBell = () => {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-80 rounded-xl border border-gray-200 bg-white shadow-lg">
-          <div className="border-b border-gray-100 px-4 py-3">
-            <h3 className="text-sm font-semibold text-gray-900">
-              Notifications
-            </h3>
+        <div className="card absolute right-0 z-50 mt-2 w-80 overflow-hidden">
+          <div className="border-b border-border px-4 py-3">
+            <h3 className="section-heading text-sm">Notifications</h3>
             {unreadCount > 0 && (
-              <p className="text-xs text-gray-500">
-                {unreadCount} unread
-              </p>
+              <p className="text-xs text-textMuted">{unreadCount} unread</p>
             )}
           </div>
 
           <div className="max-h-80 overflow-y-auto">
             {loading && notifications.length === 0 ? (
               <div className="flex items-center justify-center py-8">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
             ) : notifications.length === 0 ? (
-              <p className="py-8 text-center text-sm text-gray-400">
+              <p className="py-8 text-center text-sm text-textMuted">
                 No notifications yet
               </p>
             ) : (
@@ -122,17 +118,17 @@ const NotificationBell = () => {
                 <button
                   key={notification._id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`w-full border-b border-gray-50 px-4 py-3 text-left transition hover:bg-gray-50 ${
-                    !notification.isRead ? "bg-indigo-50/40" : ""
+                  className={`w-full border-b border-border/60 px-4 py-3 text-left transition hover:bg-background/40 ${
+                    !notification.isRead ? "bg-primary/10" : ""
                   }`}
                 >
                   <div className="flex items-start gap-2">
                     {!notification.isRead && (
-                      <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-indigo-500" />
+                      <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
                     )}
                     <div className={`flex-1 ${notification.isRead ? "ml-4" : ""}`}>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-textPrimary">
                           {notification.title}
                         </p>
                         <span
@@ -143,10 +139,10 @@ const NotificationBell = () => {
                           {TYPE_LABELS[notification.type] || "Info"}
                         </span>
                       </div>
-                      <p className="mt-0.5 text-xs text-gray-500 line-clamp-2">
+                      <p className="mt-0.5 text-xs text-textMuted line-clamp-2">
                         {notification.message}
                       </p>
-                      <p className="mt-1 text-[10px] text-gray-400">
+                      <p className="mt-1 text-[10px] text-textMuted">
                         {timeAgo(notification.createdAt)}
                       </p>
                     </div>

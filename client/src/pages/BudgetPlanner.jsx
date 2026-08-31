@@ -48,9 +48,9 @@ const formatCurrency = (amount) =>
 
 /** Return Tailwind color classes based on usage percentage */
 const getProgressColor = (percent) => {
-  if (percent > 100) return { bar: "bg-red-500", text: "text-red-600" };
-  if (percent >= 70) return { bar: "bg-yellow-500", text: "text-yellow-600" };
-  return { bar: "bg-green-500", text: "text-green-600" };
+  if (percent > 100) return { bar: "bg-expense", text: "text-expense" };
+  if (percent >= 70) return { bar: "bg-warning", text: "text-warning" };
+  return { bar: "bg-income", text: "text-income" };
 };
 
 const BudgetPlanner = () => {
@@ -119,9 +119,6 @@ const BudgetPlanner = () => {
     }
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   const selectedMonthLabel =
     MONTH_OPTIONS.find(
       (o) => o.month === selectedMonth && o.year === selectedYear
@@ -130,21 +127,18 @@ const BudgetPlanner = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Budget Planner</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Budget Planner</h1>
+        <p className="page-subheading">
           Set monthly spending limits and track your progress
         </p>
       </div>
 
       {/* Set budget form */}
-      <form
-        onSubmit={handleSubmit}
-        className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-      >
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Set Budget</h2>
+      <form onSubmit={handleSubmit} className="card p-6">
+        <h2 className="section-heading mb-4">Set Budget</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Category
             </label>
             <select
@@ -152,7 +146,7 @@ const BudgetPlanner = () => {
               required
               value={formData.category}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
             >
               <option value="">Select category</option>
               {EXPENSE_CATEGORIES.map((cat) => (
@@ -164,7 +158,7 @@ const BudgetPlanner = () => {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Monthly Limit (₹)
             </label>
             <input
@@ -175,13 +169,13 @@ const BudgetPlanner = () => {
               step="0.01"
               value={formData.monthlyLimit}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
               placeholder="5000"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Month
             </label>
             <select
@@ -189,7 +183,7 @@ const BudgetPlanner = () => {
               required
               value={formData.monthYear}
               onChange={handleFormChange}
-              className={inputClass}
+              className="input-field"
             >
               {MONTH_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -200,24 +194,18 @@ const BudgetPlanner = () => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-4 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className="btn-primary mt-4">
           {loading ? "Saving..." : "Save Budget"}
         </button>
       </form>
 
       {/* Month filter for budget list */}
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-gray-800">
-          Budgets for {selectedMonthLabel}
-        </h2>
+        <h2 className="section-heading">Budgets for {selectedMonthLabel}</h2>
         <select
           value={`${selectedYear}-${selectedMonth}`}
           onChange={handleMonthFilterChange}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+          className="input-field w-auto"
         >
           {MONTH_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -229,14 +217,12 @@ const BudgetPlanner = () => {
 
       {/* Budget list with progress bars */}
       {loading && budgets.length === 0 ? (
-        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+        <div className="card flex h-48 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         </div>
       ) : budgets.length === 0 ? (
-        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <p className="text-sm text-gray-400">
-            No budgets set for this month
-          </p>
+        <div className="card flex h-48 items-center justify-center">
+          <p className="text-sm text-textMuted">No budgets set for this month</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -245,13 +231,10 @@ const BudgetPlanner = () => {
             const barWidth = Math.min(budget.percentageUsed, 100);
 
             return (
-              <div
-                key={budget._id}
-                className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-              >
+              <div key={budget._id} className="card p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
+                    <span className="badge-primary px-3 py-1 text-sm">
                       {budget.category}
                     </span>
                     <span className={`text-sm font-semibold ${colors.text}`}>
@@ -261,7 +244,7 @@ const BudgetPlanner = () => {
                   <button
                     onClick={() => handleDelete(budget._id)}
                     title="Delete budget"
-                    className="rounded-lg p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-1.5 text-textMuted transition hover:bg-expense/10 hover:text-expense"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -281,23 +264,17 @@ const BudgetPlanner = () => {
                 </div>
 
                 {/* Progress bar */}
-                <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-100">
+                <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-background">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${colors.bar}`}
                     style={{ width: `${barWidth}%` }}
                   />
                 </div>
 
-                <div className="mt-2 flex justify-between text-xs text-gray-500">
-                  <span>
-                    Spent: {formatCurrency(budget.currentSpent)}
-                  </span>
-                  <span>
-                    Limit: {formatCurrency(budget.monthlyLimit)}
-                  </span>
-                  <span>
-                    Remaining: {formatCurrency(budget.remaining)}
-                  </span>
+                <div className="mt-2 flex justify-between text-xs text-textMuted">
+                  <span>Spent: {formatCurrency(budget.currentSpent)}</span>
+                  <span>Limit: {formatCurrency(budget.monthlyLimit)}</span>
+                  <span>Remaining: {formatCurrency(budget.remaining)}</span>
                 </div>
               </div>
             );

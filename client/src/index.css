@@ -1,6 +1,6 @@
 /**
  * index.css
- * Global styles — imports TailwindCSS base, components, and utilities layers.
+ * Global styles — dark fintech theme with TailwindCSS layers.
  */
 
 @tailwind base;
@@ -9,6 +9,70 @@
 
 @layer base {
   body {
-    @apply antialiased text-gray-900;
+    @apply min-h-screen bg-background font-sans antialiased text-textPrimary;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-semibold tracking-heading text-textPrimary;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border bg-surface shadow-card;
+  }
+
+  .card-glow {
+    @apply rounded-2xl bg-gradient-to-br from-primary/50 via-secondary/30 to-primary/20 p-[1px] shadow-glow;
+  }
+
+  .card-glow-inner {
+    @apply rounded-2xl bg-surface p-6;
+  }
+
+  .btn-primary {
+    @apply rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-textPrimary transition hover:bg-primaryGlow hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-secondary {
+    @apply rounded-lg border border-border bg-surface px-5 py-2 text-sm font-medium text-textSecondary transition hover:border-primary/40 hover:text-textPrimary disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-danger {
+    @apply rounded-lg border border-expense/30 px-5 py-2 text-sm font-medium text-expense transition hover:bg-expense/10 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .input-field {
+    @apply w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-textPrimary outline-none transition placeholder:text-textMuted focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  .page-heading {
+    @apply text-2xl font-bold tracking-heading text-textPrimary;
+  }
+
+  .page-subheading {
+    @apply mt-1 text-sm text-textSecondary;
+  }
+
+  .section-heading {
+    @apply text-base font-semibold text-textPrimary;
+  }
+
+  .badge {
+    @apply rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary/15 text-primaryGlow;
+  }
+
+  .table-header {
+    @apply border-b border-border bg-background/60;
+  }
+
+  .table-row {
+    @apply border-b border-border/60 transition hover:bg-background/40;
   }
 }

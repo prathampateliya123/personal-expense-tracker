@@ -21,17 +21,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { fetchDashboardData, clearError } from "../redux/dashboardSlice";
-
-const CHART_COLORS = [
-  "#6366f1",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#06b6d4",
-  "#ec4899",
-  "#84cc16",
-];
+import {
+  CHART_COLORS,
+  CHART_TOOLTIP_STYLE,
+  CHART_AXIS_TICK,
+  CHART_AXIS_LINE,
+  CHART_GRID,
+  INCOME_LINE_COLOR,
+  EXPENSE_LINE_COLOR,
+} from "../utils/themeConstants";
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {
@@ -42,40 +40,48 @@ const formatCurrency = (amount) =>
 
 /** Loading skeleton for summary cards */
 const SummaryCardSkeleton = () => (
-  <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+  <div className="card animate-pulse p-6">
     <div className="flex items-center justify-between">
-      <div className="h-4 w-24 rounded bg-gray-200" />
-      <div className="h-10 w-10 rounded-lg bg-gray-200" />
+      <div className="h-4 w-24 rounded bg-border" />
+      <div className="h-10 w-10 rounded-lg bg-border" />
     </div>
-    <div className="mt-4 h-8 w-32 rounded bg-gray-200" />
-    <div className="mt-2 h-3 w-20 rounded bg-gray-100" />
+    <div className="mt-4 h-8 w-32 rounded bg-border" />
+    <div className="mt-2 h-3 w-20 rounded bg-border/60" />
   </div>
 );
 
 /** Loading skeleton for chart panels */
 const ChartSkeleton = () => (
-  <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-    <div className="mb-4 h-5 w-40 rounded bg-gray-200" />
-    <div className="h-64 rounded-lg bg-gray-100" />
+  <div className="card animate-pulse p-6">
+    <div className="mb-4 h-5 w-40 rounded bg-border" />
+    <div className="h-64 rounded-xl bg-background" />
   </div>
 );
 
 const SummaryCard = ({ title, value, subtitle, icon, colorClass, iconBg }) => (
-  <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-    <div className="flex items-center justify-between">
-      <p className="text-sm font-medium text-gray-500">{title}</p>
-      <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}>
-        {icon}
+  <div className="card-glow">
+    <div className="card-glow-inner">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-textSecondary">{title}</p>
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}
+        >
+          {icon}
+        </div>
       </div>
+      <p className={`mt-3 text-3xl font-bold tracking-heading ${colorClass}`}>
+        {value}
+      </p>
+      {subtitle && (
+        <p className="mt-1 text-xs text-textMuted">{subtitle}</p>
+      )}
     </div>
-    <p className={`mt-3 text-3xl font-bold ${colorClass}`}>{value}</p>
-    {subtitle && <p className="mt-1 text-xs text-gray-400">{subtitle}</p>}
   </div>
 );
 
 const EmptyChart = ({ message = "No data yet" }) => (
-  <div className="flex h-64 items-center justify-center rounded-lg bg-gray-50">
-    <p className="text-sm text-gray-400">{message}</p>
+  <div className="flex h-64 items-center justify-center rounded-xl bg-background">
+    <p className="text-sm text-textMuted">{message}</p>
   </div>
 );
 
@@ -111,8 +117,8 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Dashboard</h1>
+        <p className="page-subheading">
           Overview of your financial activity
         </p>
       </div>
@@ -131,11 +137,11 @@ const Dashboard = () => {
               title="Total Income"
               value={formatCurrency(monthData?.income)}
               subtitle={`All-time: ${formatCurrency(summary?.allTime?.income)}`}
-              colorClass="text-green-600"
-              iconBg="bg-green-50"
+              colorClass="text-income"
+              iconBg="bg-income/15"
               icon={
                 <svg
-                  className="h-5 w-5 text-green-600"
+                  className="h-5 w-5 text-income"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -153,11 +159,11 @@ const Dashboard = () => {
               title="Total Expense"
               value={formatCurrency(monthData?.expense)}
               subtitle={`All-time: ${formatCurrency(summary?.allTime?.expense)}`}
-              colorClass="text-red-600"
-              iconBg="bg-red-50"
+              colorClass="text-expense"
+              iconBg="bg-expense/15"
               icon={
                 <svg
-                  className="h-5 w-5 text-red-600"
+                  className="h-5 w-5 text-expense"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -177,13 +183,13 @@ const Dashboard = () => {
               subtitle={`All-time: ${formatCurrency(summary?.allTime?.balance)}`}
               colorClass={
                 (monthData?.balance ?? 0) >= 0
-                  ? "text-indigo-600"
-                  : "text-orange-600"
+                  ? "text-secondary"
+                  : "text-warning"
               }
-              iconBg="bg-indigo-50"
+              iconBg="bg-secondary/15"
               icon={
                 <svg
-                  className="h-5 w-5 text-indigo-600"
+                  className="h-5 w-5 text-secondary"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -203,14 +209,11 @@ const Dashboard = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Pie chart — category breakdown */}
         {loading && categoryBreakdown.length === 0 ? (
           <ChartSkeleton />
         ) : (
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-gray-800">
-              Expense by Category
-            </h2>
+          <div className="card p-6">
+            <h2 className="section-heading mb-4">Expense by Category</h2>
             {hasCategoryData ? (
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
@@ -233,17 +236,13 @@ const Dashboard = () => {
                   </Pie>
                   <Tooltip
                     formatter={(value) => formatCurrency(value)}
-                    contentStyle={{
-                      borderRadius: "8px",
-                      border: "1px solid #e5e7eb",
-                      fontSize: "13px",
-                    }}
+                    contentStyle={CHART_TOOLTIP_STYLE}
                   />
                   <Legend
                     verticalAlign="bottom"
                     height={36}
                     formatter={(value) => (
-                      <span className="text-xs text-gray-600">{value}</span>
+                      <span className="text-xs text-textSecondary">{value}</span>
                     )}
                   />
                 </PieChart>
@@ -254,59 +253,52 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Line chart — monthly trend */}
         {loading && monthlyTrend.length === 0 ? (
           <ChartSkeleton />
         ) : (
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-gray-800">
-              Income vs Expense Trend
-            </h2>
+          <div className="card p-6">
+            <h2 className="section-heading mb-4">Income vs Expense Trend</h2>
             {hasTrendData ? (
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={monthlyTrend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <CartesianGrid {...CHART_GRID} />
                   <XAxis
                     dataKey="month"
-                    tick={{ fontSize: 12, fill: "#6b7280" }}
-                    axisLine={{ stroke: "#e5e7eb" }}
+                    tick={CHART_AXIS_TICK}
+                    axisLine={CHART_AXIS_LINE}
                   />
                   <YAxis
-                    tick={{ fontSize: 12, fill: "#6b7280" }}
-                    axisLine={{ stroke: "#e5e7eb" }}
+                    tick={CHART_AXIS_TICK}
+                    axisLine={CHART_AXIS_LINE}
                     tickFormatter={(val) =>
                       val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val
                     }
                   />
                   <Tooltip
                     formatter={(value) => formatCurrency(value)}
-                    contentStyle={{
-                      borderRadius: "8px",
-                      border: "1px solid #e5e7eb",
-                      fontSize: "13px",
-                    }}
+                    contentStyle={CHART_TOOLTIP_STYLE}
                   />
                   <Legend
                     formatter={(value) => (
-                      <span className="text-xs text-gray-600">{value}</span>
+                      <span className="text-xs text-textSecondary">{value}</span>
                     )}
                   />
                   <Line
                     type="monotone"
                     dataKey="income"
                     name="Income"
-                    stroke="#22c55e"
+                    stroke={INCOME_LINE_COLOR}
                     strokeWidth={2}
-                    dot={{ r: 4, fill: "#22c55e" }}
+                    dot={{ r: 4, fill: INCOME_LINE_COLOR }}
                     activeDot={{ r: 6 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="expense"
                     name="Expense"
-                    stroke="#ef4444"
+                    stroke={EXPENSE_LINE_COLOR}
                     strokeWidth={2}
-                    dot={{ r: 4, fill: "#ef4444" }}
+                    dot={{ r: 4, fill: EXPENSE_LINE_COLOR }}
                     activeDot={{ r: 6 }}
                   />
                 </LineChart>

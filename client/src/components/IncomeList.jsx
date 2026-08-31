@@ -24,48 +24,48 @@ const formatAmount = (amount) =>
 const IncomeList = ({ incomes, loading, onEdit, onDelete }) => {
   if (loading && incomes.length === 0) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+      <div className="card flex h-48 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
 
   if (!loading && incomes.length === 0) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-        <p className="text-sm text-gray-400">No income entries found</p>
+      <div className="card flex h-48 items-center justify-center">
+        <p className="text-sm text-textMuted">No income entries found</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="card overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50">
+          <thead className="table-header">
             <tr>
-              <th className="px-4 py-3 font-medium text-gray-600">Source</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Amount</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Date</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Description</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-textSecondary">Source</th>
+              <th className="px-4 py-3 font-medium text-textSecondary">Amount</th>
+              <th className="px-4 py-3 font-medium text-textSecondary">Date</th>
+              <th className="px-4 py-3 font-medium text-textSecondary">Description</th>
+              <th className="px-4 py-3 font-medium text-textSecondary">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {incomes.map((income) => (
-              <tr key={income._id} className="hover:bg-gray-50">
+              <tr key={income._id} className="table-row">
                 <td className="px-4 py-3">
-                  <span className="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                  <span className="badge bg-income/15 text-income">
                     {sourceLabel(income.source)}
                   </span>
                 </td>
-                <td className="px-4 py-3 font-medium text-green-600">
+                <td className="px-4 py-3 font-medium text-income">
                   {formatAmount(income.amount)}
                 </td>
-                <td className="px-4 py-3 text-gray-600">
+                <td className="px-4 py-3 text-textSecondary">
                   {formatDate(income.date)}
                 </td>
-                <td className="max-w-[200px] truncate px-4 py-3 text-gray-500">
+                <td className="max-w-[200px] truncate px-4 py-3 text-textMuted">
                   {income.description || "—"}
                 </td>
                 <td className="px-4 py-3">
@@ -73,7 +73,7 @@ const IncomeList = ({ incomes, loading, onEdit, onDelete }) => {
                     <button
                       onClick={() => onEdit(income)}
                       title="Edit"
-                      className="rounded-lg p-1.5 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600"
+                      className="rounded-lg p-1.5 text-textMuted transition hover:bg-primary/10 hover:text-primary"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +93,7 @@ const IncomeList = ({ incomes, loading, onEdit, onDelete }) => {
                     <button
                       onClick={() => onDelete(income._id)}
                       title="Delete"
-                      className="rounded-lg p-1.5 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+                      className="rounded-lg p-1.5 text-textMuted transition hover:bg-expense/10 hover:text-expense"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

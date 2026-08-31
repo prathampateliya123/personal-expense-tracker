@@ -90,16 +90,11 @@ const Income = () => {
     }
   };
 
-  const inputClass =
-    "rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Income</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Track and manage your earnings
-        </p>
+        <h1 className="page-heading">Income</h1>
+        <p className="page-subheading">Track and manage your earnings</p>
       </div>
 
       {/* Add / Edit form */}
@@ -111,18 +106,18 @@ const Income = () => {
       />
 
       {/* Filter bar */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h3 className="mb-3 text-sm font-semibold text-gray-700">Filters</h3>
+      <div className="card p-4">
+        <h3 className="section-heading mb-3">Filters</h3>
         <div className="flex flex-wrap items-end gap-3">
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
+            <label className="mb-1 block text-xs font-medium text-textSecondary">
               Source
             </label>
             <select
               name="source"
               value={filters.source}
               onChange={handleFilterChange}
-              className={inputClass}
+              className="input-field"
             >
               <option value="">All sources</option>
               {INCOME_SOURCES.map(({ value, label }) => (
@@ -134,7 +129,7 @@ const Income = () => {
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
+            <label className="mb-1 block text-xs font-medium text-textSecondary">
               Start Date
             </label>
             <input
@@ -142,12 +137,12 @@ const Income = () => {
               type="date"
               value={filters.startDate}
               onChange={handleFilterChange}
-              className={inputClass}
+              className="input-field"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
+            <label className="mb-1 block text-xs font-medium text-textSecondary">
               End Date
             </label>
             <input
@@ -155,20 +150,14 @@ const Income = () => {
               type="date"
               value={filters.endDate}
               onChange={handleFilterChange}
-              className={inputClass}
+              className="input-field"
             />
           </div>
 
-          <button
-            onClick={handleApplyFilters}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
-          >
+          <button onClick={handleApplyFilters} className="btn-primary">
             Apply
           </button>
-          <button
-            onClick={handleClearFilters}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-          >
+          <button onClick={handleClearFilters} className="btn-secondary">
             Clear
           </button>
         </div>
@@ -188,17 +177,17 @@ const Income = () => {
           <button
             disabled={pagination.page <= 1}
             onClick={() => dispatch(setPage(pagination.page - 1))}
-            className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn-secondary px-3 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Previous
           </button>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-textSecondary">
             Page {pagination.page} of {pagination.pages}
           </span>
           <button
             disabled={pagination.page >= pagination.pages}
             onClick={() => dispatch(setPage(pagination.page + 1))}
-            className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn-secondary px-3 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next
           </button>

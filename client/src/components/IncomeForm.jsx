@@ -56,21 +56,15 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
     });
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-    >
-      <h2 className="mb-4 text-lg font-semibold text-gray-900">
+    <form onSubmit={handleSubmit} className="card p-6">
+      <h2 className="section-heading mb-4">
         {isEditing ? "Edit Income" : "Add Income"}
       </h2>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Source
           </label>
           <select
@@ -78,7 +72,7 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
             required
             value={formData.source}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           >
             <option value="">Select source</option>
             {INCOME_SOURCES.map(({ value, label }) => (
@@ -90,7 +84,7 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Amount
           </label>
           <input
@@ -101,13 +95,13 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
             step="0.01"
             value={formData.amount}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Date
           </label>
           <input
@@ -116,19 +110,19 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
             required
             value={formData.date}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Wallet
           </label>
           <select
             name="walletId"
             value={formData.walletId}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           >
             <option value="">No wallet (optional)</option>
             {wallets.map((w) => (
@@ -140,7 +134,7 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
         </div>
 
         <div className="sm:col-span-2 lg:col-span-3">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Description
           </label>
           <textarea
@@ -148,18 +142,14 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
             rows={2}
             value={formData.description}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
             placeholder="Optional notes..."
           />
         </div>
       </div>
 
       <div className="mt-4 flex gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className="btn-primary">
           {loading
             ? "Saving..."
             : isEditing
@@ -167,11 +157,7 @@ const IncomeForm = ({ income, onSubmit, onCancel, loading }) => {
               : "Add Income"}
         </button>
         {isEditing && onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="rounded-lg border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-          >
+          <button type="button" onClick={onCancel} className="btn-secondary">
             Cancel
           </button>
         )}

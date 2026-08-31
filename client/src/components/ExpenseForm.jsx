@@ -75,15 +75,9 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
     });
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-    >
-      <h2 className="mb-4 text-lg font-semibold text-gray-900">
+    <form onSubmit={handleSubmit} className="card p-6">
+      <h2 className="section-heading mb-4">
         {isEditing
           ? "Edit Expense"
           : fixedTripId
@@ -93,7 +87,7 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Title
           </label>
           <input
@@ -102,13 +96,13 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
             required
             value={formData.title}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
             placeholder="Grocery shopping"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Amount
           </label>
           <input
@@ -119,13 +113,13 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
             step="0.01"
             value={formData.amount}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Category
           </label>
           <select
@@ -133,7 +127,7 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
             required
             value={formData.category}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           >
             <option value="">Select category</option>
             {EXPENSE_CATEGORIES.map((cat) => (
@@ -145,7 +139,7 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Payment Mode
           </label>
           <select
@@ -153,7 +147,7 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
             required
             value={formData.paymentMode}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           >
             <option value="">Select payment mode</option>
             {PAYMENT_MODES.map(({ value, label }) => (
@@ -165,14 +159,14 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Wallet
           </label>
           <select
             name="walletId"
             value={formData.walletId}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           >
             <option value="">No wallet (optional)</option>
             {wallets.map((w) => (
@@ -185,14 +179,14 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
 
         {showTripSelector && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-textSecondary">
               Trip
             </label>
             <select
               name="tripId"
               value={formData.tripId}
               onChange={handleChange}
-              className={inputClass}
+              className="input-field"
             >
               <option value="">No trip (optional)</option>
               {trips
@@ -207,7 +201,7 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Date
           </label>
           <input
@@ -216,12 +210,12 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
             required
             value={formData.date}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
           />
         </div>
 
         <div className="sm:col-span-2 lg:col-span-3">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-textSecondary">
             Description
           </label>
           <textarea
@@ -229,18 +223,14 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
             rows={2}
             value={formData.description}
             onChange={handleChange}
-            className={inputClass}
+            className="input-field"
             placeholder="Optional notes..."
           />
         </div>
       </div>
 
       <div className="mt-4 flex gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className="btn-primary">
           {loading
             ? "Saving..."
             : isEditing
@@ -248,11 +238,7 @@ const ExpenseForm = ({ expense, tripId: fixedTripId, onSubmit, onCancel, loading
               : "Add Expense"}
         </button>
         {isEditing && onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="rounded-lg border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-          >
+          <button type="button" onClick={onCancel} className="btn-secondary">
             Cancel
           </button>
         )}

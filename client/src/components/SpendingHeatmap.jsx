@@ -1,15 +1,15 @@
 /**
  * components/SpendingHeatmap.jsx
  * GitHub-style calendar heatmap built with TailwindCSS.
- * Darker indigo = higher daily spend.
+ * Darker primary = higher daily spend.
  */
 
 const INTENSITY_CLASSES = [
-  "bg-gray-100",
-  "bg-indigo-200",
-  "bg-indigo-400",
-  "bg-indigo-600",
-  "bg-indigo-800",
+  "bg-background",
+  "bg-primary/20",
+  "bg-primary/40",
+  "bg-primary/70",
+  "bg-primary",
 ];
 
 const getIntensityClass = (amount, maxAmount) => {
@@ -26,7 +26,7 @@ const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 const SpendingHeatmap = ({ heatmap, maxAmount, year }) => {
   if (!heatmap?.length) {
     return (
-      <p className="text-sm text-gray-400">No spending data for {year}</p>
+      <p className="text-sm text-textMuted">No spending data for {year}</p>
     );
   }
 
@@ -62,7 +62,7 @@ const SpendingHeatmap = ({ heatmap, maxAmount, year }) => {
           {MONTH_LABELS.map((label, i) => (
             <span
               key={label}
-              className="text-[10px] text-gray-400"
+              className="text-[10px] text-textMuted"
               style={{ width: `${(weeks.length / 12) * 14}px`, minWidth: "28px" }}
             >
               {i % 2 === 0 ? label : ""}
@@ -74,7 +74,7 @@ const SpendingHeatmap = ({ heatmap, maxAmount, year }) => {
           {/* Day-of-week labels */}
           <div className="flex flex-col gap-[3px] pr-1 pt-0.5">
             {["", "Mon", "", "Wed", "", "Fri", ""].map((label, i) => (
-              <span key={i} className="h-[12px] text-[9px] leading-[12px] text-gray-400">
+              <span key={i} className="h-[12px] text-[9px] leading-[12px] text-textMuted">
                 {label}
               </span>
             ))}
@@ -89,7 +89,7 @@ const SpendingHeatmap = ({ heatmap, maxAmount, year }) => {
                     <div
                       key={day.date}
                       title={`${day.date}: ${formatCurrency(day.amount)}`}
-                      className={`h-[12px] w-[12px] rounded-sm ${getIntensityClass(day.amount, maxAmount)} transition hover:ring-2 hover:ring-indigo-300`}
+                      className={`h-[12px] w-[12px] rounded-sm ${getIntensityClass(day.amount, maxAmount)} transition hover:ring-2 hover:ring-primaryGlow/40`}
                     />
                   ) : (
                     <div key={`empty-${wi}-${di}`} className="h-[12px] w-[12px]" />
@@ -102,11 +102,11 @@ const SpendingHeatmap = ({ heatmap, maxAmount, year }) => {
 
         {/* Legend */}
         <div className="ml-8 mt-2 flex items-center gap-2">
-          <span className="text-[10px] text-gray-400">Less</span>
+          <span className="text-[10px] text-textMuted">Less</span>
           {INTENSITY_CLASSES.map((cls) => (
             <div key={cls} className={`h-[10px] w-[10px] rounded-sm ${cls}`} />
           ))}
-          <span className="text-[10px] text-gray-400">More</span>
+          <span className="text-[10px] text-textMuted">More</span>
         </div>
       </div>
     </div>
