@@ -1,29 +1,14 @@
 /**
  * layouts/DashboardLayout.jsx
- * Main authenticated layout with sidebar navigation, topbar, and content area.
+ * Main authenticated layout with sidebar and content area.
  */
 
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { logoutUser } from "../redux/authSlice";
-import NotificationBell from "../components/NotificationBell";
 
-const navLinks = [
-  { to: "/dashboard", label: "Dashboard", end: true },
-  { to: "/expenses", label: "Expenses" },
-  { to: "/income", label: "Income" },
-  { to: "/budget", label: "Budget" },
-  { to: "/goals", label: "Goals" },
-  { to: "/wallets", label: "Wallets" },
-  { to: "/subscriptions", label: "Subscriptions" },
-  { to: "/simulator", label: "Simulator" },
-  { to: "/investments", label: "Investments" },
-  { to: "/reports", label: "Reports" },
-  { to: "/timeline", label: "Timeline" },
-  { to: "/trips", label: "Trips" },
-  { to: "/dashboard/settings", label: "Settings" },
-];
+const navLinks = [{ to: "/dashboard", label: "Dashboard", end: true }];
 
 const DashboardLayout = () => {
   const dispatch = useDispatch();
@@ -49,12 +34,11 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
-      {/* Sidebar — SpendWise dark green nav */}
-      <aside className="fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-navBar shadow-cardDark">
-        <div className="flex h-16 items-center border-b border-white/10 px-6">
-          <span className="text-lg font-bold tracking-heading text-white">
-            Spend<span className="text-secondaryLight">Wise</span>
+    <div className="flex min-h-screen bg-gray-50">
+      <aside className="fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-white shadow-md">
+        <div className="flex h-16 items-center border-b border-gray-100 px-6">
+          <span className="text-lg font-bold text-indigo-600">
+            ExpenseTracker
           </span>
         </div>
 
@@ -65,10 +49,10 @@ const DashboardLayout = () => {
               to={to}
               end={end}
               className={({ isActive }) =>
-                `block rounded-card px-4 py-2.5 text-sm font-medium transition ${
+                `block rounded-lg px-4 py-2.5 text-sm font-medium transition ${
                   isActive
-                    ? "bg-accent/20 text-secondaryLight"
-                    : "text-textMuted hover:bg-white/5 hover:text-white"
+                    ? "bg-indigo-50 text-indigo-700"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`
               }
             >
@@ -79,7 +63,7 @@ const DashboardLayout = () => {
           <button
             onClick={handleLogout}
             disabled={loading}
-            className="mt-2 w-full rounded-card px-4 py-2.5 text-left text-sm font-medium text-textMuted transition hover:bg-white/5 hover:text-white disabled:opacity-60"
+            className="mt-2 w-full rounded-lg px-4 py-2.5 text-left text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-60"
           >
             Logout
           </button>
@@ -87,10 +71,9 @@ const DashboardLayout = () => {
       </aside>
 
       <div className="ml-64 flex flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-end gap-4 border-b border-border bg-surface/90 px-8 backdrop-blur-sm">
-          <NotificationBell />
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-end gap-4 border-b border-gray-100 bg-white px-8 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/15 text-sm font-semibold text-accent">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -101,7 +84,7 @@ const DashboardLayout = () => {
                 getInitials(user?.name)
               )}
             </div>
-            <span className="text-sm font-medium text-textPrimary">
+            <span className="text-sm font-medium text-gray-700">
               {user?.name}
             </span>
           </div>

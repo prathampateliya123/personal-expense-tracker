@@ -1,7 +1,6 @@
 /**
  * models/User.js
  * Mongoose schema for User documents.
- * Passwords are hashed via bcrypt before save in the auth controller.
  */
 
 import mongoose from "mongoose";
@@ -29,10 +28,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpire: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
-    // Map createdAt/updatedAt; expose createdAt as specified
     createdAt: "createdAt",
     updatedAt: "updatedAt",
   }

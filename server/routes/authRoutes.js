@@ -1,7 +1,6 @@
 /**
  * routes/authRoutes.js
- * Defines authentication-related API endpoints.
- * Mounts at /api/auth in server.js.
+ * Authentication API endpoints.
  */
 
 import express from "express";
@@ -10,6 +9,9 @@ import {
   login,
   logout,
   getProfile,
+  forgotPassword,
+  resetPassword,
+  validateResetToken,
 } from "../controllers/authController.js";
 import protect from "../middleware/authMiddleware.js";
 
@@ -19,5 +21,8 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", protect, logout);
 router.get("/profile", protect, getProfile);
+router.post("/forgot-password", forgotPassword);
+router.get("/reset-password/:token", validateResetToken);
+router.post("/reset-password/:token", resetPassword);
 
 export default router;

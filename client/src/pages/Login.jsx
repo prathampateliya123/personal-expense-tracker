@@ -1,7 +1,6 @@
 /**
  * pages/Login.jsx
- * Login form page — centered card layout with TailwindCSS.
- * Dispatches loginUser thunk and shows toast notifications.
+ * Sign in page.
  */
 
 import { useState, useEffect } from "react";
@@ -9,20 +8,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { loginUser, clearError } from "../redux/authSlice";
+import AuthCard, {
+  authInputClass,
+  authButtonClass,
+  authLinkClass,
+} from "../components/AuthCard";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, navigate]);
+  const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (error) {
@@ -45,76 +41,62 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md">
-        <div className="card p-8">
-          <div className="mb-8 text-center">
-            <h1 className="page-heading">
-              Spend<span className="text-accent">Wise</span>
-            </h1>
-            <p className="page-subheading">Sign in to your account</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-textSecondary"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="input-field py-2.5"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-textSecondary"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="input-field py-2.5"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-2.5"
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-textMuted">
-            Don&apos;t have an account?{" "}
-            <Link
-              to="/register"
-              className="font-medium text-primary hover:text-primaryGlow"
-            >
-              Register
-            </Link>
-          </p>
+    <AuthCard
+      title="Welcome back"
+      subtitle="Sign in to your expense tracker account"
+      footer={
+        <p className="text-center text-sm text-gray-500">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className={authLinkClass}>
+            Create account
+          </Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={authInputClass}
+            placeholder="you@example.com"
+          />
         </div>
-      </div>
-    </div>
+
+        <div>
+          <div className="mb-1.5 flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-700">Password</label>
+            <Link
+              to="/forgot-password"
+              className="text-xs font-medium text-brand-600 hover:text-brand-700"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <input
+            name="password"
+            type="password"
+            required
+            autoComplete="current-password"
+            value={formData.password}
+            onChange={handleChange}
+            className={authInputClass}
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button type="submit" disabled={loading} className={authButtonClass}>
+          {loading ? "Signing in..." : "Sign in"}
+        </button>
+      </form>
+    </AuthCard>
   );
 };
 

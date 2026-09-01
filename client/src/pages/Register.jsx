@@ -1,7 +1,6 @@
 /**
  * pages/Register.jsx
- * Registration form page — centered card layout with TailwindCSS.
- * Dispatches registerUser thunk and shows toast notifications.
+ * Sign up page.
  */
 
 import { useState, useEffect } from "react";
@@ -9,6 +8,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { registerUser, clearError } from "../redux/authSlice";
+import AuthCard, {
+  authInputClass,
+  authButtonClass,
+  authLinkClass,
+} from "../components/AuthCard";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -18,15 +22,7 @@ const Register = () => {
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, navigate]);
+  const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (error) {
@@ -49,96 +45,73 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md">
-        <div className="card p-8">
-          <div className="mb-8 text-center">
-            <h1 className="page-heading">Create an account</h1>
-            <p className="page-subheading">
-              Start tracking your expenses today
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label
-                htmlFor="name"
-                className="mb-1.5 block text-sm font-medium text-textSecondary"
-              >
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className="input-field py-2.5"
-                placeholder="John Doe"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-textSecondary"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="input-field py-2.5"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-textSecondary"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={6}
-                value={formData.password}
-                onChange={handleChange}
-                className="input-field py-2.5"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-2.5"
-            >
-              {loading ? "Creating account..." : "Create account"}
-            </button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-textMuted">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="font-medium text-primary hover:text-primaryGlow"
-            >
-              Sign in
-            </Link>
-          </p>
+    <AuthCard
+      title="Create your account"
+      subtitle="Start tracking your expenses in minutes"
+      footer={
+        <p className="text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <Link to="/login" className={authLinkClass}>
+            Sign in
+          </Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Full name
+          </label>
+          <input
+            name="name"
+            type="text"
+            required
+            autoComplete="name"
+            value={formData.name}
+            onChange={handleChange}
+            className={authInputClass}
+            placeholder="John Doe"
+          />
         </div>
-      </div>
-    </div>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={authInputClass}
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            name="password"
+            type="password"
+            required
+            minLength={6}
+            autoComplete="new-password"
+            value={formData.password}
+            onChange={handleChange}
+            className={authInputClass}
+            placeholder="At least 6 characters"
+          />
+        </div>
+
+        <button type="submit" disabled={loading} className={authButtonClass}>
+          {loading ? "Creating account..." : "Create account"}
+        </button>
+      </form>
+    </AuthCard>
   );
 };
 
