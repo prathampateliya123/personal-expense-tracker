@@ -12,6 +12,9 @@ const PUBLIC_AUTH_URLS = [
   "/auth/register",
   "/auth/logout",
   "/auth/forgot-password",
+  "/auth/verify-otp",
+  "/auth/resend-otp",
+  "/auth/reset-password",
 ];
 
 const isPublicAuthRequest = (url = "") =>

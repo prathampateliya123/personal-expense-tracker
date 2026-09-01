@@ -28,6 +28,23 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    otp: {
+      type: String,
+      default: null,
+    },
+    otpExpire: {
+      type: Date,
+      default: null,
+    },
+    otpPurpose: {
+      type: String,
+      enum: ["login", "register", "forgot-password", null],
+      default: null,
+    },
     resetPasswordToken: {
       type: String,
       default: null,

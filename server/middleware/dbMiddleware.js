@@ -10,7 +10,7 @@ const requireDb = (req, res, next) => {
     res.status(503).json({
       success: false,
       message:
-        "Database not connected. Set your MongoDB Atlas password in server/.env (replace YOUR_DB_PASSWORD).",
+        "Database not connected. Open server/.env and set MONGO_PASSWORD to your MongoDB Atlas password, then restart the server.",
     });
     return;
   }

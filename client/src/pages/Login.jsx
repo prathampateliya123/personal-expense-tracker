@@ -1,6 +1,5 @@
 /**
  * pages/Login.jsx
- * Sign in page.
  */
 
 import { useState, useEffect } from "react";
@@ -29,16 +28,23 @@ const Login = () => {
     }
   }, [error, dispatch]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
-      toast.success("Logged in successfully!");
-      navigate(from, { replace: true });
+      const purpose = result.payload.purpose || "login";
+      toast.success(
+        purpose === "register"
+          ? "Account not verified. Enter OTP to complete setup."
+          : "OTP sent! Enter the code to continue."
+      );
+      navigate("/verify-otp", {
+        state: {
+          email: result.payload.email,
+          purpose,
+          from,
+        },
+      });
     }
   };
 
@@ -66,7 +72,9 @@ const Login = () => {
             required
             autoComplete="email"
             value={formData.email}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             className={authInputClass}
             placeholder="you@example.com"
           />
@@ -88,14 +96,16 @@ const Login = () => {
             required
             autoComplete="current-password"
             value={formData.password}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             className={authInputClass}
             placeholder="••••••••"
           />
         </div>
 
         <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? "Sending OTP..." : "Continue"}
         </button>
       </form>
     </AuthCard>

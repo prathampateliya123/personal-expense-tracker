@@ -1,17 +1,13 @@
 /**
  * pages/ResetPassword.jsx
- * Set a new password using the reset token from email.
+ * Set new password after forgot-password OTP is verified.
  */
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import {
-  resetPassword,
-  validateResetToken,
-  clearError,
-} from "../redux/authSlice";
+import { resetPassword, clearError } from "../redux/authSlice";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -19,20 +15,20 @@ import AuthCard, {
 } from "../components/AuthCard";
 
 const ResetPassword = () => {
-  const { token } = useParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, tokenValid, tokenChecking } = useSelector(
-    (state) => state.auth
-  );
+  const location = useLocation();
+  const email = location.state?.email;
+  const otpVerified = location.state?.otpVerified;
+  const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (token) {
-      dispatch(validateResetToken(token));
+    if (!email || !otpVerified) {
+      navigate("/forgot-password", { replace: true });
     }
-  }, [dispatch, token]);
+  }, [email, otpVerified, navigate]);
 
   useEffect(() => {
     if (error) {
@@ -49,35 +45,15 @@ const ResetPassword = () => {
       return;
     }
 
-    const result = await dispatch(resetPassword({ token, password }));
+    const result = await dispatch(resetPassword({ email, password }));
     if (resetPassword.fulfilled.match(result)) {
       toast.success("Password updated! You are now signed in.");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }
   };
 
-  if (tokenChecking) {
-    return (
-      <div className="flex justify-center py-16">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
-      </div>
-    );
-  }
-
-  if (!tokenValid) {
-    return (
-      <AuthCard
-        title="Invalid or expired link"
-        subtitle="This password reset link is no longer valid. Please request a new one."
-        footer={
-          <p className="text-center text-sm text-ink-400">
-            <Link to="/forgot-password" className={authLinkClass}>
-              Request new link
-            </Link>
-          </p>
-        }
-      />
-    );
+  if (!email || !otpVerified) {
+    return null;
   }
 
   return (
@@ -92,6 +68,11 @@ const ResetPassword = () => {
         </p>
       }
     >
+      <p className="mb-5 text-center text-sm text-ink-500">
+        Resetting password for{" "}
+        <span className="font-medium text-ink-800">{email}</span>
+      </p>
+
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="mb-1.5 block text-sm font-medium text-ink-700">

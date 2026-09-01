@@ -1,6 +1,5 @@
 /**
  * pages/Register.jsx
- * Sign up page.
  */
 
 import { useState, useEffect } from "react";
@@ -31,16 +30,17 @@ const Register = () => {
     }
   }, [error, dispatch]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await dispatch(registerUser(formData));
     if (registerUser.fulfilled.match(result)) {
-      toast.success("Account created successfully!");
-      navigate("/dashboard");
+      toast.success("OTP sent! Verify to complete registration.");
+      navigate("/verify-otp", {
+        state: {
+          email: result.payload.email,
+          purpose: "register",
+        },
+      });
     }
   };
 
@@ -68,7 +68,9 @@ const Register = () => {
             required
             autoComplete="name"
             value={formData.name}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             className={authInputClass}
             placeholder="John Doe"
           />
@@ -84,7 +86,9 @@ const Register = () => {
             required
             autoComplete="email"
             value={formData.email}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             className={authInputClass}
             placeholder="you@example.com"
           />
@@ -101,14 +105,16 @@ const Register = () => {
             minLength={6}
             autoComplete="new-password"
             value={formData.password}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             className={authInputClass}
             placeholder="At least 6 characters"
           />
         </div>
 
         <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? "Sending OTP..." : "Continue"}
         </button>
       </form>
     </AuthCard>

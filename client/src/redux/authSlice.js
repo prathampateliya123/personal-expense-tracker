@@ -1,11 +1,6 @@
 /**
  * redux/authSlice.js
- *
- * JWT auth flow (httpOnly cookie — token never in localStorage):
- * 1. Login/Register → server sets `token` cookie
- * 2. checkAuthSession → GET /auth/profile with cookie → valid = authenticated
- * 3. Logout → server clears cookie → redirect to /login
- * 4. No valid cookie → ProtectedRoute keeps user on /login
+ * Auth with OTP verification for login, register, forgot password.
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
@@ -18,9 +13,7 @@ const initialState = {
   initializing: true,
   error: null,
   message: null,
-  devResetUrl: null,
-  tokenValid: false,
-  tokenChecking: false,
+  otpSession: null,
 };
 
 export const registerUser = createAsyncThunk(
@@ -28,7 +21,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post("/auth/register", userData);
-      return data.user;
+      return data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
@@ -42,7 +35,7 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post("/auth/login", credentials);
-      return data.user;
+      return data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Login failed"
@@ -51,20 +44,50 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-/** Clear JWT cookie on server and wipe client session */
+export const verifyOtpCode = createAsyncThunk(
+  "auth/verifyOtp",
+  async ({ email, otp, purpose }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post("/auth/verify-otp", {
+        email,
+        otp,
+        purpose,
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "OTP verification failed"
+      );
+    }
+  }
+);
+
+export const resendOtpCode = createAsyncThunk(
+  "auth/resendOtp",
+  async ({ email, purpose }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post("/auth/resend-otp", {
+        email,
+        purpose,
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to resend OTP"
+      );
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
   try {
     await axiosInstance.post("/auth/logout");
   } catch {
-    // Always clear client session even if API fails
+    /* always clear client session */
   }
   return null;
 });
 
-/**
- * Verify session by reading JWT from httpOnly cookie (via /auth/profile).
- * Called on app load — source of truth for route guards.
- */
 export const checkAuthSession = createAsyncThunk(
   "auth/checkSession",
   async (_, { rejectWithValue }) => {
@@ -77,7 +100,6 @@ export const checkAuthSession = createAsyncThunk(
   }
 );
 
-/** @deprecated use checkAuthSession */
 export const fetchProfile = checkAuthSession;
 
 export const forgotPassword = createAsyncThunk(
@@ -90,21 +112,7 @@ export const forgotPassword = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to send reset link"
-      );
-    }
-  }
-);
-
-export const validateResetToken = createAsyncThunk(
-  "auth/validateResetToken",
-  async (token, { rejectWithValue }) => {
-    try {
-      await axiosInstance.get(`/auth/reset-password/${token}`);
-      return true;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Invalid or expired reset token"
+        error.response?.data?.message || "Failed to send OTP"
       );
     }
   }
@@ -112,12 +120,12 @@ export const validateResetToken = createAsyncThunk(
 
 export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
-  async ({ token, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(
-        `/auth/reset-password/${token}`,
-        { password }
-      );
+      const { data } = await axiosInstance.post("/auth/reset-password", {
+        email,
+        password,
+      });
       return data.user;
     } catch (error) {
       return rejectWithValue(
@@ -134,17 +142,16 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    clearAuthMessage: (state) => {
-      state.message = null;
-      state.devResetUrl = null;
+    clearOtpSession: (state) => {
+      state.otpSession = null;
     },
-    /** Wipe session when cookie is missing/invalid (no token in client memory) */
     resetAuth: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
       state.initializing = false;
+      state.otpSession = null;
     },
   },
   extraReducers: (builder) => {
@@ -155,9 +162,11 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.initializing = false;
+        state.otpSession = {
+          email: action.payload.email,
+          purpose: action.payload.purpose || "register",
+          otp: action.payload.otp || null,
+        };
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -171,11 +180,50 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.initializing = false;
+        state.otpSession = {
+          email: action.payload.email,
+          purpose: action.payload.purpose || "login",
+          otp: action.payload.otp || null,
+        };
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(verifyOtpCode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtpCode.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.user) {
+          state.user = action.payload.user;
+          state.isAuthenticated = true;
+          state.initializing = false;
+        }
+        state.otpSession = null;
+      })
+      .addCase(verifyOtpCode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(resendOtpCode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendOtpCode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.otpSession = {
+          email: action.payload.email,
+          purpose: action.payload.purpose,
+          otp: action.payload.otp || null,
+        };
+      })
+      .addCase(resendOtpCode.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
@@ -189,6 +237,7 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.initializing = false;
+        state.otpSession = null;
       })
       .addCase(logoutUser.rejected, (state) => {
         state.loading = false;
@@ -216,32 +265,18 @@ const authSlice = createSlice({
       .addCase(forgotPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.message = null;
-        state.devResetUrl = null;
       })
       .addCase(forgotPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message;
-        state.devResetUrl = action.payload.devResetUrl || null;
+        state.otpSession = {
+          email: action.payload.email,
+          purpose: action.payload.purpose || "forgot-password",
+          otp: action.payload.otp || null,
+        };
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
-
-    builder
-      .addCase(validateResetToken.pending, (state) => {
-        state.tokenChecking = true;
-        state.tokenValid = false;
-        state.error = null;
-      })
-      .addCase(validateResetToken.fulfilled, (state) => {
-        state.tokenChecking = false;
-        state.tokenValid = true;
-      })
-      .addCase(validateResetToken.rejected, (state) => {
-        state.tokenChecking = false;
-        state.tokenValid = false;
       });
 
     builder
@@ -262,5 +297,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, clearAuthMessage, resetAuth } = authSlice.actions;
+export const { clearError, clearOtpSession, resetAuth } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,13 +1,12 @@
 /**
  * pages/ForgotPassword.jsx
- * Request a password reset link.
  */
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { forgotPassword, clearError, clearAuthMessage } from "../redux/authSlice";
+import { forgotPassword, clearError } from "../redux/authSlice";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -16,11 +15,9 @@ import AuthCard, {
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const dispatch = useDispatch();
-  const { loading, error, message, devResetUrl } = useSelector(
-    (state) => state.auth
-  );
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (error) {
@@ -29,59 +26,24 @@ const ForgotPassword = () => {
     }
   }, [error, dispatch]);
 
-  useEffect(() => {
-    return () => {
-      dispatch(clearAuthMessage());
-    };
-  }, [dispatch]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await dispatch(forgotPassword({ email }));
     if (forgotPassword.fulfilled.match(result)) {
-      setSubmitted(true);
-      toast.success("Check your email for reset instructions.");
+      toast.success("OTP sent! Enter the code to continue.");
+      navigate("/verify-otp", {
+        state: {
+          email: result.payload.email,
+          purpose: "forgot-password",
+        },
+      });
     }
   };
-
-  if (submitted) {
-    return (
-      <AuthCard
-        title="Check your inbox"
-        subtitle={
-          message ||
-          "If an account exists with that email, a password reset link has been sent."
-        }
-        footer={
-          <p className="text-center text-sm text-ink-400">
-            <Link to="/login" className={authLinkClass}>
-              Back to sign in
-            </Link>
-          </p>
-        }
-      >
-        {devResetUrl && (
-          <div className="rounded-xl border border-accent-warning/30 bg-amber-50 p-4 text-sm text-amber-900">
-            <p className="font-medium">Development mode</p>
-            <p className="mt-1 text-amber-800/90">
-              SMTP is not configured. Use this link to reset your password:
-            </p>
-            <a
-              href={devResetUrl}
-              className="mt-2 inline-block break-all font-medium text-brand-700 underline"
-            >
-              {devResetUrl}
-            </a>
-          </div>
-        )}
-      </AuthCard>
-    );
-  }
 
   return (
     <AuthCard
       title="Forgot password?"
-      subtitle="Enter your email and we'll send you a reset link"
+      subtitle="Enter your email and we'll send you an OTP"
       footer={
         <p className="text-center text-sm text-ink-400">
           Remember your password?{" "}
@@ -109,7 +71,7 @@ const ForgotPassword = () => {
         </div>
 
         <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Sending..." : "Send reset link"}
+          {loading ? "Sending OTP..." : "Send OTP"}
         </button>
       </form>
     </AuthCard>
