@@ -1,6 +1,6 @@
 /**
  * layouts/DashboardLayout.jsx
- * Main authenticated shell — sidebar, header, and content area.
+ * Authenticated app shell — sidebar, header, content.
  */
 
 import { useState } from "react";
@@ -26,12 +26,13 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen bg-surface">
       <Sidebar
-        user={user}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        onLogout={handleLogout}
+        logoutLoading={loading}
       />
 
-      <div className="flex min-h-screen flex-col lg:pl-[272px]">
+      <div className="flex min-h-screen flex-col lg:pl-[280px]">
         <DashboardHeader
           user={user}
           onMenuClick={() => setSidebarOpen(true)}
@@ -39,7 +40,7 @@ const DashboardLayout = () => {
           logoutLoading={loading}
         />
 
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main className="dashboard-content flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="mx-auto max-w-7xl">
             <Outlet />
           </div>

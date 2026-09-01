@@ -38,4 +38,8 @@
   .sidebar-scroll::-webkit-scrollbar-thumb {
     @apply rounded-full bg-white/10;
   }
+
+  .dashboard-content {
+    @apply min-h-[calc(100vh-72px)];
+  }
 }
