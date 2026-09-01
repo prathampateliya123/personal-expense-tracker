@@ -18,11 +18,9 @@ const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
-    const result = await dispatch(logoutUser());
-    if (logoutUser.fulfilled.match(result)) {
-      toast.success("Logged out successfully");
-      navigate("/login");
-    }
+    await dispatch(logoutUser());
+    toast.success("Logged out successfully");
+    navigate("/login", { replace: true });
   };
 
   return (

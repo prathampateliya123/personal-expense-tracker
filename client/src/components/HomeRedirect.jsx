@@ -1,13 +1,12 @@
 /**
- * components/PublicAuthRoute.jsx
- * Keeps users on login/register until a valid JWT cookie exists.
- * Authenticated users are sent to dashboard.
+ * components/HomeRedirect.jsx
+ * Sends users to dashboard or login based on auth state.
  */
 
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const PublicAuthRoute = () => {
+const HomeRedirect = () => {
   const { isAuthenticated, initializing } = useSelector((state) => state.auth);
 
   if (initializing) {
@@ -18,11 +17,9 @@ const PublicAuthRoute = () => {
     );
   }
 
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return <Outlet />;
+  return (
+    <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+  );
 };
 
-export default PublicAuthRoute;
+export default HomeRedirect;

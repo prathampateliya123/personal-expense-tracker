@@ -4,12 +4,13 @@
  */
 
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
-import { fetchProfile } from "./redux/authSlice";
+import { checkAuthSession } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicAuthRoute from "./components/PublicAuthRoute";
+import HomeRedirect from "./components/HomeRedirect";
 import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Login from "./pages/Login";
@@ -22,7 +23,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchProfile());
+    dispatch(checkAuthSession());
   }, [dispatch]);
 
   return (
@@ -61,8 +62,8 @@ const App = () => {
           </Route>
         </Route>
 
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<HomeRedirect />} />
+        <Route path="*" element={<HomeRedirect />} />
       </Routes>
     </BrowserRouter>
   );

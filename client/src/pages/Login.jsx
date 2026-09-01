@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { loginUser, clearError } from "../redux/authSlice";
@@ -18,6 +18,8 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/dashboard";
   const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const Login = () => {
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
       toast.success("Logged in successfully!");
-      navigate("/dashboard");
+      navigate(from, { replace: true });
     }
   };
 

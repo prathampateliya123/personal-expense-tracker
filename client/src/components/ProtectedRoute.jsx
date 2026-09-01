@@ -1,14 +1,15 @@
 /**
  * components/ProtectedRoute.jsx
- * Route guard that redirects unauthenticated users to /login.
- * Shows a loading state while auth status is being determined.
+ * Blocks dashboard routes until JWT cookie is verified via /auth/profile.
+ * No cookie / invalid token → always redirect to /login.
  */
 
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, initializing } = useSelector((state) => state.auth);
+  const location = useLocation();
 
   if (initializing) {
     return (
@@ -18,7 +19,11 @@ const ProtectedRoute = () => {
     );
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

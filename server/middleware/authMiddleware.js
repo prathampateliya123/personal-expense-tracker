@@ -1,11 +1,10 @@
 /**
  * middleware/authMiddleware.js
- * Protects routes by verifying JWT stored in an httpOnly cookie.
- * Attaches the authenticated user (without password) to req.user.
+ * Reads JWT from httpOnly cookie, verifies it, attaches user to req.
  */
 
-import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { clearTokenCookie, verifyToken } from "../utils/jwtToken.js";
 
 const protect = async (req, res, next) => {
   try {
@@ -13,23 +12,32 @@ const protect = async (req, res, next) => {
 
     if (!token) {
       res.status(401);
-      throw new Error("Not authorized, no token");
+      throw new Error("Not authorized — please log in");
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = verifyToken(token);
+
+    if (!decoded?.id) {
+      clearTokenCookie(res);
+      res.status(401);
+      throw new Error("Session expired — please log in again");
+    }
 
     const user = await User.findById(decoded.id).select("-password");
 
     if (!user) {
+      clearTokenCookie(res);
       res.status(401);
-      throw new Error("Not authorized, user not found");
+      throw new Error("User not found — please log in again");
     }
 
     req.user = user;
     next();
   } catch (error) {
-    res.status(401);
-    next(new Error("Not authorized, token invalid"));
+    if (res.statusCode === 200) {
+      res.status(401);
+    }
+    next(error);
   }
 };
 

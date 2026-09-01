@@ -5,21 +5,13 @@
 
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { sendPasswordResetEmail } from "../utils/emailHelper.js";
-
-const generateToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-const setTokenCookie = (res, token) => {
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-};
+import {
+  generateToken,
+  setTokenCookie,
+  clearTokenCookie,
+} from "../utils/jwtToken.js";
 
 const formatUser = (user) => ({
   _id: user._id,
@@ -66,6 +58,7 @@ export const register = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
+      message: "Account created — JWT stored in secure cookie",
       user: formatUser(user),
     });
   } catch (error) {
@@ -102,6 +95,7 @@ export const login = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      message: "Login successful — JWT stored in secure cookie",
       user: formatUser(user),
     });
   } catch (error) {
@@ -114,14 +108,11 @@ export const login = async (req, res, next) => {
  */
 export const logout = async (req, res, next) => {
   try {
-    res.cookie("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
-    });
+    clearTokenCookie(res);
 
     res.status(200).json({
       success: true,
-      message: "Logged out successfully",
+      message: "Logged out — cookie cleared",
     });
   } catch (error) {
     next(error);
@@ -130,11 +121,13 @@ export const logout = async (req, res, next) => {
 
 /**
  * @route   GET /api/auth/profile
+ * @desc    Verify JWT cookie and return current user (session check)
  */
 export const getProfile = async (req, res, next) => {
   try {
     res.status(200).json({
       success: true,
+      authenticated: true,
       user: formatUser(req.user),
     });
   } catch (error) {

@@ -1,6 +1,11 @@
 /**
  * redux/authSlice.js
- * Authentication state: login, register, logout, profile, forgot/reset password.
+ *
+ * JWT auth flow (httpOnly cookie — token never in localStorage):
+ * 1. Login/Register → server sets `token` cookie
+ * 2. checkAuthSession → GET /auth/profile with cookie → valid = authenticated
+ * 3. Logout → server clears cookie → redirect to /login
+ * 4. No valid cookie → ProtectedRoute keeps user on /login
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
@@ -46,33 +51,34 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const logoutUser = createAsyncThunk(
-  "auth/logout",
-  async (_, { rejectWithValue }) => {
-    try {
-      await axiosInstance.post("/auth/logout");
-      return null;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Logout failed"
-      );
-    }
+/** Clear JWT cookie on server and wipe client session */
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
+  try {
+    await axiosInstance.post("/auth/logout");
+  } catch {
+    // Always clear client session even if API fails
   }
-);
+  return null;
+});
 
-export const fetchProfile = createAsyncThunk(
-  "auth/fetchProfile",
+/**
+ * Verify session by reading JWT from httpOnly cookie (via /auth/profile).
+ * Called on app load — source of truth for route guards.
+ */
+export const checkAuthSession = createAsyncThunk(
+  "auth/checkSession",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get("/auth/profile");
       return data.user;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch profile"
-      );
+    } catch {
+      return rejectWithValue(null);
     }
   }
 );
+
+/** @deprecated use checkAuthSession */
+export const fetchProfile = checkAuthSession;
 
 export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
@@ -132,6 +138,14 @@ const authSlice = createSlice({
       state.message = null;
       state.devResetUrl = null;
     },
+    /** Wipe session when cookie is missing/invalid (no token in client memory) */
+    resetAuth: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.loading = false;
+      state.error = null;
+      state.initializing = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -143,6 +157,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.initializing = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -158,6 +173,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.initializing = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -172,22 +188,25 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = null;
         state.isAuthenticated = false;
+        state.initializing = false;
       })
-      .addCase(logoutUser.rejected, (state, action) => {
+      .addCase(logoutUser.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.initializing = false;
       });
 
     builder
-      .addCase(fetchProfile.pending, (state) => {
+      .addCase(checkAuthSession.pending, (state) => {
         state.initializing = true;
       })
-      .addCase(fetchProfile.fulfilled, (state, action) => {
+      .addCase(checkAuthSession.fulfilled, (state, action) => {
         state.initializing = false;
         state.user = action.payload;
         state.isAuthenticated = true;
       })
-      .addCase(fetchProfile.rejected, (state) => {
+      .addCase(checkAuthSession.rejected, (state) => {
         state.initializing = false;
         state.user = null;
         state.isAuthenticated = false;
@@ -234,6 +253,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.initializing = false;
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
@@ -242,5 +262,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, clearAuthMessage } = authSlice.actions;
+export const { clearError, clearAuthMessage, resetAuth } = authSlice.actions;
 export default authSlice.reducer;
