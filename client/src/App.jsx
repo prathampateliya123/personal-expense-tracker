@@ -1,22 +1,25 @@
 /**
  * App.jsx
- * Root component — React Router with public and protected routes.
+ * Root component — React Router with auth and protected routes.
  */
 
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import { fetchProfile } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicAuthRoute from "./components/PublicAuthRoute";
+import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 
 const App = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchProfile());
@@ -27,22 +30,14 @@ const App = () => {
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
 
       <Routes>
-        <Route
-          path="/login"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Register />
-            )
-          }
-        />
+        <Route element={<PublicAuthRoute />}>
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+          </Route>
+        </Route>
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
@@ -50,6 +45,7 @@ const App = () => {
           </Route>
         </Route>
 
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

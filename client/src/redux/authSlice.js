@@ -1,7 +1,6 @@
 /**
  * redux/authSlice.js
- * Manages authentication state: user, isAuthenticated, loading, and error.
- * Provides async thunks for login, register, logout, and profile fetch.
+ * Authentication state: login, register, logout, profile, forgot/reset password.
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
@@ -13,9 +12,12 @@ const initialState = {
   loading: false,
   initializing: true,
   error: null,
+  message: null,
+  devResetUrl: null,
+  tokenValid: false,
+  tokenChecking: false,
 };
 
-/** Register a new user */
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
@@ -30,7 +32,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-/** Log in an existing user */
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
@@ -45,7 +46,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-/** Log out the current user */
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
@@ -60,7 +60,6 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-/** Fetch the authenticated user's profile (used on app load) */
 export const fetchProfile = createAsyncThunk(
   "auth/fetchProfile",
   async (_, { rejectWithValue }) => {
@@ -75,6 +74,53 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async ({ email }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post("/auth/forgot-password", {
+        email,
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to send reset link"
+      );
+    }
+  }
+);
+
+export const validateResetToken = createAsyncThunk(
+  "auth/validateResetToken",
+  async (token, { rejectWithValue }) => {
+    try {
+      await axiosInstance.get(`/auth/reset-password/${token}`);
+      return true;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Invalid or expired reset token"
+      );
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ token, password }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/auth/reset-password/${token}`,
+        { password }
+      );
+      return data.user;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to reset password"
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -82,9 +128,12 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    clearAuthMessage: (state) => {
+      state.message = null;
+      state.devResetUrl = null;
+    },
   },
   extraReducers: (builder) => {
-    // Register
     builder
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -100,7 +149,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       });
 
-    // Login
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -116,7 +164,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       });
 
-    // Logout
     builder
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
@@ -131,7 +178,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       });
 
-    // Fetch profile
     builder
       .addCase(fetchProfile.pending, (state) => {
         state.initializing = true;
@@ -146,8 +192,55 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       });
+
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.message = null;
+        state.devResetUrl = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.devResetUrl = action.payload.devResetUrl || null;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(validateResetToken.pending, (state) => {
+        state.tokenChecking = true;
+        state.tokenValid = false;
+        state.error = null;
+      })
+      .addCase(validateResetToken.fulfilled, (state) => {
+        state.tokenChecking = false;
+        state.tokenValid = true;
+      })
+      .addCase(validateResetToken.rejected, (state) => {
+        state.tokenChecking = false;
+        state.tokenValid = false;
+      });
+
+    builder
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, clearAuthMessage } = authSlice.actions;
 export default authSlice.reducer;
