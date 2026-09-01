@@ -70,7 +70,7 @@ const ResetPassword = () => {
         title="Invalid or expired link"
         subtitle="This password reset link is no longer valid. Please request a new one."
         footer={
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-ink-400">
             <Link to="/forgot-password" className={authLinkClass}>
               Request new link
             </Link>
@@ -85,7 +85,7 @@ const ResetPassword = () => {
       title="Set new password"
       subtitle="Choose a strong password with at least 6 characters"
       footer={
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-ink-400">
           <Link to="/login" className={authLinkClass}>
             Back to sign in
           </Link>
@@ -94,7 +94,7 @@ const ResetPassword = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className="mb-1.5 block text-sm font-medium text-ink-700">
             New password
           </label>
           <input
@@ -111,7 +111,7 @@ const ResetPassword = () => {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className="mb-1.5 block text-sm font-medium text-ink-700">
             Confirm password
           </label>
           <input

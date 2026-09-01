@@ -53,7 +53,7 @@ const ForgotPassword = () => {
           "If an account exists with that email, a password reset link has been sent."
         }
         footer={
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-ink-400">
             <Link to="/login" className={authLinkClass}>
               Back to sign in
             </Link>
@@ -61,9 +61,9 @@ const ForgotPassword = () => {
         }
       >
         {devResetUrl && (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <div className="rounded-xl border border-accent-warning/30 bg-amber-50 p-4 text-sm text-amber-900">
             <p className="font-medium">Development mode</p>
-            <p className="mt-1 text-amber-800">
+            <p className="mt-1 text-amber-800/90">
               SMTP is not configured. Use this link to reset your password:
             </p>
             <a
@@ -83,7 +83,7 @@ const ForgotPassword = () => {
       title="Forgot password?"
       subtitle="Enter your email and we'll send you a reset link"
       footer={
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-ink-400">
           Remember your password?{" "}
           <Link to="/login" className={authLinkClass}>
             Sign in
@@ -93,7 +93,7 @@ const ForgotPassword = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className="mb-1.5 block text-sm font-medium text-ink-700">
             Email
           </label>
           <input

@@ -1,6 +1,6 @@
 /**
  * index.css
- * Global styles — TailwindCSS base, components, and utilities.
+ * Global styles — SpendWise-inspired fintech palette.
  */
 
 @tailwind base;
@@ -8,7 +8,26 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
-    @apply antialiased text-gray-900;
+    @apply bg-surface font-sans text-ink-900 antialiased;
+  }
+
+  ::selection {
+    background-color: #d1fae5;
+    color: #022c22;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .card {
+    @apply rounded-2xl border border-surface-border bg-surface-card shadow-card;
   }
 }
