@@ -28,11 +28,9 @@ const DashboardLayout = () => {
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        onLogout={handleLogout}
-        logoutLoading={loading}
       />
 
-      <div className="flex min-h-screen flex-col lg:pl-[280px]">
+      <div className="flex min-h-screen flex-col lg:pl-[240px]">
         <DashboardHeader
           user={user}
           onMenuClick={() => setSidebarOpen(true)}

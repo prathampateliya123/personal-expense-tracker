@@ -3,6 +3,8 @@
  */
 
 import { useSelector } from "react-redux";
+import PageHeader from "../components/dashboard/PageHeader";
+import { getPageMeta } from "../dashboard/navConfig";
 
 const quickStats = [
   {
@@ -33,17 +35,22 @@ const quickStats = [
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
+  const pageInfo = getPageMeta("/dashboard");
 
   return (
     <div className="space-y-6">
+      <PageHeader
+        title={pageInfo.title}
+        subtitle={pageInfo.subtitle}
+        breadcrumb={pageInfo.breadcrumb}
+      />
+
       {/* Welcome banner */}
       <div className="card overflow-hidden">
         <div className="relative bg-brand-gradient px-6 py-8 sm:px-8 sm:py-10">
           <div className="absolute right-0 top-0 h-full w-1/3 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.2),transparent)]" />
           <div className="relative">
-            <p className="text-sm font-medium text-brand-100">
-              Welcome back
-            </p>
+            <p className="text-sm font-medium text-brand-100">Welcome back</p>
             <h2 className="mt-1 text-2xl font-bold tracking-tight text-white sm:text-3xl">
               {user?.name ? `Hello, ${user.name.split(" ")[0]}!` : "Hello!"}
             </h2>

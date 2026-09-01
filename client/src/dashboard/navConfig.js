@@ -1,6 +1,6 @@
 /**
  * dashboard/navConfig.js
- * Sidebar navigation and page metadata.
+ * Sidebar links and page metadata.
  */
 
 import {
@@ -12,69 +12,15 @@ import {
   IconSettings,
 } from "../components/dashboard/icons";
 
-export const SIDEBAR_WIDTH = 280;
+export const SIDEBAR_WIDTH = 240;
 
-export const navSections = [
-  {
-    id: "main",
-    title: "Main Menu",
-    items: [
-      {
-        to: "/dashboard",
-        label: "Dashboard",
-        icon: IconDashboard,
-        end: true,
-        description: "Overview & summary",
-      },
-    ],
-  },
-  {
-    id: "finance",
-    title: "Finance",
-    items: [
-      {
-        to: "/expenses",
-        label: "Expenses",
-        icon: IconExpenses,
-        disabled: true,
-        description: "Track spending",
-      },
-      {
-        to: "/budgets",
-        label: "Budgets",
-        icon: IconBudget,
-        disabled: true,
-        description: "Set limits",
-      },
-      {
-        to: "/goals",
-        label: "Goals",
-        icon: IconGoals,
-        disabled: true,
-        description: "Save targets",
-      },
-      {
-        to: "/reports",
-        label: "Reports",
-        icon: IconReports,
-        disabled: true,
-        description: "Analytics",
-      },
-    ],
-  },
-  {
-    id: "account",
-    title: "Preferences",
-    items: [
-      {
-        to: "/settings",
-        label: "Settings",
-        icon: IconSettings,
-        disabled: true,
-        description: "Account & app",
-      },
-    ],
-  },
+export const navItems = [
+  { to: "/dashboard", label: "Dashboard", icon: IconDashboard, end: true },
+  { to: "/expenses", label: "Expenses", icon: IconExpenses, disabled: true },
+  { to: "/budgets", label: "Budgets", icon: IconBudget, disabled: true },
+  { to: "/goals", label: "Goals", icon: IconGoals, disabled: true },
+  { to: "/reports", label: "Reports", icon: IconReports, disabled: true },
+  { to: "/settings", label: "Settings", icon: IconSettings, disabled: true },
 ];
 
 export const pageMeta = {

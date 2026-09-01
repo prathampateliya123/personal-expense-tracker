@@ -40,6 +40,6 @@
   }
 
   .dashboard-content {
-    @apply min-h-[calc(100vh-72px)];
+    @apply min-h-[calc(100vh-64px)];
   }
 }
