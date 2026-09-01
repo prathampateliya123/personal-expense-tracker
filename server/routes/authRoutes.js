@@ -14,15 +14,16 @@ import {
   validateResetToken,
 } from "../controllers/authController.js";
 import protect from "../middleware/authMiddleware.js";
+import requireDb from "../middleware/dbMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", requireDb, register);
+router.post("/login", requireDb, login);
 router.post("/logout", logout);
 router.get("/profile", protect, getProfile);
-router.post("/forgot-password", forgotPassword);
-router.get("/reset-password/:token", validateResetToken);
-router.post("/reset-password/:token", resetPassword);
+router.post("/forgot-password", requireDb, forgotPassword);
+router.get("/reset-password/:token", requireDb, validateResetToken);
+router.post("/reset-password/:token", requireDb, resetPassword);
 
 export default router;
