@@ -15,7 +15,7 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="card overflow-hidden">
         <div className="bg-brand-gradient px-8 py-10">
           <p className="text-sm font-medium text-brand-100">Good to see you</p>

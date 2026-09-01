@@ -30,4 +30,12 @@
   .card {
     @apply rounded-2xl border border-surface-border bg-surface-card shadow-card;
   }
+
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-white/10;
+  }
 }
