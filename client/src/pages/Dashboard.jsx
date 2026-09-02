@@ -79,7 +79,7 @@ const Dashboard = () => {
   const remaining = Math.max(0, monthlyBudget - monthlyTotal);
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
+    <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
       <div>
         <p className="text-sm text-textSecondary">Welcome back</p>
         <h1 className="text-2xl font-bold text-textPrimary sm:text-3xl">

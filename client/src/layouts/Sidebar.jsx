@@ -1,6 +1,6 @@
 /**
  * layouts/Sidebar.jsx
- * Light fintech sidebar navigation.
+ * Sidebar navigation — flex column on desktop, slide-over on mobile.
  */
 
 import { NavLink } from "react-router-dom";
@@ -18,7 +18,7 @@ const NavItem = ({ to, label, icon: Icon, end, onNavigate }) => (
     end={end}
     onClick={onNavigate}
     className={({ isActive }) =>
-      `flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
+      `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
         isActive
           ? "bg-successBg text-primaryDark"
           : "text-textSecondary hover:bg-surfaceGray hover:text-textPrimary"
@@ -40,40 +40,46 @@ const NavItem = ({ to, label, icon: Icon, end, onNavigate }) => (
 
 const Sidebar = ({ isOpen, onClose }) => (
   <>
-    <div
-      className={`fixed inset-0 z-40 bg-textPrimary/20 backdrop-blur-sm transition-opacity lg:hidden ${
-        isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-      }`}
-      onClick={onClose}
-      aria-hidden="true"
-    />
+    {isOpen ? (
+      <div
+        className="fixed inset-0 z-30 bg-textPrimary/30 backdrop-blur-[2px] lg:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+    ) : null}
 
     <aside
       style={{ width: SIDEBAR_WIDTH }}
-      className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-border bg-white transition-transform duration-300 lg:translate-x-0 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+      className={[
+        "flex h-full shrink-0 flex-col border-r border-border bg-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
+        "max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-40 max-lg:w-[min(272px,88vw)]",
+        isOpen ? "max-lg:translate-x-0" : "max-lg:-translate-x-full",
+        "max-lg:transition-transform max-lg:duration-300",
+      ].join(" ")}
     >
-      <div className="flex h-16 shrink-0 items-center justify-between px-5">
-        <div className="flex items-center gap-2.5">
-          <span className="gradient-green-card flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white shadow-sm">
+      <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4 sm:h-16 sm:px-5">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="gradient-green-card flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm">
             ₹
           </span>
-          <span className="text-sm font-semibold text-primaryDark">
+          <span className="truncate text-sm font-semibold text-primaryDark">
             ExpenseTracker
           </span>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="rounded-xl p-1.5 text-textSecondary hover:bg-surfaceGray lg:hidden"
+          className="rounded-lg p-1.5 text-textSecondary hover:bg-surfaceGray lg:hidden"
           aria-label="Close sidebar"
         >
           <IconClose />
         </button>
       </div>
 
-      <nav className="sidebar-scroll flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      <nav className="sidebar-scroll min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain px-3 py-4">
+        <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-textSecondary/70">
+          Menu
+        </p>
         {NAV_ITEMS.map((item) => (
           <NavItem
             key={item.key}

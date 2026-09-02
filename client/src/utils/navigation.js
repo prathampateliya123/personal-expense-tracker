@@ -3,7 +3,7 @@
  * Sidebar links and page metadata (no UI imports).
  */
 
-export const SIDEBAR_WIDTH = 240;
+export const SIDEBAR_WIDTH = 272;
 
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },

@@ -6,8 +6,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ExpenseList from "../components/expenses/ExpenseList";
-import ExpenseFilters from "../components/expenses/ExpenseFilters";
+import ExpenseTable from "../components/expenses/ExpenseTable";
 import { formatCurrency } from "../utils/expenseConstants";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
@@ -73,11 +72,6 @@ const Expenses = () => {
     await deleteMutation.mutateAsync(id);
   };
 
-  const goToPage = (page) => {
-    if (page < 1 || page > totalPages) return;
-    setFilters((prev) => ({ ...prev, page }));
-  };
-
   const monthLabel = useMemo(
     () =>
       stats
@@ -90,7 +84,7 @@ const Expenses = () => {
   );
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
+    <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-textPrimary sm:text-3xl">
@@ -129,41 +123,21 @@ const Expenses = () => {
         />
       </div>
 
-      <ExpenseFilters filters={filters} onFiltersChange={handleFiltersChange} />
-
-      <ExpenseList
+      <ExpenseTable
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
         expenses={expenses}
         loading={loading && !deleteMutation.isPending}
+        totalCount={totalCount}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={(page) => {
+          if (page < 1 || page > totalPages) return;
+          setFilters((prev) => ({ ...prev, page }));
+        }}
         onDelete={handleDelete}
         deleting={deleteMutation.isPending}
       />
-
-      <div className="card flex w-full flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-textSecondary">
-          {totalCount > 0
-            ? `Showing ${expenses.length} of ${totalCount} expenses`
-            : "No expenses to display"}
-          {totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
-        </p>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage <= 1 || loading}
-            className="rounded-2xl bg-surfaceGray px-4 py-2 text-sm font-medium text-textPrimary transition hover:bg-surfaceLight disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage >= totalPages || loading}
-            className="rounded-2xl bg-surfaceGray px-4 py-2 text-sm font-medium text-textPrimary transition hover:bg-surfaceLight disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      </div>
     </div>
   );
 };

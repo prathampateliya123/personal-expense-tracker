@@ -32,7 +32,7 @@ const AddExpense = () => {
   const handleCancel = () => navigate("/expenses");
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
+    <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
       <ExpensePageHeader
         title="Add expense"
         subtitle="Record a new transaction with amount, category, and payment details"

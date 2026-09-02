@@ -10,10 +10,12 @@
 @layer base {
   html {
     @apply scroll-smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-appBg font-sans text-textPrimary antialiased;
+    overflow-x: hidden;
   }
 
   ::selection {
@@ -55,8 +57,32 @@
     @apply rounded-lg bg-border;
   }
 
-  .dashboard-content {
-    @apply min-h-[calc(100vh-64px)];
+  @supports (height: 100dvh) {
+    .app-shell-height {
+      height: 100dvh;
+    }
+  }
+
+  .dashboard-main-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb transparent;
+  }
+
+  .dashboard-main-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .page-shell {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .dashboard-page {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .select-field {
@@ -117,5 +143,169 @@
 
   .expense-table-wrap {
     @apply overflow-x-auto;
+  }
+
+  /* Unified table panel — toolbar + table + pager (reference pattern) */
+  .table-panel {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .table-toolbar {
+    container-type: inline-size;
+    container-name: table-toolbar;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-toolbar__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-toolbar__search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .table-toolbar__search-field {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .table-toolbar__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-toolbar__control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-toolbar__tools-wrap {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .table-toolbar__controls-start {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .table-toolbar__tools-wrap > *,
+  .table-toolbar__controls-start > * {
+    min-width: 0;
+  }
+
+  .table-toolbar__tools {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .table-toolbar__type {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: min(100%, 180px);
+  }
+
+  .table-toolbar__type .select-field {
+    height: 42px;
+  }
+
+  .table-toolbar__limit {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .table-toolbar__limit .select-field {
+    height: 42px;
+    min-width: 72px;
+  }
+
+  .table-toolbar__date {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-toolbar__date .date-field {
+    height: 42px;
+  }
+
+  @container table-toolbar (min-width: 42rem) {
+    .table-toolbar__row {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .table-toolbar__search {
+      width: auto;
+      flex: 1 1 13rem;
+      max-width: 18rem;
+    }
+
+    .table-toolbar__controls {
+      width: auto;
+      flex: 1 1 auto;
+    }
+
+    .table-toolbar__control-row {
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+    }
+
+    .table-toolbar__tools-wrap {
+      flex: 0 1 auto;
+      order: 1;
+    }
+
+    .table-toolbar__date {
+      order: 2;
+      flex: 1 1 10rem;
+      max-width: 11rem;
+      width: auto;
+    }
+
+    .table-toolbar__controls-start {
+      flex-wrap: nowrap;
+    }
+  }
+
+  @container table-toolbar (min-width: 52rem) {
+    .table-toolbar__search {
+      max-width: 20rem;
+    }
+
+    .table-toolbar__date {
+      flex: 0 0 11rem;
+      max-width: 11rem;
+    }
   }
 }

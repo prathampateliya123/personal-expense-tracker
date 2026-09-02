@@ -1,9 +1,9 @@
 /**
  * layouts/DashboardLayout.jsx
- * Authenticated app shell — sidebar, header, mobile bottom nav.
+ * Authenticated app shell — reference-style viewport height + scroll containment.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserProfile } from "../context/UserProfileContext";
@@ -39,11 +39,20 @@ const DashboardLayout = () => {
 
   const handleLogout = () => logoutMutation.mutate();
 
+  useEffect(() => {
+    if (!sidebarOpen) return undefined;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [sidebarOpen]);
+
   return (
-    <div className="min-h-screen bg-appBg">
+    <div className="app-shell-height flex h-screen overflow-hidden bg-appBg text-textPrimary antialiased">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex min-h-screen flex-col lg:pl-[240px]">
+      <div className="app-shell-height flex h-screen min-w-0 flex-1 flex-col overflow-hidden">
         <Header
           user={user}
           onMenuClick={() => setSidebarOpen(true)}
@@ -51,8 +60,8 @@ const DashboardLayout = () => {
           logoutLoading={logoutMutation.isPending}
         />
 
-        <main className="dashboard-content w-full min-w-0 flex-1 bg-surfaceLight px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          <div className="w-full min-w-0">
+        <main className="dashboard-main-scroll relative flex min-h-0 flex-grow flex-col overflow-x-hidden overflow-y-auto overscroll-contain bg-surfaceLight px-3 pt-3 pb-[max(5.5rem,env(safe-area-inset-bottom))] sm:px-5 sm:pt-4 lg:px-6 lg:pt-5 lg:pb-5">
+          <div className="page-shell w-full min-w-0 max-w-full">
             <Outlet />
           </div>
         </main>

@@ -61,7 +61,7 @@ const EditExpense = () => {
   }
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
+    <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
       <ExpensePageHeader
         title="Edit expense"
         subtitle={`Update details for "${detailQuery.data.title}"`}

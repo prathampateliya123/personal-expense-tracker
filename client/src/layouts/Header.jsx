@@ -1,22 +1,18 @@
 /**
  * layouts/Header.jsx
- * Top bar — search pill and user avatar.
+ * Top bar — mobile menu toggle and user avatar.
  */
 
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   IconMenu,
   IconChevronDown,
   IconLogout,
-  IconSearch,
 } from "../components/ui/Icons";
 import { getInitials } from "../utils/helper";
 
 const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
-  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -34,38 +30,18 @@ const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
     onLogout();
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (search.trim()) {
-      navigate(`/expenses?search=${encodeURIComponent(search.trim())}`);
-    }
-  };
-
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 bg-appBg/95 px-4 backdrop-blur-md sm:px-6 lg:px-8">
+    <header className="relative z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center justify-between gap-2 border-b border-border bg-white px-3 pt-[env(safe-area-inset-top)] shadow-sm sm:h-[calc(4rem+env(safe-area-inset-top))] sm:gap-3 sm:px-4 lg:px-6">
       <button
         type="button"
         onClick={onMenuClick}
-        className="rounded-2xl bg-surfaceGray p-2.5 text-textSecondary transition hover:bg-surfaceLight lg:hidden"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-textPrimary transition hover:bg-surfaceLight lg:hidden sm:h-9 sm:w-9"
         aria-label="Open menu"
       >
         <IconMenu />
       </button>
 
-      <form onSubmit={handleSearch} className="hidden flex-1 sm:block sm:max-w-md">
-        <div className="relative">
-          <IconSearch className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-textSecondary" />
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search expenses..."
-            className="w-full rounded-full bg-surfaceGray py-2.5 pl-11 pr-4 text-sm text-textPrimary outline-none transition placeholder:text-textSecondary focus:bg-white focus:ring-2 focus:ring-accentGreen/20"
-          />
-        </div>
-      </form>
-
-      <div className="relative ml-auto" ref={menuRef}>
+      <div className="relative ml-auto shrink-0" ref={menuRef}>
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
