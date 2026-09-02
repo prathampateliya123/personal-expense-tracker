@@ -1,6 +1,6 @@
 /**
  * components/expenses/ExpenseFilters.jsx
- * Filter bar with category, payment mode, date range, and debounced search.
+ * Full-width filter bar with category, payment mode, date range, and search.
  */
 
 import { useEffect, useState } from "react";
@@ -15,18 +15,16 @@ import {
   fetchExpenses,
 } from "../../redux/slices/expenseSlice";
 
-const selectClass =
+const fieldClass =
   "w-full rounded-xl border border-surface-border bg-white px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
 
-const inputClass =
-  "w-full rounded-xl border border-surface-border bg-white px-3 py-2.5 text-sm text-ink-900 outline-none placeholder:text-ink-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
+const labelClass = "mb-1 block text-xs font-medium text-ink-500";
 
 const ExpenseFilters = () => {
   const dispatch = useDispatch();
   const { filters } = useSelector((state) => state.expenses);
   const [searchInput, setSearchInput] = useState(filters.search);
 
-  // Debounce search input before updating filters and refetching
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchInput !== filters.search) {
@@ -41,23 +39,25 @@ const ExpenseFilters = () => {
 
   const applyFilter = (updates) => {
     const nextFilters = { ...filters, ...updates, page: 1 };
-    dispatch(setFilters(updates.page ? updates : { ...updates, page: 1 }));
+    dispatch(setFilters({ ...updates, page: 1 }));
     dispatch(fetchExpenses(nextFilters));
   };
 
   const handleClear = () => {
     setSearchInput("");
     dispatch(resetFilters());
-    dispatch(fetchExpenses({
-      category: "",
-      paymentMode: "",
-      startDate: "",
-      endDate: "",
-      search: "",
-      page: 1,
-      limit: 10,
-      sortBy: "date",
-    }));
+    dispatch(
+      fetchExpenses({
+        category: "",
+        paymentMode: "",
+        startDate: "",
+        endDate: "",
+        search: "",
+        page: 1,
+        limit: 10,
+        sortBy: "date",
+      })
+    );
   };
 
   const hasActiveFilters =
@@ -68,31 +68,38 @@ const ExpenseFilters = () => {
     filters.search;
 
   return (
-    <div className="card p-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-        <div className="lg:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-ink-500">
-            Search
-          </label>
+    <div className="card w-full p-4 sm:p-5">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold text-ink-800">Filters</h2>
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="text-sm font-medium text-brand-600 transition hover:text-brand-700"
+          >
+            Clear all
+          </button>
+        )}
+      </div>
+
+      <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="xl:col-span-2">
+          <label className={labelClass}>Search</label>
           <input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search by title..."
-            className={inputClass}
+            className={`${fieldClass} placeholder:text-ink-300`}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-ink-500">
-            Category
-          </label>
+          <label className={labelClass}>Category</label>
           <select
             value={filters.category}
-            onChange={(e) =>
-              applyFilter({ category: e.target.value })
-            }
-            className={selectClass}
+            onChange={(e) => applyFilter({ category: e.target.value })}
+            className={fieldClass}
           >
             <option value="">All categories</option>
             {EXPENSE_CATEGORIES.map((cat) => (
@@ -104,15 +111,11 @@ const ExpenseFilters = () => {
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-ink-500">
-            Payment mode
-          </label>
+          <label className={labelClass}>Payment mode</label>
           <select
             value={filters.paymentMode}
-            onChange={(e) =>
-              applyFilter({ paymentMode: e.target.value })
-            }
-            className={selectClass}
+            onChange={(e) => applyFilter({ paymentMode: e.target.value })}
+            className={fieldClass}
           >
             <option value="">All modes</option>
             {PAYMENT_MODES.map((mode) => (
@@ -124,45 +127,25 @@ const ExpenseFilters = () => {
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-ink-500">
-            From date
-          </label>
+          <label className={labelClass}>From date</label>
           <input
             type="date"
             value={filters.startDate}
-            onChange={(e) =>
-              applyFilter({ startDate: e.target.value })
-            }
-            className={inputClass}
+            onChange={(e) => applyFilter({ startDate: e.target.value })}
+            className={fieldClass}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-ink-500">
-            To date
-          </label>
+          <label className={labelClass}>To date</label>
           <input
             type="date"
             value={filters.endDate}
-            onChange={(e) =>
-              applyFilter({ endDate: e.target.value })
-            }
-            className={inputClass}
+            onChange={(e) => applyFilter({ endDate: e.target.value })}
+            className={fieldClass}
           />
         </div>
       </div>
-
-      {hasActiveFilters && (
-        <div className="mt-3 flex justify-end">
-          <button
-            type="button"
-            onClick={handleClear}
-            className="text-sm font-medium text-brand-600 transition hover:text-brand-700"
-          >
-            Clear filters
-          </button>
-        </div>
-      )}
     </div>
   );
 };

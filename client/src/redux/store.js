@@ -1,6 +1,6 @@
 /**
  * redux/store.js
- * Configures the Redux store with the auth reducer.
+ * Configures the Redux store with feature reducers.
  */
 
 import { configureStore } from "@reduxjs/toolkit";

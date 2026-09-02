@@ -76,21 +76,25 @@ const ExpenseList = ({
 }) => {
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const handleConfirmDelete = () => {
-    if (deleteTarget) {
-      onDelete(deleteTarget._id);
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await onDelete(deleteTarget._id);
+      setDeleteTarget(null);
+    } catch {
+      /* dialog stays open on failure */
     }
   };
 
   if (loading) {
     return (
-      <div className="card overflow-hidden">
-        <table className="w-full text-left text-sm">
+      <div className="card w-full overflow-hidden">
+        <table className="w-full table-fixed text-left text-sm">
           <thead className="border-b border-surface-border bg-surface-muted/50">
             <tr>
               {["Date", "Title", "Category", "Payment", "Amount", "Actions"].map(
                 (h) => (
-                  <th key={h} className="px-4 py-3 font-semibold text-ink-600">
+                  <th key={h} className="px-4 py-3 font-semibold text-ink-600 lg:px-6">
                     {h}
                   </th>
                 )
@@ -109,7 +113,7 @@ const ExpenseList = ({
 
   if (!expenses.length) {
     return (
-      <div className="card flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="card flex w-full flex-col items-center justify-center px-6 py-16 text-center">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-2xl">
           ₹
         </div>
@@ -123,19 +127,27 @@ const ExpenseList = ({
 
   return (
     <>
-      <div className="card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-sm">
+      <div className="card w-full overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-full table-fixed text-left text-sm">
             <thead className="border-b border-surface-border bg-surface-muted/50">
               <tr>
-                <th className="px-4 py-3 font-semibold text-ink-600">Date</th>
-                <th className="px-4 py-3 font-semibold text-ink-600">Title</th>
-                <th className="px-4 py-3 font-semibold text-ink-600">Category</th>
-                <th className="px-4 py-3 font-semibold text-ink-600">Payment</th>
-                <th className="px-4 py-3 font-semibold text-ink-600 text-right">
+                <th className="w-[11%] px-4 py-3 font-semibold text-ink-600 lg:px-6">
+                  Date
+                </th>
+                <th className="w-[26%] px-4 py-3 font-semibold text-ink-600 lg:px-6">
+                  Title
+                </th>
+                <th className="w-[14%] px-4 py-3 font-semibold text-ink-600 lg:px-6">
+                  Category
+                </th>
+                <th className="w-[14%] px-4 py-3 font-semibold text-ink-600 lg:px-6">
+                  Payment
+                </th>
+                <th className="w-[14%] px-4 py-3 text-right font-semibold text-ink-600 lg:px-6">
                   Amount
                 </th>
-                <th className="px-4 py-3 font-semibold text-ink-600 text-center">
+                <th className="w-[11%] px-4 py-3 text-center font-semibold text-ink-600 lg:px-6">
                   Actions
                 </th>
               </tr>
@@ -146,13 +158,23 @@ const ExpenseList = ({
                   key={expense._id}
                   className="border-b border-surface-border last:border-0 hover:bg-surface-muted/30"
                 >
-                  <td className="whitespace-nowrap px-4 py-3.5 text-ink-600">
+                  <td className="whitespace-nowrap px-4 py-3.5 text-ink-600 lg:px-6">
                     {formatExpenseDate(expense.date)}
                   </td>
-                  <td className="px-4 py-3.5 font-medium text-ink-900">
-                    {expense.title}
+                  <td className="truncate px-4 py-3.5 font-medium text-ink-900 lg:px-6">
+                    <span className="block truncate" title={expense.title}>
+                      {expense.title}
+                    </span>
+                    {expense.description && (
+                      <span
+                        className="mt-0.5 block truncate text-xs text-ink-400"
+                        title={expense.description}
+                      >
+                        {expense.description}
+                      </span>
+                    )}
                   </td>
-                  <td className="px-4 py-3.5">
+                  <td className="px-4 py-3.5 lg:px-6">
                     <span
                       className={`inline-flex rounded-lg px-2.5 py-1 text-xs font-semibold ${
                         CATEGORY_COLORS[expense.category] ||
@@ -162,13 +184,13 @@ const ExpenseList = ({
                       {expense.category}
                     </span>
                   </td>
-                  <td className="px-4 py-3.5 text-ink-600">
+                  <td className="px-4 py-3.5 text-ink-600 lg:px-6">
                     {expense.paymentMode}
                   </td>
-                  <td className="px-4 py-3.5 text-right font-semibold text-accent-expense">
+                  <td className="px-4 py-3.5 text-right font-semibold text-accent-expense lg:px-6">
                     {formatCurrency(expense.amount)}
                   </td>
-                  <td className="px-4 py-3.5">
+                  <td className="px-4 py-3.5 lg:px-6">
                     <div className="flex items-center justify-center gap-2">
                       <button
                         type="button"
