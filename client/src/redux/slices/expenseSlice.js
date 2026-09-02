@@ -103,6 +103,23 @@ export const deleteExpense = createAsyncThunk(
 );
 
 /**
+ * Fetch a single expense by id (for edit page).
+ */
+export const fetchExpenseById = createAsyncThunk(
+  "expenses/fetchExpenseById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get(`/expenses/${id}`);
+      return data.expense;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch expense"
+      );
+    }
+  }
+);
+
+/**
  * Fetch current-month expense statistics.
  */
 export const fetchExpenseStats = createAsyncThunk(
@@ -128,6 +145,8 @@ const expenseSlice = createSlice({
     currentPage: 1,
     totalAmount: 0,
     stats: null,
+    currentExpense: null,
+    detailLoading: false,
     filters: initialFilters,
     loading: false,
     saving: false,
@@ -142,6 +161,9 @@ const expenseSlice = createSlice({
     },
     clearExpenseError: (state) => {
       state.error = null;
+    },
+    clearCurrentExpense: (state) => {
+      state.currentExpense = null;
     },
   },
   extraReducers: (builder) => {
@@ -212,9 +234,24 @@ const expenseSlice = createSlice({
       .addCase(fetchExpenseStats.rejected, (state, action) => {
         state.error = action.payload;
       });
+
+    builder
+      .addCase(fetchExpenseById.pending, (state) => {
+        state.detailLoading = true;
+        state.error = null;
+        state.currentExpense = null;
+      })
+      .addCase(fetchExpenseById.fulfilled, (state, action) => {
+        state.detailLoading = false;
+        state.currentExpense = action.payload;
+      })
+      .addCase(fetchExpenseById.rejected, (state, action) => {
+        state.detailLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { setFilters, resetFilters, clearExpenseError } =
+export const { setFilters, resetFilters, clearExpenseError, clearCurrentExpense } =
   expenseSlice.actions;
 export default expenseSlice.reducer;

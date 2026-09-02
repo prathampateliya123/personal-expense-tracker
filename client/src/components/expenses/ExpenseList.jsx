@@ -4,6 +4,7 @@
  */
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   CATEGORY_COLORS,
   formatCurrency,
@@ -63,14 +64,12 @@ const ConfirmDialog = ({ title, message, onConfirm, onCancel, loading }) => (
  * @param {object} props
  * @param {Array} props.expenses
  * @param {boolean} props.loading
- * @param {function} props.onEdit
  * @param {function} props.onDelete
  * @param {boolean} [props.deleting]
  */
 const ExpenseList = ({
   expenses,
   loading,
-  onEdit,
   onDelete,
   deleting = false,
 }) => {
@@ -192,14 +191,13 @@ const ExpenseList = ({
                   </td>
                   <td className="px-4 py-3.5 lg:px-6">
                     <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onEdit(expense)}
+                      <Link
+                        to={`/expenses/${expense._id}/edit`}
                         className="rounded-lg border border-surface-border p-2 text-ink-500 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
                         aria-label={`Edit ${expense.title}`}
                       >
                         <IconEdit />
-                      </button>
+                      </Link>
                       <button
                         type="button"
                         onClick={() => setDeleteTarget(expense)}

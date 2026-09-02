@@ -25,6 +25,11 @@ export const PAGE_META = {
     subtitle: "Track and manage your spending",
     breadcrumb: ["Home", "Expenses"],
   },
+  "/expenses/add": {
+    title: "Add expense",
+    subtitle: "Record a new transaction",
+    breadcrumb: ["Home", "Expenses", "Add"],
+  },
 };
 
 export const getPageMeta = (pathname) =>

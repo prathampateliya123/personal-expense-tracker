@@ -1,6 +1,6 @@
 /**
  * components/expenses/ExpenseForm.jsx
- * Controlled form for adding or editing an expense.
+ * Controlled form for adding or editing an expense (modal or full page).
  */
 
 import { useState, useEffect } from "react";
@@ -32,11 +32,19 @@ const emptyForm = {
  * @param {object} props
  * @param {object} [props.initialData] - Existing expense for edit mode
  * @param {function} props.onSubmit - Called with validated form data
- * @param {function} [props.onCancel] - Close modal handler
+ * @param {function} [props.onCancel] - Cancel / back handler
  * @param {boolean} [props.loading] - Submit loading state
+ * @param {"page"|"modal"} [props.variant] - Layout variant
  */
-const ExpenseForm = ({ initialData, onSubmit, onCancel, loading = false }) => {
+const ExpenseForm = ({
+  initialData,
+  onSubmit,
+  onCancel,
+  loading = false,
+  variant = "modal",
+}) => {
   const isEdit = Boolean(initialData?._id);
+  const isPage = variant === "page";
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
 
@@ -51,7 +59,7 @@ const ExpenseForm = ({ initialData, onSubmit, onCancel, loading = false }) => {
         description: initialData.description || "",
       });
     } else {
-      setForm(emptyForm);
+      setForm({ ...emptyForm, date: toDateInputValue() });
     }
     setErrors({});
   }, [initialData]);
@@ -98,105 +106,194 @@ const ExpenseForm = ({ initialData, onSubmit, onCancel, loading = false }) => {
     });
   };
 
+  const gridClass = isPage
+    ? "grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+    : "grid gap-4 sm:grid-cols-2";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="title" className={labelClass}>
-          Title
-        </label>
-        <input
-          id="title"
-          name="title"
-          type="text"
-          value={form.title}
-          onChange={handleChange}
-          className={inputClass}
-          placeholder="e.g. Grocery shopping"
-        />
-        {errors.title && (
-          <p className="mt-1 text-xs text-accent-expense">{errors.title}</p>
+    <form onSubmit={handleSubmit} className={isPage ? "space-y-6" : "space-y-4"}>
+      <div className={isPage ? gridClass : ""}>
+        <div className={isPage ? "sm:col-span-2 xl:col-span-3" : ""}>
+          <label htmlFor="title" className={labelClass}>
+            Title
+          </label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            value={form.title}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="e.g. Grocery shopping"
+          />
+          {errors.title && (
+            <p className="mt-1 text-xs text-accent-expense">{errors.title}</p>
+          )}
+        </div>
+
+        {!isPage && (
+          <>
+            <div>
+              <label htmlFor="amount" className={labelClass}>
+                Amount (₹)
+              </label>
+              <input
+                id="amount"
+                name="amount"
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.amount}
+                onChange={handleChange}
+                className={inputClass}
+                placeholder="0"
+              />
+              {errors.amount && (
+                <p className="mt-1 text-xs text-accent-expense">{errors.amount}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="date" className={labelClass}>
+                Date
+              </label>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                value={form.date}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+          </>
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="amount" className={labelClass}>
-            Amount (₹)
-          </label>
-          <input
-            id="amount"
-            name="amount"
-            type="number"
-            min="0"
-            step="0.01"
-            value={form.amount}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="0"
-          />
-          {errors.amount && (
-            <p className="mt-1 text-xs text-accent-expense">{errors.amount}</p>
-          )}
-        </div>
+      {isPage && (
+        <div className={gridClass}>
+          <div>
+            <label htmlFor="amount" className={labelClass}>
+              Amount (₹)
+            </label>
+            <input
+              id="amount"
+              name="amount"
+              type="number"
+              min="0"
+              step="0.01"
+              value={form.amount}
+              onChange={handleChange}
+              className={inputClass}
+              placeholder="0"
+            />
+            {errors.amount && (
+              <p className="mt-1 text-xs text-accent-expense">{errors.amount}</p>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor="date" className={labelClass}>
-            Date
-          </label>
-          <input
-            id="date"
-            name="date"
-            type="date"
-            value={form.date}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
+          <div>
+            <label htmlFor="date" className={labelClass}>
+              Date
+            </label>
+            <input
+              id="date"
+              name="date"
+              type="date"
+              value={form.date}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="category" className={labelClass}>
-            Category
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="">Select category</option>
-            {EXPENSE_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-          {errors.category && (
-            <p className="mt-1 text-xs text-accent-expense">{errors.category}</p>
-          )}
-        </div>
+          <div>
+            <label htmlFor="category" className={labelClass}>
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="">Select category</option>
+              {EXPENSE_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+            {errors.category && (
+              <p className="mt-1 text-xs text-accent-expense">{errors.category}</p>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor="paymentMode" className={labelClass}>
-            Payment mode
-          </label>
-          <select
-            id="paymentMode"
-            name="paymentMode"
-            value={form.paymentMode}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            {PAYMENT_MODES.map((mode) => (
-              <option key={mode} value={mode}>
-                {mode}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label htmlFor="paymentMode" className={labelClass}>
+              Payment mode
+            </label>
+            <select
+              id="paymentMode"
+              name="paymentMode"
+              value={form.paymentMode}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              {PAYMENT_MODES.map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
+      )}
+
+      {!isPage && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="category" className={labelClass}>
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="">Select category</option>
+              {EXPENSE_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+            {errors.category && (
+              <p className="mt-1 text-xs text-accent-expense">{errors.category}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="paymentMode" className={labelClass}>
+              Payment mode
+            </label>
+            <select
+              id="paymentMode"
+              name="paymentMode"
+              value={form.paymentMode}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              {PAYMENT_MODES.map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
 
       <div>
         <label htmlFor="description" className={labelClass}>
@@ -205,7 +302,7 @@ const ExpenseForm = ({ initialData, onSubmit, onCancel, loading = false }) => {
         <textarea
           id="description"
           name="description"
-          rows={3}
+          rows={isPage ? 4 : 3}
           value={form.description}
           onChange={handleChange}
           className={inputClass}
@@ -213,13 +310,21 @@ const ExpenseForm = ({ initialData, onSubmit, onCancel, loading = false }) => {
         />
       </div>
 
-      <div className="flex gap-3 pt-2">
+      <div
+        className={`flex gap-3 ${
+          isPage
+            ? "border-t border-surface-border pt-6 sm:justify-end"
+            : "pt-2"
+        }`}
+      >
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="flex-1 rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-surface-muted disabled:opacity-60"
+            className={`rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-surface-muted disabled:opacity-60 ${
+              isPage ? "sm:min-w-[140px]" : "flex-1"
+            }`}
           >
             Cancel
           </button>
@@ -227,7 +332,7 @@ const ExpenseForm = ({ initialData, onSubmit, onCancel, loading = false }) => {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary flex-1"
+          className={`btn-primary ${isPage ? "sm:min-w-[160px]" : "flex-1"}`}
         >
           {loading
             ? "Saving..."

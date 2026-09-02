@@ -1,45 +1,22 @@
 /**
  * pages/Expenses.jsx
- * Full-width expenses page — stats, filters, list, and pagination.
+ * Full-width expenses list — stats, filters, table, and pagination.
  */
 
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import ExpenseForm from "../components/expenses/ExpenseForm";
 import ExpenseList from "../components/expenses/ExpenseList";
 import ExpenseFilters from "../components/expenses/ExpenseFilters";
 import { formatCurrency } from "../config/expenseConstants";
 import {
   fetchExpenses,
-  addExpense,
-  updateExpense,
   deleteExpense,
   fetchExpenseStats,
   setFilters,
   clearExpenseError,
 } from "../redux/slices/expenseSlice";
-
-const ExpenseModal = ({ title, children, onClose }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink-950/50 p-4 backdrop-blur-sm">
-    <div className="card max-h-[90vh] w-full max-w-lg overflow-y-auto p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-ink-900">{title}</h2>
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-lg p-1.5 text-ink-400 transition hover:bg-surface-muted hover:text-ink-700"
-          aria-label="Close"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      {children}
-    </div>
-  </div>
-);
 
 const StatCard = ({ label, value, hint, valueClass = "text-ink-900" }) => (
   <div className="card flex min-h-[100px] w-full flex-col justify-center p-4 sm:p-5">
@@ -64,12 +41,9 @@ const Expenses = () => {
     stats,
     filters,
     loading,
-    saving,
     error,
   } = useSelector((state) => state.expenses);
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingExpense, setEditingExpense] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
@@ -83,43 +57,6 @@ const Expenses = () => {
       dispatch(clearExpenseError());
     }
   }, [error, dispatch]);
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setEditingExpense(null);
-  };
-
-  const openAddModal = () => {
-    setEditingExpense(null);
-    setModalOpen(true);
-  };
-
-  const openEditModal = (expense) => {
-    setEditingExpense(expense);
-    setModalOpen(true);
-  };
-
-  const handleSubmit = async (formData) => {
-    if (editingExpense) {
-      const result = await dispatch(
-        updateExpense({ id: editingExpense._id, data: formData })
-      );
-      if (updateExpense.fulfilled.match(result)) {
-        toast.success("Expense updated successfully");
-        closeModal();
-        dispatch(fetchExpenses());
-        dispatch(fetchExpenseStats());
-      }
-    } else {
-      const result = await dispatch(addExpense(formData));
-      if (addExpense.fulfilled.match(result)) {
-        toast.success("Expense added successfully");
-        closeModal();
-        dispatch(fetchExpenses());
-        dispatch(fetchExpenseStats());
-      }
-    }
-  };
 
   const handleDelete = async (id) => {
     setDeleting(true);
@@ -151,7 +88,6 @@ const Expenses = () => {
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">
-      {/* Page header — full width */}
       <div className="flex w-full flex-col gap-4 border-b border-surface-border pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
@@ -161,16 +97,11 @@ const Expenses = () => {
             Track and manage your spending across all categories
           </p>
         </div>
-        <button
-          type="button"
-          onClick={openAddModal}
-          className="btn-primary shrink-0 self-start sm:self-auto"
-        >
+        <Link to="/expenses/add" className="btn-primary shrink-0 self-start sm:self-auto">
           + Add expense
-        </button>
+        </Link>
       </div>
 
-      {/* Stats row — spans full width */}
       <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Filtered total"
@@ -201,12 +132,10 @@ const Expenses = () => {
       <ExpenseList
         expenses={expenses}
         loading={loading && !deleting}
-        onEdit={openEditModal}
         onDelete={handleDelete}
         deleting={deleting}
       />
 
-      {/* Pagination — full width bar */}
       <div className="card flex w-full flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <p className="text-sm text-ink-500">
           {totalCount > 0
@@ -233,20 +162,6 @@ const Expenses = () => {
           </button>
         </div>
       </div>
-
-      {modalOpen && (
-        <ExpenseModal
-          title={editingExpense ? "Edit expense" : "Add expense"}
-          onClose={closeModal}
-        >
-          <ExpenseForm
-            initialData={editingExpense}
-            onSubmit={handleSubmit}
-            onCancel={closeModal}
-            loading={saving}
-          />
-        </ExpenseModal>
-      )}
     </div>
   );
 };
