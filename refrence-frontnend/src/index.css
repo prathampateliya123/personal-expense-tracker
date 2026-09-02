@@ -1,0 +1,546 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f5f6f8;
+  --foreground: #1a1d23;
+  --brand-white: #ffffff;
+  --brand-black: #1a1d23;
+  --brand-orange: #f68f3d;
+  --brand-orange-soft: #fff4eb;
+  --brand-orange-strong: #e07828;
+  --ink: #1a1d23;
+  --ink-muted: #5b6270;
+  --ink-subtle: #8b929e;
+  --border: #e4e7ec;
+  --border-strong: #d0d5dd;
+  --surface: #ffffff;
+  --canvas: #f5f6f8;
+  --sidebar-bg: #111827;
+  --sidebar-text: #c4cad4;
+  --sidebar-text-active: #ffffff;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: rgba(246, 143, 61, 0.16);
+  --header-bg: #ffffff;
+  --app-radius: 7px;
+  --font-inter: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  accent-color: var(--brand-orange);
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-size-adjust: from-font;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.page-title {
+  font-family: var(--font-inter);
+  font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  overflow-wrap: break-word;
+}
+
+.page-subtitle {
+  margin-top: 4px;
+  font-size: clamp(12px, 2.8vw, 14px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  overflow-wrap: break-word;
+}
+
+@supports (height: 100dvh) {
+  .app-shell-height {
+    height: 100dvh;
+  }
+}
+
+a,
+button {
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+button,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="image"]),
+select,
+textarea {
+  border-radius: var(--app-radius);
+}
+
+[role="listbox"] [role="option"],
+[role="listbox"]>button {
+  border-radius: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="time"] {
+  accent-color: var(--brand-orange);
+  color-scheme: light;
+  color: var(--ink);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="week"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.9;
+  filter: invert(62%) sepia(52%) saturate(1206%) hue-rotate(338deg) brightness(101%) contrast(94%);
+}
+
+input[type="date"]::-webkit-datetime-edit-day-field:focus,
+input[type="date"]::-webkit-datetime-edit-month-field:focus,
+input[type="date"]::-webkit-datetime-edit-year-field:focus,
+input[type="datetime-local"]::-webkit-datetime-edit-day-field:focus,
+input[type="datetime-local"]::-webkit-datetime-edit-month-field:focus,
+input[type="datetime-local"]::-webkit-datetime-edit-year-field:focus,
+input[type="datetime-local"]::-webkit-datetime-edit-hour-field:focus,
+input[type="datetime-local"]::-webkit-datetime-edit-minute-field:focus,
+input[type="datetime-local"]::-webkit-datetime-edit-ampm-field:focus,
+input[type="month"]::-webkit-datetime-edit-month-field:focus,
+input[type="month"]::-webkit-datetime-edit-year-field:focus,
+input[type="week"]::-webkit-datetime-edit-week-field:focus,
+input[type="week"]::-webkit-datetime-edit-year-field:focus,
+input[type="time"]::-webkit-datetime-edit-hour-field:focus,
+input[type="time"]::-webkit-datetime-edit-minute-field:focus,
+input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
+  background-color: var(--brand-orange);
+  color: var(--brand-white);
+  outline: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: var(--ink);
+}
+
+.set-message-box {
+  background: color-mix(in srgb, var(--surface) 85%, transparent) !important;
+  backdrop-filter: blur(6px) !important;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 20%) !important;
+  color: var(--ink) !important;
+  font-family: var(--font-inter) !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  padding: 16px !important;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ink-subtle);
+}
+
+/* Table / list cards: ring via box-shadow so rounded corners stay continuous
+   when overflow is visible (absolute dropdown menus). */
+.table-panel {
+  min-width: 0;
+  max-width: 100%;
+  border-radius: var(--app-radius);
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 1px 2px rgba(17, 24, 39, 0.04);
+}
+
+/* Report table toolbar: adapts to panel width, not just viewport. */
+.table-toolbar {
+  container-type: inline-size;
+  container-name: table-toolbar;
+  width: 100%;
+  min-width: 0;
+}
+
+.table-toolbar__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.table-toolbar__search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.table-toolbar__search-field {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.table-toolbar__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.table-toolbar__control-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.table-toolbar__tools-wrap {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+.table-toolbar__controls-start {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.table-toolbar__controls-end {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.table-toolbar__tools-wrap > *,
+.table-toolbar__controls-start > *,
+.table-toolbar__controls-end > * {
+  min-width: 0;
+}
+
+.table-toolbar__tools {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.table-toolbar__control-row:has(.table-toolbar__controls-end) .table-toolbar__tools {
+  flex-wrap: nowrap;
+}
+
+.table-toolbar__type {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: min(100%, 220px);
+}
+
+.table-toolbar__limit {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.table-toolbar__date {
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Narrow toolbar: date trigger is icon-only (no truncated "Select da..."). */
+.table-toolbar__date .date-range-picker__label {
+  display: none;
+}
+
+.table-toolbar__date > .relative > button {
+  width: 100%;
+  min-width: 42px;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  padding-inline: 0.625rem;
+}
+
+/* Keep mid-width row compact: icon-first actions until there is room. */
+.table-toolbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+.table-toolbar__action.table-toolbar__action {
+  gap: 0.375rem;
+  padding-inline: 0.625rem;
+  min-width: 2.625rem;
+  min-height: 2.625rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.table-toolbar__action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+.table-toolbar__action-label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.table-toolbar__export-label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.table-toolbar__columns-btn {
+  flex: 0 0 auto;
+  min-width: 0;
+  justify-content: center;
+}
+
+.table-toolbar__controls-end .table-toolbar__actions {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.table-toolbar__controls-end .table-toolbar__actions .table-toolbar__action {
+  flex: 0 0 auto;
+  min-width: 0;
+  justify-content: center;
+}
+
+@container table-toolbar (min-width: 30rem) {
+  .table-toolbar__columns-btn,
+  .table-toolbar__controls-end .table-toolbar__action,
+  .table-toolbar__controls-end .table-toolbar__actions .table-toolbar__action {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .table-toolbar__controls-end .table-toolbar__actions {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .table-toolbar__date {
+    flex: 1 1 10rem;
+    width: auto;
+    min-width: 10rem;
+    max-width: 15rem;
+  }
+
+  .table-toolbar__date .date-range-picker__label {
+    display: block;
+  }
+
+  .table-toolbar__date > .relative > button {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding-inline: 0.625rem;
+  }
+}
+
+@container table-toolbar (min-width: 42rem) {
+  .table-toolbar__row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .table-toolbar__search {
+    width: auto;
+    flex: 1 1 13rem;
+    max-width: 18rem;
+  }
+
+  .table-toolbar__controls {
+    width: auto;
+    flex: 1 1 auto;
+  }
+
+  .table-toolbar__control-row {
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+  }
+
+  .table-toolbar__tools-wrap {
+    flex: 0 1 auto;
+    order: 1;
+  }
+
+  .table-toolbar__date {
+    order: 2;
+    flex: 1 1 12rem;
+    max-width: 15rem;
+    width: auto;
+  }
+
+  .table-toolbar__controls-end {
+    order: 3;
+  }
+
+  .table-toolbar__controls-start {
+    flex-wrap: nowrap;
+  }
+}
+
+@container table-toolbar (min-width: 52rem) {
+  .table-toolbar__search {
+    max-width: 20rem;
+  }
+
+  .table-toolbar__control-row {
+    flex-wrap: nowrap;
+  }
+
+  .table-toolbar__date {
+    flex: 0 0 15rem;
+    max-width: 15rem;
+  }
+}
+
+.dashboard-main-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.dashboard-main-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.page-shell {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dashboard-page {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dashboard-tabs-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.dashboard-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.dashboard-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.dashboard-chart-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-chart-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Condition org-chart uses SVG curved connectors (see OrgTreeBranch.jsx). */

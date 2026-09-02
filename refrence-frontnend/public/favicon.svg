@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Amazon Analysis SaaS">
+  <rect width="32" height="32" rx="8" fill="#f68f3d"/>
+  <path
+    fill="#fff"
+    fill-rule="evenodd"
+    d="M16 6.2 8.2 25.2h3.7l1.55-3.9h5.1l1.55 3.9h3.7L16 6.2zm0 5.8 2.15 5.4h-4.3L16 12z"
+  />
+  <rect x="11.6" y="16.2" width="8.8" height="2.5" rx="0.25" fill="#fff"/>
+</svg>

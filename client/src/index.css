@@ -112,6 +112,10 @@
   }
 
   .category-chip {
-    @apply inline-flex rounded-lg px-2.5 py-1 text-xs font-semibold;
+    @apply inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .expense-table-wrap {
+    @apply overflow-x-auto;
   }
 }
