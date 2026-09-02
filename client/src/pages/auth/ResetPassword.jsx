@@ -6,8 +6,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 import { resetPassword, clearError } from "../../redux/slices/authSlice";
+import useReduxErrorToast from "../../hooks/useReduxErrorToast";
+import { showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -30,24 +31,19 @@ const ResetPassword = () => {
     }
   }, [email, otpVerified, navigate]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  useReduxErrorToast(error, clearError);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      showErrorToast("Passwords do not match");
       return;
     }
 
     const result = await dispatch(resetPassword({ email, password }));
     if (resetPassword.fulfilled.match(result)) {
-      toast.success("Password updated! You are now signed in.");
+      showSuccessToast("Password updated! You are now signed in.");
       navigate("/dashboard", { replace: true });
     }
   };

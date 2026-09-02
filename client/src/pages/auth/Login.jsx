@@ -2,11 +2,12 @@
  * pages/Login.jsx
  */
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 import { loginUser, clearError } from "../../redux/slices/authSlice";
+import useReduxErrorToast from "../../hooks/useReduxErrorToast";
+import { showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -21,19 +22,14 @@ const Login = () => {
   const from = location.state?.from || "/dashboard";
   const { loading, error } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  useReduxErrorToast(error, clearError);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
       const purpose = result.payload.purpose || "login";
-      toast.success(
+      showSuccessToast(
         purpose === "register"
           ? "Account not verified. Enter OTP to complete setup."
           : "OTP sent! Enter the code to continue."

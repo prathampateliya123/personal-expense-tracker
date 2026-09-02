@@ -3,33 +3,25 @@
  * Full page to create a new expense.
  */
 
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import ExpenseForm from "../../components/expenses/ExpenseForm";
 import ExpensePageHeader from "../../components/expenses/ExpensePageHeader";
-import {
-  addExpense,
-  clearExpenseError,
-} from "../../redux/slices/expenseSlice";
+import useReduxErrorToast from "../../hooks/useReduxErrorToast";
+import { showSuccessToast } from "../../hooks/useHandleError";
+import { addExpense, clearExpenseError } from "../../redux/slices/expenseSlice";
 
 const AddExpense = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { saving, error } = useSelector((state) => state.expenses);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearExpenseError());
-    }
-  }, [error, dispatch]);
+  useReduxErrorToast(error, clearExpenseError);
 
   const handleSubmit = async (formData) => {
     const result = await dispatch(addExpense(formData));
     if (addExpense.fulfilled.match(result)) {
-      toast.success("Expense added successfully");
+      showSuccessToast("Expense added successfully");
       navigate("/expenses");
     }
   };

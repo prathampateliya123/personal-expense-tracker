@@ -10,7 +10,7 @@ import {
   IconChevronDown,
   IconLogout,
   IconSearch,
-} from "./icons";
+} from "../ui/Icons";
 import { getInitials } from "../../utils/helpers";
 
 const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {

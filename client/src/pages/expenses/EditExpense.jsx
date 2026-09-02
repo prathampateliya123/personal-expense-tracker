@@ -6,9 +6,9 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
 import ExpenseForm from "../../components/expenses/ExpenseForm";
 import ExpensePageHeader from "../../components/expenses/ExpensePageHeader";
+import { showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
 import {
   fetchExpenseById,
   updateExpense,
@@ -32,19 +32,20 @@ const EditExpense = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearExpenseError());
-      if (!currentExpense && !detailLoading) {
-        navigate("/expenses", { replace: true });
-      }
+    if (!error) return;
+
+    showErrorToast(error);
+    dispatch(clearExpenseError());
+
+    if (!currentExpense && !detailLoading) {
+      navigate("/expenses", { replace: true });
     }
   }, [error, dispatch, currentExpense, detailLoading, navigate]);
 
   const handleSubmit = async (formData) => {
     const result = await dispatch(updateExpense({ id, data: formData }));
     if (updateExpense.fulfilled.match(result)) {
-      toast.success("Expense updated successfully");
+      showSuccessToast("Expense updated successfully");
       navigate("/expenses");
     }
   };

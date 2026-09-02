@@ -4,6 +4,7 @@
  */
 
 import { Link } from "react-router-dom";
+import { IconChevronLeft } from "../ui/Icons";
 
 const ExpensePageHeader = ({ title, subtitle }) => (
   <div className="flex w-full flex-col gap-4 border-b border-border/60 pb-6">
@@ -11,9 +12,7 @@ const ExpensePageHeader = ({ title, subtitle }) => (
       to="/expenses"
       className="inline-flex w-fit items-center gap-2 text-sm font-medium text-textSecondary transition hover:text-accentGreen"
     >
-      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-      </svg>
+      <IconChevronLeft />
       Back to expenses
     </Link>
     <div>

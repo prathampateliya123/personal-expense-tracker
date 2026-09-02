@@ -6,10 +6,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 import ExpenseList from "../components/expenses/ExpenseList";
 import ExpenseFilters from "../components/expenses/ExpenseFilters";
 import { formatCurrency } from "../config/expenseConstants";
+import useReduxErrorToast from "../hooks/useReduxErrorToast";
+import { showSuccessToast } from "../hooks/useHandleError";
 import {
   fetchExpenses,
   deleteExpense,
@@ -50,17 +51,12 @@ const Expenses = () => {
 
   const [deleting, setDeleting] = useState(false);
 
+  useReduxErrorToast(error, clearExpenseError);
+
   useEffect(() => {
     dispatch(fetchExpenses());
     dispatch(fetchExpenseStats());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearExpenseError());
-    }
-  }, [error, dispatch]);
 
   const handleDelete = async (id) => {
     setDeleting(true);
@@ -68,11 +64,10 @@ const Expenses = () => {
     setDeleting(false);
 
     if (deleteExpense.fulfilled.match(result)) {
-      toast.success("Expense deleted successfully");
+      showSuccessToast("Expense deleted successfully");
       dispatch(fetchExpenses());
       dispatch(fetchExpenseStats());
     } else {
-      toast.error("Failed to delete expense");
       throw new Error("Delete failed");
     }
   };

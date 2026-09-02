@@ -13,6 +13,7 @@ import {
   formatExpenseDate,
   formatExpenseTime,
 } from "../config/expenseConstants";
+import { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
 import { fetchExpenses, fetchExpenseStats } from "../redux/slices/expenseSlice";
 
 const QuickAction = ({ to, icon, label }) => (
@@ -35,14 +36,10 @@ const Dashboard = () => {
     const loadDashboard = async () => {
       const todayResult = await dispatch(
         fetchExpenses({
-          category: "",
-          paymentMode: "",
+          ...INITIAL_EXPENSE_FILTERS,
           startDate: today,
           endDate: today,
-          search: "",
-          page: 1,
           limit: 50,
-          sortBy: "date",
         })
       );
       if (fetchExpenses.fulfilled.match(todayResult)) {
@@ -52,14 +49,8 @@ const Dashboard = () => {
       await dispatch(fetchExpenseStats());
       await dispatch(
         fetchExpenses({
-          category: "",
-          paymentMode: "",
-          startDate: "",
-          endDate: "",
-          search: "",
-          page: 1,
+          ...INITIAL_EXPENSE_FILTERS,
           limit: 5,
-          sortBy: "date",
         })
       );
     };

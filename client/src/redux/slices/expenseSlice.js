@@ -1,137 +1,82 @@
 /**
  * redux/slices/expenseSlice.js
- * Expense list, filters, CRUD actions, and monthly stats.
+ * Expense list, filters, CRUD — API calls via expenseService.
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import expenseService, {
+  INITIAL_EXPENSE_FILTERS,
+} from "../../services/expenseService";
+import { getApiErrorMessage } from "../../utils/helpers";
 
-const initialFilters = {
-  category: "",
-  paymentMode: "",
-  startDate: "",
-  endDate: "",
-  search: "",
-  page: 1,
-  limit: 10,
-  sortBy: "date",
-};
-
-const buildQueryParams = (filters) => {
-  const params = new URLSearchParams();
-
-  if (filters.category) params.set("category", filters.category);
-  if (filters.paymentMode) params.set("paymentMode", filters.paymentMode);
-  if (filters.startDate) params.set("startDate", filters.startDate);
-  if (filters.endDate) params.set("endDate", filters.endDate);
-  if (filters.search?.trim()) params.set("search", filters.search.trim());
-  if (filters.page) params.set("page", String(filters.page));
-  if (filters.limit) params.set("limit", String(filters.limit));
-  if (filters.sortBy) params.set("sortBy", filters.sortBy);
-
-  return params.toString();
-};
-
-/**
- * Fetch paginated expenses using current or passed filters.
- */
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
   async (filters, { getState, rejectWithValue }) => {
     try {
       const activeFilters = filters || getState().expenses.filters;
-      const query = buildQueryParams(activeFilters);
-      const { data } = await axiosInstance.get(`/expenses?${query}`);
-      return data;
+      return await expenseService.list(activeFilters);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch expenses"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch expenses"));
     }
   }
 );
 
-/**
- * Create a new expense.
- */
 export const addExpense = createAsyncThunk(
   "expenses/addExpense",
   async (expenseData, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/expenses", expenseData);
+      const data = await expenseService.create(expenseData);
       return data.expense;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to add expense"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to add expense"));
     }
   }
 );
 
-/**
- * Update an existing expense by id.
- */
 export const updateExpense = createAsyncThunk(
   "expenses/updateExpense",
   async ({ id, data: expenseData }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.put(`/expenses/${id}`, expenseData);
+      const data = await expenseService.update(id, expenseData);
       return data.expense;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update expense"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to update expense"));
     }
   }
 );
 
-/**
- * Delete an expense by id.
- */
 export const deleteExpense = createAsyncThunk(
   "expenses/deleteExpense",
   async (id, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`/expenses/${id}`);
+      await expenseService.remove(id);
       return id;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to delete expense"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to delete expense"));
     }
   }
 );
 
-/**
- * Fetch a single expense by id (for edit page).
- */
 export const fetchExpenseById = createAsyncThunk(
   "expenses/fetchExpenseById",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get(`/expenses/${id}`);
+      const data = await expenseService.getById(id);
       return data.expense;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch expense"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch expense"));
     }
   }
 );
 
-/**
- * Fetch current-month expense statistics.
- */
 export const fetchExpenseStats = createAsyncThunk(
   "expenses/fetchExpenseStats",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get("/expenses/stats");
+      const data = await expenseService.getStats();
       return data.stats;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch expense stats"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch expense stats"));
     }
   }
 );
@@ -147,7 +92,7 @@ const expenseSlice = createSlice({
     stats: null,
     currentExpense: null,
     detailLoading: false,
-    filters: initialFilters,
+    filters: { ...INITIAL_EXPENSE_FILTERS },
     loading: false,
     saving: false,
     error: null,
@@ -157,7 +102,7 @@ const expenseSlice = createSlice({
       state.filters = { ...state.filters, ...action.payload };
     },
     resetFilters: (state) => {
-      state.filters = { ...initialFilters };
+      state.filters = { ...INITIAL_EXPENSE_FILTERS };
     },
     clearExpenseError: (state) => {
       state.error = null;

@@ -2,11 +2,12 @@
  * pages/Register.jsx
  */
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 import { registerUser, clearError } from "../../redux/slices/authSlice";
+import useReduxErrorToast from "../../hooks/useReduxErrorToast";
+import { showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -23,18 +24,13 @@ const Register = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  useReduxErrorToast(error, clearError);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await dispatch(registerUser(formData));
     if (registerUser.fulfilled.match(result)) {
-      toast.success("OTP sent! Verify to complete registration.");
+      showSuccessToast("OTP sent! Verify to complete registration.");
       navigate("/verify-otp", {
         state: {
           email: result.payload.email,

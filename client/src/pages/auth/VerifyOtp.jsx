@@ -6,12 +6,13 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 import {
   verifyOtpCode,
   resendOtpCode,
   clearError,
 } from "../../redux/slices/authSlice";
+import useReduxErrorToast from "../../hooks/useReduxErrorToast";
+import { showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, { authButtonClass, authLinkClass } from "../../components/auth/AuthCard";
 import OtpInput from "../../components/auth/OtpInput";
 
@@ -56,18 +57,13 @@ const VerifyOtp = () => {
     }
   }, [email, navigate]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  useReduxErrorToast(error, clearError);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (otp.length !== 6) {
-      toast.error("Please enter the 6-digit OTP");
+      showErrorToast("Please enter the 6-digit OTP");
       return;
     }
 
@@ -76,7 +72,7 @@ const VerifyOtp = () => {
     );
 
     if (verifyOtpCode.fulfilled.match(result)) {
-      toast.success(meta.success);
+      showSuccessToast(meta.success);
 
       if (purpose === "forgot-password") {
         navigate("/reset-password", {
@@ -92,7 +88,7 @@ const VerifyOtp = () => {
   const handleResend = async () => {
     const result = await dispatch(resendOtpCode({ email, purpose }));
     if (resendOtpCode.fulfilled.match(result)) {
-      toast.success("New OTP sent!");
+      showSuccessToast("New OTP sent!");
       setOtp("");
     }
   };

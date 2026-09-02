@@ -1,21 +1,12 @@
 /**
  * utils/setupAxiosInterceptors.js
- * On 401 (invalid/missing JWT cookie), clear auth state so guards redirect to login.
+ * Global axios interceptors — 401 session reset and normalized error messages.
  */
 
 import axiosInstance from "./axiosInstance";
+import { PUBLIC_AUTH_URLS } from "./constants";
+import { getApiErrorMessage } from "./helpers";
 import { resetAuth } from "../redux/slices/authSlice";
-
-/** These endpoints may return 401 without meaning "session expired" */
-const PUBLIC_AUTH_URLS = [
-  "/auth/login",
-  "/auth/register",
-  "/auth/logout",
-  "/auth/forgot-password",
-  "/auth/verify-otp",
-  "/auth/resend-otp",
-  "/auth/reset-password",
-];
 
 const isPublicAuthRequest = (url = "") =>
   PUBLIC_AUTH_URLS.some((path) => url.includes(path));
@@ -26,6 +17,11 @@ export const setupAxiosInterceptors = (store) => {
     (error) => {
       const status = error.response?.status;
       const requestUrl = error.config?.url || "";
+
+      const message = getApiErrorMessage(error);
+      if (message) {
+        error.message = message;
+      }
 
       if (status === 401 && !isPublicAuthRequest(requestUrl)) {
         store.dispatch(resetAuth());

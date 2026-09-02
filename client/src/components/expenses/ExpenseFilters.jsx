@@ -1,14 +1,14 @@
 /**
  * components/expenses/ExpenseFilters.jsx
- * Filter bar — fintech light styling.
+ * Filter bar with debounced search.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  EXPENSE_CATEGORIES,
-  PAYMENT_MODES,
-} from "../../config/expenseConstants";
+import { EXPENSE_CATEGORIES, PAYMENT_MODES } from "../../config/expenseConstants";
+import { INITIAL_EXPENSE_FILTERS } from "../../services/expenseService";
+import { debounce } from "../../utils/helpers";
+import { DEFAULT_DEBOUNCE_MS } from "../../utils/constants";
 import {
   setFilters,
   resetFilters,
@@ -23,18 +23,24 @@ const ExpenseFilters = () => {
   const dispatch = useDispatch();
   const { filters } = useSelector((state) => state.expenses);
   const [searchInput, setSearchInput] = useState(filters.search);
+  const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
+  const debounceSearch = useMemo(
+    () => debounce(setDebouncedSearch, DEFAULT_DEBOUNCE_MS),
+    []
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchInput !== filters.search) {
-        const nextFilters = { ...filters, search: searchInput, page: 1 };
-        dispatch(setFilters({ search: searchInput, page: 1 }));
-        dispatch(fetchExpenses(nextFilters));
-      }
-    }, 400);
+    debounceSearch(searchInput);
+    return () => debounceSearch.cancel();
+  }, [searchInput, debounceSearch]);
 
-    return () => clearTimeout(timer);
-  }, [searchInput]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (debouncedSearch === filters.search) return;
+
+    const nextFilters = { ...filters, search: debouncedSearch, page: 1 };
+    dispatch(setFilters({ search: debouncedSearch, page: 1 }));
+    dispatch(fetchExpenses(nextFilters));
+  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const applyFilter = (updates) => {
     const nextFilters = { ...filters, ...updates, page: 1 };
@@ -44,19 +50,9 @@ const ExpenseFilters = () => {
 
   const handleClear = () => {
     setSearchInput("");
+    setDebouncedSearch("");
     dispatch(resetFilters());
-    dispatch(
-      fetchExpenses({
-        category: "",
-        paymentMode: "",
-        startDate: "",
-        endDate: "",
-        search: "",
-        page: 1,
-        limit: 10,
-        sortBy: "date",
-      })
-    );
+    dispatch(fetchExpenses({ ...INITIAL_EXPENSE_FILTERS }));
   };
 
   const hasActiveFilters =

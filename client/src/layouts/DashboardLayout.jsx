@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
+import { showSuccessToast } from "../hooks/useHandleError";
 import { logoutUser } from "../redux/slices/authSlice";
 import Sidebar from "../components/layout/Sidebar";
 import DashboardHeader from "../components/layout/DashboardHeader";
@@ -20,7 +20,7 @@ const DashboardLayout = () => {
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
-    toast.success("Logged out successfully");
+    showSuccessToast("Logged out successfully");
     navigate("/login", { replace: true });
   };
 

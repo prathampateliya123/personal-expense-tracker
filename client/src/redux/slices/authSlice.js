@@ -1,10 +1,11 @@
 /**
  * redux/slices/authSlice.js
- * Auth with OTP verification for login, register, forgot password.
+ * Auth with OTP verification — API calls via authService.
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import authService from "../../services/authService";
+import { getApiErrorMessage } from "../../utils/helpers";
 
 const initialState = {
   user: null,
@@ -20,12 +21,9 @@ export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/auth/register", userData);
-      return data;
+      return await authService.register(userData);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Registration failed"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Registration failed"));
     }
   }
 );
@@ -34,12 +32,9 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/auth/login", credentials);
-      return data;
+      return await authService.login(credentials);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Login failed"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Login failed"));
     }
   }
 );
@@ -48,16 +43,9 @@ export const verifyOtpCode = createAsyncThunk(
   "auth/verifyOtp",
   async ({ email, otp, purpose }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/auth/verify-otp", {
-        email,
-        otp,
-        purpose,
-      });
-      return data;
+      return await authService.verifyOtp({ email, otp, purpose });
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "OTP verification failed"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "OTP verification failed"));
     }
   }
 );
@@ -66,22 +54,16 @@ export const resendOtpCode = createAsyncThunk(
   "auth/resendOtp",
   async ({ email, purpose }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/auth/resend-otp", {
-        email,
-        purpose,
-      });
-      return data;
+      return await authService.resendOtp({ email, purpose });
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to resend OTP"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to resend OTP"));
     }
   }
 );
 
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
   try {
-    await axiosInstance.post("/auth/logout");
+    await authService.logout();
   } catch {
     /* always clear client session */
   }
@@ -92,7 +74,7 @@ export const checkAuthSession = createAsyncThunk(
   "auth/checkSession",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get("/auth/profile");
+      const data = await authService.getProfile();
       return data.user;
     } catch {
       return rejectWithValue(null);
@@ -106,14 +88,9 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async ({ email }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/auth/forgot-password", {
-        email,
-      });
-      return data;
+      return await authService.forgotPassword({ email });
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to send OTP"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to send OTP"));
     }
   }
 );
@@ -122,15 +99,10 @@ export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/auth/reset-password", {
-        email,
-        password,
-      });
+      const data = await authService.resetPassword({ email, password });
       return data.user;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to reset password"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Failed to reset password"));
     }
   }
 );
