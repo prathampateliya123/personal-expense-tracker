@@ -8,10 +8,6 @@ export const SIDEBAR_WIDTH = 240;
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
-  { key: "budgets", to: "/budgets", label: "Budgets", disabled: true },
-  { key: "goals", to: "/goals", label: "Goals", disabled: true },
-  { key: "reports", to: "/reports", label: "Reports", disabled: true },
-  { key: "settings", to: "/settings", label: "Settings", disabled: true },
 ];
 
 export const PAGE_META = {

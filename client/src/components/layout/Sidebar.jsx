@@ -5,64 +5,38 @@
 
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS, SIDEBAR_WIDTH } from "../../config/navigation";
-import {
-  IconClose,
-  IconDashboard,
-  IconExpenses,
-  IconBudget,
-  IconGoals,
-  IconReports,
-  IconSettings,
-} from "./icons";
+import { IconClose, IconDashboard, IconExpenses } from "./icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
-  budgets: IconBudget,
-  goals: IconGoals,
-  reports: IconReports,
-  settings: IconSettings,
 };
 
-const NavItem = ({ to, label, icon: Icon, end, disabled, onNavigate }) => {
-  if (disabled) {
-    return (
-      <div
-        className="flex cursor-not-allowed items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-textSecondary/50"
-        title="Coming soon"
-      >
-        <Icon className="h-5 w-5 shrink-0 opacity-50" />
+const NavItem = ({ to, label, icon: Icon, end, onNavigate }) => (
+  <NavLink
+    to={to}
+    end={end}
+    onClick={onNavigate}
+    className={({ isActive }) =>
+      `flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
+        isActive
+          ? "bg-successBg text-primaryDark"
+          : "text-textSecondary hover:bg-surfaceGray hover:text-textPrimary"
+      }`
+    }
+  >
+    {({ isActive }) => (
+      <>
+        <Icon
+          className={`h-5 w-5 shrink-0 ${
+            isActive ? "text-accentGreen" : "text-textSecondary"
+          }`}
+        />
         <span>{label}</span>
-      </div>
-    );
-  }
-
-  return (
-    <NavLink
-      to={to}
-      end={end}
-      onClick={onNavigate}
-      className={({ isActive }) =>
-        `flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
-          isActive
-            ? "bg-successBg text-primaryDark"
-            : "text-textSecondary hover:bg-surfaceGray hover:text-textPrimary"
-        }`
-      }
-    >
-      {({ isActive }) => (
-        <>
-          <Icon
-            className={`h-5 w-5 shrink-0 ${
-              isActive ? "text-accentGreen" : "text-textSecondary"
-            }`}
-          />
-          <span>{label}</span>
-        </>
-      )}
-    </NavLink>
-  );
-};
+      </>
+    )}
+  </NavLink>
+);
 
 const Sidebar = ({ isOpen, onClose }) => {
   return (

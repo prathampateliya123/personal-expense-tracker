@@ -15,23 +15,12 @@ import {
 } from "../config/expenseConstants";
 import { fetchExpenses, fetchExpenseStats } from "../redux/slices/expenseSlice";
 
-const QuickAction = ({ to, icon, label, disabled }) => {
-  if (disabled) {
-    return (
-      <div className="quick-action-btn cursor-not-allowed opacity-50">
-        <span className="text-xl">{icon}</span>
-        <span className="text-xs font-medium text-textSecondary">{label}</span>
-      </div>
-    );
-  }
-
-  return (
-    <Link to={to} className="quick-action-btn">
-      <span className="text-xl">{icon}</span>
-      <span className="text-xs font-medium text-textPrimary">{label}</span>
-    </Link>
-  );
-};
+const QuickAction = ({ to, icon, label }) => (
+  <Link to={to} className="quick-action-btn">
+    <span className="text-xl">{icon}</span>
+    <span className="text-xs font-medium text-textPrimary">{label}</span>
+  </Link>
+);
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -136,10 +125,8 @@ const Dashboard = () => {
       {/* Quick actions */}
       <div>
         <h2 className="mb-3 text-sm font-semibold text-textPrimary">Quick Actions</h2>
-        <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          <QuickAction to="/expenses/add" icon="+" label="Add" />
-          <QuickAction icon="🔔" label="Alerts" disabled />
-          <QuickAction icon="📋" label="Reports" disabled />
+        <div className="grid max-w-xs grid-cols-1 gap-3 sm:gap-4">
+          <QuickAction to="/expenses/add" icon="+" label="Add expense" />
         </div>
       </div>
 

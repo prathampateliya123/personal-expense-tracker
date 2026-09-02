@@ -9,7 +9,6 @@ import {
   IconMenu,
   IconChevronDown,
   IconLogout,
-  IconSettings,
   IconSearch,
 } from "./icons";
 import { getInitials } from "../../utils/helpers";
@@ -113,17 +112,6 @@ const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {
             </div>
 
             <div className="p-2">
-              <button
-                type="button"
-                disabled
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-textSecondary transition hover:bg-surfaceGray disabled:opacity-50"
-              >
-                <IconSettings className="h-4 w-4" />
-                Account Settings
-                <span className="ml-auto text-[10px] font-semibold uppercase text-textSecondary">
-                  Soon
-                </span>
-              </button>
               <button
                 type="button"
                 onClick={handleLogout}
