@@ -9,6 +9,7 @@ import {
   PAYMENT_MODES,
 } from "../../config/expenseConstants";
 import Select from "../ui/Select";
+import DateInput from "../ui/DateInput";
 
 const inputClass =
   "w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition placeholder:text-ink-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
@@ -153,19 +154,15 @@ const ExpenseForm = ({
                 <p className="mt-1 text-xs text-accent-expense">{errors.amount}</p>
               )}
             </div>
-            <div>
-              <label htmlFor="date" className={labelClass}>
-                Date
-              </label>
-              <input
-                id="date"
-                name="date"
-                type="date"
-                value={form.date}
-                onChange={handleChange}
-                className={inputClass}
-              />
-            </div>
+            <DateInput
+              id="date"
+              name="date"
+              label="Date"
+              labelClassName={labelClass}
+              value={form.date}
+              onChange={handleChange}
+              required
+            />
           </>
         )}
       </div>
@@ -192,19 +189,15 @@ const ExpenseForm = ({
             )}
           </div>
 
-          <div>
-            <label htmlFor="date" className={labelClass}>
-              Date
-            </label>
-            <input
-              id="date"
-              name="date"
-              type="date"
-              value={form.date}
-              onChange={handleChange}
-              className={inputClass}
-            />
-          </div>
+          <DateInput
+            id="date"
+            name="date"
+            label="Date"
+            labelClassName={labelClass}
+            value={form.date}
+            onChange={handleChange}
+            required
+          />
 
           <Select
             id="category"

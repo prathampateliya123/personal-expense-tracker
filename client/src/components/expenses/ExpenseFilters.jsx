@@ -15,6 +15,7 @@ import {
   fetchExpenses,
 } from "../../redux/slices/expenseSlice";
 import Select from "../ui/Select";
+import DateInput from "../ui/DateInput";
 
 const fieldClass =
   "w-full rounded-xl border border-surface-border bg-white px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
@@ -117,25 +118,24 @@ const ExpenseFilters = () => {
           size="sm"
         />
 
-        <div>
-          <label className={labelClass}>From date</label>
-          <input
-            type="date"
-            value={filters.startDate}
-            onChange={(e) => applyFilter({ startDate: e.target.value })}
-            className={fieldClass}
-          />
-        </div>
+        <DateInput
+          id="filter-start-date"
+          label="From date"
+          labelClassName={labelClass}
+          value={filters.startDate}
+          onChange={(e) => applyFilter({ startDate: e.target.value })}
+          size="sm"
+        />
 
-        <div>
-          <label className={labelClass}>To date</label>
-          <input
-            type="date"
-            value={filters.endDate}
-            onChange={(e) => applyFilter({ endDate: e.target.value })}
-            className={fieldClass}
-          />
-        </div>
+        <DateInput
+          id="filter-end-date"
+          label="To date"
+          labelClassName={labelClass}
+          value={filters.endDate}
+          onChange={(e) => applyFilter({ endDate: e.target.value })}
+          size="sm"
+          min={filters.startDate || undefined}
+        />
       </div>
     </div>
   );
