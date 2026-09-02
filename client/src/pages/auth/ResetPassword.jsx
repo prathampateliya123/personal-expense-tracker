@@ -7,12 +7,12 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { resetPassword, clearError } from "../redux/authSlice";
+import { resetPassword, clearError } from "../../redux/slices/authSlice";
 import AuthCard, {
   authInputClass,
   authButtonClass,
   authLinkClass,
-} from "../components/AuthCard";
+} from "../../components/auth/AuthCard";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");

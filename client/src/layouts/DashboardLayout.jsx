@@ -7,9 +7,9 @@ import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { logoutUser } from "../redux/authSlice";
-import Sidebar from "../components/dashboard/Sidebar";
-import DashboardHeader from "../components/dashboard/DashboardHeader";
+import { logoutUser } from "../redux/slices/authSlice";
+import Sidebar from "../components/layout/Sidebar";
+import DashboardHeader from "../components/layout/DashboardHeader";
 
 const DashboardLayout = () => {
   const dispatch = useDispatch();

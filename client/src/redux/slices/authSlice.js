@@ -1,10 +1,10 @@
 /**
- * redux/authSlice.js
+ * redux/slices/authSlice.js
  * Auth with OTP verification for login, register, forgot password.
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../utils/axiosInstance";
 
 const initialState = {
   user: null,

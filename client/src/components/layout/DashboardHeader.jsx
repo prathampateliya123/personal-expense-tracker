@@ -1,6 +1,6 @@
 /**
- * components/dashboard/DashboardHeader.jsx
- * Minimal top bar — user profile only (right corner).
+ * components/layout/DashboardHeader.jsx
+ * Top bar with user profile menu.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -10,7 +10,7 @@ import {
   IconLogout,
   IconSettings,
 } from "./icons";
-import { getInitials } from "../../dashboard/utils";
+import { getInitials } from "../../utils/helpers";
 
 const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,7 +33,6 @@ const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-surface-border bg-white/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
-      {/* Mobile menu only */}
       <button
         type="button"
         onClick={onMenuClick}
@@ -45,7 +44,6 @@ const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {
 
       <div className="hidden lg:block" />
 
-      {/* User info — right corner */}
       <div className="relative ml-auto" ref={menuRef}>
         <button
           type="button"

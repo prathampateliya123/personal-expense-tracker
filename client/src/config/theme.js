@@ -1,5 +1,5 @@
 /**
- * theme/themeConstants.js
+ * config/theme.js
  * Central color tokens for JS usage (charts, inline styles, etc.)
  */
 

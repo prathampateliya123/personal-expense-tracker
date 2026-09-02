@@ -1,11 +1,28 @@
 /**
- * components/dashboard/Sidebar.jsx
- * Simple flat sidebar navigation.
+ * components/layout/Sidebar.jsx
+ * Dashboard sidebar navigation.
  */
 
 import { NavLink } from "react-router-dom";
-import { IconClose } from "./icons";
-import { navItems, SIDEBAR_WIDTH } from "../../dashboard/navConfig";
+import { NAV_ITEMS, SIDEBAR_WIDTH } from "../../config/navigation";
+import {
+  IconClose,
+  IconDashboard,
+  IconExpenses,
+  IconBudget,
+  IconGoals,
+  IconReports,
+  IconSettings,
+} from "./icons";
+
+const NAV_ICONS = {
+  dashboard: IconDashboard,
+  expenses: IconExpenses,
+  budgets: IconBudget,
+  goals: IconGoals,
+  reports: IconReports,
+  settings: IconSettings,
+};
 
 const NavItem = ({ to, label, icon: Icon, end, disabled, onNavigate }) => {
   if (disabled) {
@@ -64,7 +81,6 @@ const Sidebar = ({ isOpen, onClose }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Logo */}
         <div className="flex h-16 shrink-0 items-center justify-between px-5">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">
@@ -84,10 +100,14 @@ const Sidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Nav links */}
         <nav className="sidebar-scroll flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {navItems.map((item) => (
-            <NavItem key={item.label} {...item} onNavigate={onClose} />
+          {NAV_ITEMS.map((item) => (
+            <NavItem
+              key={item.key}
+              {...item}
+              icon={NAV_ICONS[item.key]}
+              onNavigate={onClose}
+            />
           ))}
         </nav>
       </aside>

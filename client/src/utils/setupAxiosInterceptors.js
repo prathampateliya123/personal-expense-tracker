@@ -4,7 +4,7 @@
  */
 
 import axiosInstance from "./axiosInstance";
-import { resetAuth } from "../redux/authSlice";
+import { resetAuth } from "../redux/slices/authSlice";
 
 /** These endpoints may return 401 without meaning "session expired" */
 const PUBLIC_AUTH_URLS = [

@@ -11,9 +11,9 @@ import {
   verifyOtpCode,
   resendOtpCode,
   clearError,
-} from "../redux/authSlice";
-import AuthCard, { authButtonClass, authLinkClass } from "../components/AuthCard";
-import OtpInput from "../components/OtpInput";
+} from "../../redux/slices/authSlice";
+import AuthCard, { authButtonClass, authLinkClass } from "../../components/auth/AuthCard";
+import OtpInput from "../../components/auth/OtpInput";
 
 const PURPOSE_META = {
   login: {

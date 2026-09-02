@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { registerUser, clearError } from "../redux/authSlice";
+import { registerUser, clearError } from "../../redux/slices/authSlice";
 import AuthCard, {
   authInputClass,
   authButtonClass,
   authLinkClass,
-} from "../components/AuthCard";
+} from "../../components/auth/AuthCard";
 
 const Register = () => {
   const [formData, setFormData] = useState({

@@ -1,6 +1,6 @@
 /**
- * dashboard/utils.js
- * Shared dashboard helpers.
+ * utils/helpers.js
+ * Shared UI helpers.
  */
 
 export const getInitials = (name) => {

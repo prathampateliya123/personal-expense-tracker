@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import connectDB, { isDbConnected } from "./config/db.js";
 import corsOptions from "./config/cors.js";
-import authRoutes from "./routes/authRoutes.js";
+import apiRoutes from "./routes/index.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -31,7 +31,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.use("/api/auth", authRoutes);
+app.use("/api", apiRoutes);
 
 app.use(errorHandler);
 
