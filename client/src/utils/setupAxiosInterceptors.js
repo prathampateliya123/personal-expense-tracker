@@ -5,13 +5,14 @@
 
 import axiosInstance from "./axiosInstance";
 import { PUBLIC_AUTH_URLS } from "./constants";
-import { getApiErrorMessage } from "./helpers";
-import { resetAuth } from "../redux/slices/authSlice";
+import { getApiErrorMessage } from "./helper";
+import { queryClient } from "../lib/queryClient";
+import { userKeys } from "../services/queryKeys";
 
 const isPublicAuthRequest = (url = "") =>
   PUBLIC_AUTH_URLS.some((path) => url.includes(path));
 
-export const setupAxiosInterceptors = (store) => {
+export const setupAxiosInterceptors = () => {
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -24,7 +25,8 @@ export const setupAxiosInterceptors = (store) => {
       }
 
       if (status === 401 && !isPublicAuthRequest(requestUrl)) {
-        store.dispatch(resetAuth());
+        queryClient.setQueryData(userKeys.profile(), null);
+        queryClient.removeQueries({ queryKey: userKeys.all });
       }
 
       return Promise.reject(error);

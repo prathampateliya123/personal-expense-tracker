@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import {
   EXPENSE_CATEGORIES,
   PAYMENT_MODES,
-} from "../../config/expenseConstants";
+} from "../../utils/expenseConstants";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 

@@ -1,13 +1,13 @@
 /**
- * pages/Register.jsx
+ * pages/auth/Register.jsx
  */
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser, clearError } from "../../redux/slices/authSlice";
-import useReduxErrorToast from "../../hooks/useReduxErrorToast";
-import { showSuccessToast } from "../../hooks/useHandleError";
+import { useMutation } from "@tanstack/react-query";
+import authService from "../../services/authService";
+import { authKeys } from "../../services/queryKeys";
+import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -20,24 +20,27 @@ const Register = () => {
     email: "",
     password: "",
   });
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
 
-  useReduxErrorToast(error, clearError);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const result = await dispatch(registerUser(formData));
-    if (registerUser.fulfilled.match(result)) {
+  const registerMutation = useMutation({
+    mutationKey: authKeys.register(),
+    mutationFn: (payload) => authService.register(payload),
+    onSuccess: (data) => {
       showSuccessToast("OTP sent! Verify to complete registration.");
       navigate("/verify-otp", {
         state: {
-          email: result.payload.email,
-          purpose: "register",
+          email: data.email,
+          purpose: data.purpose || "register",
+          otp: data.otp || null,
         },
       });
-    }
+    },
+    onError: handleApiError,
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    registerMutation.mutate(formData);
   };
 
   return (
@@ -109,8 +112,12 @@ const Register = () => {
           />
         </div>
 
-        <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Sending OTP..." : "Continue"}
+        <button
+          type="submit"
+          disabled={registerMutation.isPending}
+          className={authButtonClass}
+        >
+          {registerMutation.isPending ? "Sending OTP..." : "Continue"}
         </button>
       </form>
     </AuthCard>

@@ -1,42 +1,54 @@
 /**
  * layouts/DashboardLayout.jsx
- * Authenticated app shell — light sidebar, header, mobile bottom nav.
+ * Authenticated app shell — sidebar, header, mobile bottom nav.
  */
 
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { showSuccessToast } from "../hooks/useHandleError";
-import { logoutUser } from "../redux/slices/authSlice";
-import Sidebar from "../components/layout/Sidebar";
-import DashboardHeader from "../components/layout/DashboardHeader";
-import MobileBottomNav from "../components/layout/MobileBottomNav";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserProfile } from "../context/UserProfileContext";
+import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
+import authService from "../services/authService";
+import { authKeys, userKeys } from "../services/queryKeys";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import MobileBottomNav from "./MobileBottomNav";
 
 const DashboardLayout = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading } = useSelector((state) => state.auth);
+  const queryClient = useQueryClient();
+  const { user } = useUserProfile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    showSuccessToast("Logged out successfully");
-    navigate("/login", { replace: true });
-  };
+  const logoutMutation = useMutation({
+    mutationKey: authKeys.logout(),
+    mutationFn: () => authService.logout(),
+    onSuccess: async () => {
+      queryClient.setQueryData(userKeys.profile(), null);
+      queryClient.clear();
+      showSuccessToast("Logged out successfully");
+      navigate("/login", { replace: true });
+    },
+    onError: (error) => {
+      queryClient.setQueryData(userKeys.profile(), null);
+      queryClient.clear();
+      handleApiError(error);
+      navigate("/login", { replace: true });
+    },
+  });
+
+  const handleLogout = () => logoutMutation.mutate();
 
   return (
     <div className="min-h-screen bg-appBg">
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex min-h-screen flex-col lg:pl-[240px]">
-        <DashboardHeader
+        <Header
           user={user}
           onMenuClick={() => setSidebarOpen(true)}
           onLogout={handleLogout}
-          logoutLoading={loading}
+          logoutLoading={logoutMutation.isPending}
         />
 
         <main className="dashboard-content w-full min-w-0 flex-1 bg-surfaceLight px-4 py-6 sm:px-6 lg:px-8 lg:py-8">

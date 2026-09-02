@@ -1,11 +1,11 @@
 /**
- * components/layout/MobileBottomNav.jsx
+ * layouts/MobileBottomNav.jsx
  * Dark pill bottom navigation for mobile.
  */
 
 import { NavLink } from "react-router-dom";
-import { NAV_ITEMS } from "../../config/navigation";
-import { IconDashboard, IconExpenses } from "../ui/Icons";
+import { NAV_ITEMS } from "../utils/navigation";
+import { IconDashboard, IconExpenses } from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,

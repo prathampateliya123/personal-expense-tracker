@@ -10,7 +10,7 @@ import {
   CATEGORY_AVATAR_BG,
   formatCurrency,
   formatExpenseDate,
-} from "../../config/expenseConstants";
+} from "../../utils/expenseConstants";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
 import ConfirmModal from "../modal/ConfirmModal";
 

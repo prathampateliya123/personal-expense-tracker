@@ -1,5 +1,5 @@
 /**
- * utils/helpers.js
+ * utils/helper.js
  * Shared pure helpers — formatters, debounce, API error parsing.
  */
 

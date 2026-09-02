@@ -1,13 +1,13 @@
 /**
- * pages/ForgotPassword.jsx
+ * pages/auth/ForgotPassword.jsx
  */
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { forgotPassword, clearError } from "../../redux/slices/authSlice";
-import useReduxErrorToast from "../../hooks/useReduxErrorToast";
-import { showSuccessToast } from "../../hooks/useHandleError";
+import { useMutation } from "@tanstack/react-query";
+import authService from "../../services/authService";
+import { authKeys } from "../../services/queryKeys";
+import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -16,24 +16,27 @@ import AuthCard, {
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
 
-  useReduxErrorToast(error, clearError);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const result = await dispatch(forgotPassword({ email }));
-    if (forgotPassword.fulfilled.match(result)) {
+  const forgotMutation = useMutation({
+    mutationKey: authKeys.forgotPassword(),
+    mutationFn: (payload) => authService.forgotPassword(payload),
+    onSuccess: (data) => {
       showSuccessToast("OTP sent! Enter the code to continue.");
       navigate("/verify-otp", {
         state: {
-          email: result.payload.email,
-          purpose: "forgot-password",
+          email: data.email,
+          purpose: data.purpose || "forgot-password",
+          otp: data.otp || null,
         },
       });
-    }
+    },
+    onError: handleApiError,
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    forgotMutation.mutate({ email });
   };
 
   return (
@@ -66,8 +69,12 @@ const ForgotPassword = () => {
           />
         </div>
 
-        <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Sending OTP..." : "Send OTP"}
+        <button
+          type="submit"
+          disabled={forgotMutation.isPending}
+          className={authButtonClass}
+        >
+          {forgotMutation.isPending ? "Sending OTP..." : "Send OTP"}
         </button>
       </form>
     </AuthCard>

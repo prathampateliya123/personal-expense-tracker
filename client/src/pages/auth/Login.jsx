@@ -1,13 +1,13 @@
 /**
- * pages/Login.jsx
+ * pages/auth/Login.jsx
  */
 
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser, clearError } from "../../redux/slices/authSlice";
-import useReduxErrorToast from "../../hooks/useReduxErrorToast";
-import { showSuccessToast } from "../../hooks/useHandleError";
+import { useMutation } from "@tanstack/react-query";
+import authService from "../../services/authService";
+import { authKeys } from "../../services/queryKeys";
+import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -16,19 +16,15 @@ import AuthCard, {
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/dashboard";
-  const { loading, error } = useSelector((state) => state.auth);
 
-  useReduxErrorToast(error, clearError);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const result = await dispatch(loginUser(formData));
-    if (loginUser.fulfilled.match(result)) {
-      const purpose = result.payload.purpose || "login";
+  const loginMutation = useMutation({
+    mutationKey: authKeys.login(),
+    mutationFn: (credentials) => authService.login(credentials),
+    onSuccess: (data) => {
+      const purpose = data.purpose || "login";
       showSuccessToast(
         purpose === "register"
           ? "Account not verified. Enter OTP to complete setup."
@@ -36,12 +32,19 @@ const Login = () => {
       );
       navigate("/verify-otp", {
         state: {
-          email: result.payload.email,
+          email: data.email,
           purpose,
           from,
+          otp: data.otp || null,
         },
       });
-    }
+    },
+    onError: handleApiError,
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginMutation.mutate(formData);
   };
 
   return (
@@ -100,8 +103,12 @@ const Login = () => {
           />
         </div>
 
-        <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Sending OTP..." : "Continue"}
+        <button
+          type="submit"
+          disabled={loginMutation.isPending}
+          className={authButtonClass}
+        >
+          {loginMutation.isPending ? "Sending OTP..." : "Continue"}
         </button>
       </form>
     </AuthCard>

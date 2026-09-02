@@ -1,18 +1,14 @@
 /**
- * pages/VerifyOtp.jsx
+ * pages/auth/VerifyOtp.jsx
  * Shared OTP confirmation for login, register, and forgot password.
  */
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  verifyOtpCode,
-  resendOtpCode,
-  clearError,
-} from "../../redux/slices/authSlice";
-import useReduxErrorToast from "../../hooks/useReduxErrorToast";
-import { showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import authService from "../../services/authService";
+import { authKeys, userKeys } from "../../services/queryKeys";
+import { handleApiError, showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, { authButtonClass, authLinkClass } from "../../components/auth/AuthCard";
 import OtpInput from "../../components/auth/OtpInput";
 
@@ -39,17 +35,21 @@ const PURPOSE_META = {
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
-  const dispatch = useDispatch();
+  const [devOtp, setDevOtp] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { loading, error, otpSession } = useSelector((state) => state.auth);
+  const queryClient = useQueryClient();
 
-  const purpose =
-    location.state?.purpose || otpSession?.purpose || "login";
-  const email = location.state?.email || otpSession?.email || "";
-  const devOtp = otpSession?.otp;
+  const purpose = location.state?.purpose || "login";
+  const email = location.state?.email || "";
   const meta = PURPOSE_META[purpose] || PURPOSE_META.login;
   const from = location.state?.from || "/dashboard";
+
+  useEffect(() => {
+    if (location.state?.otp) {
+      setDevOtp(location.state.otp);
+    }
+  }, [location.state?.otp]);
 
   useEffect(() => {
     if (!email) {
@@ -57,21 +57,16 @@ const VerifyOtp = () => {
     }
   }, [email, navigate]);
 
-  useReduxErrorToast(error, clearError);
+  const verifyMutation = useMutation({
+    mutationKey: authKeys.verifyOtp(),
+    mutationFn: (payload) => authService.verifyOtp(payload),
+    onSuccess: async (data) => {
+      if (data.user) {
+        queryClient.setQueryData(userKeys.profile(), data.user);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: userKeys.profile() });
+      }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (otp.length !== 6) {
-      showErrorToast("Please enter the 6-digit OTP");
-      return;
-    }
-
-    const result = await dispatch(
-      verifyOtpCode({ email, otp, purpose })
-    );
-
-    if (verifyOtpCode.fulfilled.match(result)) {
       showSuccessToast(meta.success);
 
       if (purpose === "forgot-password") {
@@ -82,15 +77,36 @@ const VerifyOtp = () => {
       } else {
         navigate(purpose === "login" ? from : meta.redirect, { replace: true });
       }
-    }
-  };
+    },
+    onError: handleApiError,
+  });
 
-  const handleResend = async () => {
-    const result = await dispatch(resendOtpCode({ email, purpose }));
-    if (resendOtpCode.fulfilled.match(result)) {
+  const resendMutation = useMutation({
+    mutationKey: authKeys.resendOtp(),
+    mutationFn: (payload) => authService.resendOtp(payload),
+    onSuccess: (data) => {
       showSuccessToast("New OTP sent!");
       setOtp("");
+      if (data.otp) setDevOtp(data.otp);
+    },
+    onError: handleApiError,
+  });
+
+  const loading = verifyMutation.isPending || resendMutation.isPending;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (otp.length !== 6) {
+      showErrorToast("Please enter the 6-digit OTP");
+      return;
     }
+
+    verifyMutation.mutate({ email, otp, purpose });
+  };
+
+  const handleResend = () => {
+    resendMutation.mutate({ email, purpose });
   };
 
   return (
@@ -129,7 +145,7 @@ const VerifyOtp = () => {
           disabled={loading || otp.length !== 6}
           className={authButtonClass}
         >
-          {loading ? "Verifying..." : "Confirm OTP"}
+          {verifyMutation.isPending ? "Verifying..." : "Confirm OTP"}
         </button>
       </form>
 

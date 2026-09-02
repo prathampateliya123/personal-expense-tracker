@@ -1,5 +1,5 @@
 /**
- * app/toastConfig.js
+ * utils/toastConfig.js
  * Global react-hot-toast options — light fintech theme.
  */
 

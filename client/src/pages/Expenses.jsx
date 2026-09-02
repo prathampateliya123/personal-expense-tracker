@@ -1,23 +1,17 @@
 /**
  * pages/Expenses.jsx
- * Full-width expenses list — fintech light green styling.
+ * Full-width expenses list — TanStack Query for data fetching.
  */
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ExpenseList from "../components/expenses/ExpenseList";
 import ExpenseFilters from "../components/expenses/ExpenseFilters";
-import { formatCurrency } from "../config/expenseConstants";
-import useReduxErrorToast from "../hooks/useReduxErrorToast";
-import { showSuccessToast } from "../hooks/useHandleError";
-import {
-  fetchExpenses,
-  deleteExpense,
-  fetchExpenseStats,
-  setFilters,
-  clearExpenseError,
-} from "../redux/slices/expenseSlice";
+import { formatCurrency } from "../utils/expenseConstants";
+import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
+import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
+import { expenseKeys } from "../services/queryKeys";
 
 const StatCard = ({ label, value, hint, hero = false }) => (
   <div className={`card flex min-h-[100px] w-full flex-col justify-center p-5 sm:p-6 ${hero ? "gradient-green-card text-white" : ""}`}>
@@ -36,54 +30,64 @@ const StatCard = ({ label, value, hint, hero = false }) => (
 );
 
 const Expenses = () => {
-  const dispatch = useDispatch();
-  const {
-    expenses,
-    totalCount,
-    totalPages,
-    currentPage,
-    totalAmount,
-    stats,
-    filters,
-    loading,
-    error,
-  } = useSelector((state) => state.expenses);
+  const queryClient = useQueryClient();
+  const [filters, setFilters] = useState({ ...INITIAL_EXPENSE_FILTERS });
 
-  const [deleting, setDeleting] = useState(false);
+  const handleFiltersChange = (updates) => {
+    setFilters((prev) => ({ ...prev, ...updates }));
+  };
 
-  useReduxErrorToast(error, clearExpenseError);
+  const listQuery = useQuery({
+    queryKey: expenseKeys.list(filters),
+    queryFn: () => expenseService.list(filters),
+    placeholderData: (previous) => previous,
+  });
 
-  useEffect(() => {
-    dispatch(fetchExpenses());
-    dispatch(fetchExpenseStats());
-  }, [dispatch]);
+  const statsQuery = useQuery({
+    queryKey: expenseKeys.stats(),
+    queryFn: async () => {
+      const data = await expenseService.getStats();
+      return data.stats;
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => expenseService.remove(id),
+    onSuccess: async () => {
+      showSuccessToast("Expense deleted successfully");
+      await queryClient.invalidateQueries({ queryKey: expenseKeys.all });
+    },
+    onError: handleApiError,
+  });
+
+  const listData = listQuery.data;
+  const expenses = listData?.expenses ?? [];
+  const totalCount = listData?.totalCount ?? 0;
+  const totalPages = listData?.totalPages ?? 1;
+  const currentPage = listData?.currentPage ?? filters.page;
+  const totalAmount = listData?.totalAmount ?? 0;
+  const stats = statsQuery.data;
+  const loading = listQuery.isLoading || listQuery.isFetching;
 
   const handleDelete = async (id) => {
-    setDeleting(true);
-    const result = await dispatch(deleteExpense(id));
-    setDeleting(false);
-
-    if (deleteExpense.fulfilled.match(result)) {
-      showSuccessToast("Expense deleted successfully");
-      dispatch(fetchExpenses());
-      dispatch(fetchExpenseStats());
-    } else {
-      throw new Error("Delete failed");
-    }
+    await deleteMutation.mutateAsync(id);
   };
 
   const goToPage = (page) => {
     if (page < 1 || page > totalPages) return;
-    dispatch(setFilters({ page }));
-    dispatch(fetchExpenses({ ...filters, page }));
+    setFilters((prev) => ({ ...prev, page }));
   };
 
-  const monthLabel = stats
-    ? new Date(stats.year, stats.month - 1).toLocaleDateString("en-IN", {
-        month: "long",
-        year: "numeric",
-      })
-    : "This month";
+  const monthLabel = useMemo(
+    () =>
+      stats
+        ? new Date(stats.year, stats.month - 1).toLocaleDateString("en-IN", {
+            month: "long",
+            year: "numeric",
+          })
+        : "This month",
+    [stats]
+  );
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
@@ -125,13 +129,13 @@ const Expenses = () => {
         />
       </div>
 
-      <ExpenseFilters />
+      <ExpenseFilters filters={filters} onFiltersChange={handleFiltersChange} />
 
       <ExpenseList
         expenses={expenses}
-        loading={loading && !deleting}
+        loading={loading && !deleteMutation.isPending}
         onDelete={handleDelete}
-        deleting={deleting}
+        deleting={deleteMutation.isPending}
       />
 
       <div className="card flex w-full flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">

@@ -1,14 +1,14 @@
 /**
- * pages/ResetPassword.jsx
+ * pages/auth/ResetPassword.jsx
  * Set new password after forgot-password OTP is verified.
  */
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { resetPassword, clearError } from "../../redux/slices/authSlice";
-import useReduxErrorToast from "../../hooks/useReduxErrorToast";
-import { showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import authService from "../../services/authService";
+import { authKeys, userKeys } from "../../services/queryKeys";
+import { handleApiError, showErrorToast, showSuccessToast } from "../../hooks/useHandleError";
 import AuthCard, {
   authInputClass,
   authButtonClass,
@@ -18,12 +18,11 @@ import AuthCard, {
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const email = location.state?.email;
   const otpVerified = location.state?.otpVerified;
-  const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (!email || !otpVerified) {
@@ -31,9 +30,20 @@ const ResetPassword = () => {
     }
   }, [email, otpVerified, navigate]);
 
-  useReduxErrorToast(error, clearError);
+  const resetMutation = useMutation({
+    mutationKey: authKeys.resetPassword(),
+    mutationFn: (payload) => authService.resetPassword(payload),
+    onSuccess: (data) => {
+      if (data.user) {
+        queryClient.setQueryData(userKeys.profile(), data.user);
+      }
+      showSuccessToast("Password updated! You are now signed in.");
+      navigate("/dashboard", { replace: true });
+    },
+    onError: handleApiError,
+  });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -41,11 +51,7 @@ const ResetPassword = () => {
       return;
     }
 
-    const result = await dispatch(resetPassword({ email, password }));
-    if (resetPassword.fulfilled.match(result)) {
-      showSuccessToast("Password updated! You are now signed in.");
-      navigate("/dashboard", { replace: true });
-    }
+    resetMutation.mutate({ email, password });
   };
 
   if (!email || !otpVerified) {
@@ -104,8 +110,12 @@ const ResetPassword = () => {
           />
         </div>
 
-        <button type="submit" disabled={loading} className={authButtonClass}>
-          {loading ? "Updating..." : "Update password"}
+        <button
+          type="submit"
+          disabled={resetMutation.isPending}
+          className={authButtonClass}
+        >
+          {resetMutation.isPending ? "Updating..." : "Update password"}
         </button>
       </form>
     </AuthCard>

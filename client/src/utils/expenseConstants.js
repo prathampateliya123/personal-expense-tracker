@@ -1,5 +1,5 @@
 /**
- * config/expenseConstants.js
+ * utils/expenseConstants.js
  * Shared expense categories, payment modes, and UI helpers.
  */
 

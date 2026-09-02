@@ -1,27 +1,19 @@
 /**
  * components/expenses/ExpenseFilters.jsx
- * Filter bar with debounced search.
+ * Filter bar with debounced search — controlled by parent page.
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { EXPENSE_CATEGORIES, PAYMENT_MODES } from "../../config/expenseConstants";
+import { EXPENSE_CATEGORIES, PAYMENT_MODES } from "../../utils/expenseConstants";
 import { INITIAL_EXPENSE_FILTERS } from "../../services/expenseService";
-import { debounce } from "../../utils/helpers";
+import { debounce } from "../../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../../utils/constants";
-import {
-  setFilters,
-  resetFilters,
-  fetchExpenses,
-} from "../../redux/slices/expenseSlice";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 
 const labelClass = "mb-1 block text-xs font-medium text-textSecondary";
 
-const ExpenseFilters = () => {
-  const dispatch = useDispatch();
-  const { filters } = useSelector((state) => state.expenses);
+const ExpenseFilters = ({ filters, onFiltersChange }) => {
   const [searchInput, setSearchInput] = useState(filters.search);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
   const debounceSearch = useMemo(
@@ -36,23 +28,22 @@ const ExpenseFilters = () => {
 
   useEffect(() => {
     if (debouncedSearch === filters.search) return;
-
-    const nextFilters = { ...filters, search: debouncedSearch, page: 1 };
-    dispatch(setFilters({ search: debouncedSearch, page: 1 }));
-    dispatch(fetchExpenses(nextFilters));
+    onFiltersChange({ search: debouncedSearch, page: 1 });
   }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    setSearchInput(filters.search);
+    setDebouncedSearch(filters.search);
+  }, [filters.search]);
+
   const applyFilter = (updates) => {
-    const nextFilters = { ...filters, ...updates, page: 1 };
-    dispatch(setFilters({ ...updates, page: 1 }));
-    dispatch(fetchExpenses(nextFilters));
+    onFiltersChange({ ...updates, page: 1 });
   };
 
   const handleClear = () => {
     setSearchInput("");
     setDebouncedSearch("");
-    dispatch(resetFilters());
-    dispatch(fetchExpenses({ ...INITIAL_EXPENSE_FILTERS }));
+    onFiltersChange({ ...INITIAL_EXPENSE_FILTERS });
   };
 
   const hasActiveFilters =

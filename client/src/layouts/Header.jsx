@@ -1,5 +1,5 @@
 /**
- * components/layout/DashboardHeader.jsx
+ * layouts/Header.jsx
  * Top bar — search pill and user avatar.
  */
 
@@ -10,10 +10,10 @@ import {
   IconChevronDown,
   IconLogout,
   IconSearch,
-} from "../ui/Icons";
-import { getInitials } from "../../utils/helpers";
+} from "../components/ui/Icons";
+import { getInitials } from "../utils/helper";
 
-const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {
+const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -129,4 +129,4 @@ const DashboardHeader = ({ user, onMenuClick, onLogout, logoutLoading }) => {
   );
 };
 
-export default DashboardHeader;
+export default Header;

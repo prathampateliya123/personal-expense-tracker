@@ -1,20 +1,21 @@
 /**
  * pages/Dashboard.jsx
- * Fintech-style overview — hero spend, monthly stats, quick actions, recent txns.
+ * Fintech-style overview — TanStack Query for dashboard data.
  */
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { useUserProfile } from "../context/UserProfileContext";
 import CircularProgress from "../components/dashboard/CircularProgress";
 import {
   formatCurrency,
   CATEGORY_AVATAR_BG,
   formatExpenseDate,
   formatExpenseTime,
-} from "../config/expenseConstants";
-import { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
-import { fetchExpenses, fetchExpenseStats } from "../redux/slices/expenseSlice";
+} from "../utils/expenseConstants";
+import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
+import { expenseKeys } from "../services/queryKeys";
 
 const QuickAction = ({ to, icon, label }) => (
   <Link to={to} className="quick-action-btn">
@@ -24,39 +25,50 @@ const QuickAction = ({ to, icon, label }) => (
 );
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  const { expenses, stats, loading } = useSelector((state) => state.expenses);
-  const [todaySpend, setTodaySpend] = useState(0);
-
-  const firstName = user?.name?.split(" ")[0] || "there";
+  const { user } = useUserProfile();
   const today = new Date().toISOString().split("T")[0];
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      const todayResult = await dispatch(
-        fetchExpenses({
-          ...INITIAL_EXPENSE_FILTERS,
-          startDate: today,
-          endDate: today,
-          limit: 50,
-        })
-      );
-      if (fetchExpenses.fulfilled.match(todayResult)) {
-        setTodaySpend(todayResult.payload.totalAmount || 0);
-      }
+  const todayFilters = useMemo(
+    () => ({
+      ...INITIAL_EXPENSE_FILTERS,
+      startDate: today,
+      endDate: today,
+      limit: 50,
+    }),
+    [today]
+  );
 
-      await dispatch(fetchExpenseStats());
-      await dispatch(
-        fetchExpenses({
-          ...INITIAL_EXPENSE_FILTERS,
-          limit: 5,
-        })
-      );
-    };
+  const recentFilters = useMemo(
+    () => ({
+      ...INITIAL_EXPENSE_FILTERS,
+      limit: 5,
+    }),
+    []
+  );
 
-    loadDashboard();
-  }, [dispatch, today]);
+  const statsQuery = useQuery({
+    queryKey: expenseKeys.stats(),
+    queryFn: async () => {
+      const data = await expenseService.getStats();
+      return data.stats;
+    },
+  });
+
+  const todayQuery = useQuery({
+    queryKey: expenseKeys.list(todayFilters),
+    queryFn: () => expenseService.list(todayFilters),
+  });
+
+  const recentQuery = useQuery({
+    queryKey: expenseKeys.list(recentFilters),
+    queryFn: () => expenseService.list(recentFilters),
+  });
+
+  const firstName = user?.name?.split(" ")[0] || "there";
+  const stats = statsQuery.data;
+  const todaySpend = todayQuery.data?.totalAmount || 0;
+  const expenses = recentQuery.data?.expenses ?? [];
+  const loading = recentQuery.isLoading;
 
   const monthlyTotal = stats?.totalAmount || 0;
   const monthlyBudget = Math.max(monthlyTotal * 1.25, 10000);
@@ -76,7 +88,6 @@ const Dashboard = () => {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        {/* Hero — Today's Spend */}
         <div className="gradient-green-card rounded-3xl p-6 text-white shadow-soft sm:p-8">
           <div className="flex items-start justify-between">
             <div>
@@ -94,7 +105,6 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Monthly overview */}
         <div className="card flex flex-col justify-between p-6 sm:p-8">
           <div>
             <p className="text-sm font-medium text-textSecondary">Monthly Overview</p>
@@ -113,7 +123,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Quick actions */}
       <div>
         <h2 className="mb-3 text-sm font-semibold text-textPrimary">Quick Actions</h2>
         <div className="grid max-w-xs grid-cols-1 gap-3 sm:gap-4">
@@ -121,7 +130,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Recent transactions */}
       <div className="card p-5 sm:p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-textPrimary">Recent Transactions</h2>

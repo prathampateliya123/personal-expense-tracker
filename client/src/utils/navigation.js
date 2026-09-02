@@ -1,5 +1,5 @@
 /**
- * config/navigation.js
+ * utils/navigation.js
  * Sidebar links and page metadata (no UI imports).
  */
 
