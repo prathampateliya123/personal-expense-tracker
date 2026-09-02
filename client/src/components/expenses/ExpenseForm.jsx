@@ -8,6 +8,7 @@ import {
   EXPENSE_CATEGORIES,
   PAYMENT_MODES,
 } from "../../config/expenseConstants";
+import Select from "../ui/Select";
 
 const inputClass =
   "w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition placeholder:text-ink-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
@@ -205,93 +206,53 @@ const ExpenseForm = ({
             />
           </div>
 
-          <div>
-            <label htmlFor="category" className={labelClass}>
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select category</option>
-              {EXPENSE_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="mt-1 text-xs text-accent-expense">{errors.category}</p>
-            )}
-          </div>
+          <Select
+            id="category"
+            name="category"
+            label="Category"
+            labelClassName={labelClass}
+            value={form.category}
+            onChange={handleChange}
+            placeholder="Select category"
+            options={EXPENSE_CATEGORIES}
+            error={errors.category}
+          />
 
-          <div>
-            <label htmlFor="paymentMode" className={labelClass}>
-              Payment mode
-            </label>
-            <select
-              id="paymentMode"
-              name="paymentMode"
-              value={form.paymentMode}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              {PAYMENT_MODES.map((mode) => (
-                <option key={mode} value={mode}>
-                  {mode}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            id="paymentMode"
+            name="paymentMode"
+            label="Payment mode"
+            labelClassName={labelClass}
+            value={form.paymentMode}
+            onChange={handleChange}
+            options={PAYMENT_MODES}
+          />
         </div>
       )}
 
       {!isPage && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="category" className={labelClass}>
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select category</option>
-              {EXPENSE_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="mt-1 text-xs text-accent-expense">{errors.category}</p>
-            )}
-          </div>
+          <Select
+            id="category"
+            name="category"
+            label="Category"
+            labelClassName={labelClass}
+            value={form.category}
+            onChange={handleChange}
+            placeholder="Select category"
+            options={EXPENSE_CATEGORIES}
+            error={errors.category}
+          />
 
-          <div>
-            <label htmlFor="paymentMode" className={labelClass}>
-              Payment mode
-            </label>
-            <select
-              id="paymentMode"
-              name="paymentMode"
-              value={form.paymentMode}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              {PAYMENT_MODES.map((mode) => (
-                <option key={mode} value={mode}>
-                  {mode}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            id="paymentMode"
+            name="paymentMode"
+            label="Payment mode"
+            labelClassName={labelClass}
+            value={form.paymentMode}
+            onChange={handleChange}
+            options={PAYMENT_MODES}
+          />
         </div>
       )}
 

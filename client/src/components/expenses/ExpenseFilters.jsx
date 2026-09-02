@@ -14,6 +14,7 @@ import {
   resetFilters,
   fetchExpenses,
 } from "../../redux/slices/expenseSlice";
+import Select from "../ui/Select";
 
 const fieldClass =
   "w-full rounded-xl border border-surface-border bg-white px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
@@ -94,37 +95,27 @@ const ExpenseFilters = () => {
           />
         </div>
 
-        <div>
-          <label className={labelClass}>Category</label>
-          <select
-            value={filters.category}
-            onChange={(e) => applyFilter({ category: e.target.value })}
-            className={fieldClass}
-          >
-            <option value="">All categories</option>
-            {EXPENSE_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          id="filter-category"
+          label="Category"
+          labelClassName={labelClass}
+          value={filters.category}
+          onChange={(e) => applyFilter({ category: e.target.value })}
+          placeholder="All categories"
+          options={EXPENSE_CATEGORIES}
+          size="sm"
+        />
 
-        <div>
-          <label className={labelClass}>Payment mode</label>
-          <select
-            value={filters.paymentMode}
-            onChange={(e) => applyFilter({ paymentMode: e.target.value })}
-            className={fieldClass}
-          >
-            <option value="">All modes</option>
-            {PAYMENT_MODES.map((mode) => (
-              <option key={mode} value={mode}>
-                {mode}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          id="filter-payment"
+          label="Payment mode"
+          labelClassName={labelClass}
+          value={filters.paymentMode}
+          onChange={(e) => applyFilter({ paymentMode: e.target.value })}
+          placeholder="All modes"
+          options={PAYMENT_MODES}
+          size="sm"
+        />
 
         <div>
           <label className={labelClass}>From date</label>

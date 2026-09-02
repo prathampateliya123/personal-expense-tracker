@@ -42,4 +42,23 @@
   .dashboard-content {
     @apply min-h-[calc(100vh-64px)];
   }
+
+  .select-field {
+    @apply w-full cursor-pointer appearance-none rounded-xl border border-surface-border bg-white shadow-sm outline-none transition;
+    @apply hover:border-brand-200 hover:bg-brand-50/30;
+    @apply focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15;
+    @apply disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-muted disabled:text-ink-400 disabled:opacity-70;
+  }
+
+  .select-field-error {
+    @apply border-accent-expense focus:border-accent-expense focus:ring-accent-expense/15;
+  }
+
+  .select-field option {
+    @apply bg-white text-ink-900;
+  }
+
+  .select-field option:checked {
+    @apply bg-brand-50 text-brand-800;
+  }
 }
