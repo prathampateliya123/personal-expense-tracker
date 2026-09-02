@@ -1,6 +1,6 @@
 /**
  * pages/Expenses.jsx
- * Full-width expenses list — stats, filters, table, and pagination.
+ * Full-width expenses list — fintech light green styling.
  */
 
 import { useEffect, useState } from "react";
@@ -18,15 +18,19 @@ import {
   clearExpenseError,
 } from "../redux/slices/expenseSlice";
 
-const StatCard = ({ label, value, hint, valueClass = "text-ink-900" }) => (
-  <div className="card flex min-h-[100px] w-full flex-col justify-center p-4 sm:p-5">
-    <p className="text-xs font-medium uppercase tracking-wide text-ink-400">
+const StatCard = ({ label, value, hint, hero = false }) => (
+  <div className={`card flex min-h-[100px] w-full flex-col justify-center p-5 sm:p-6 ${hero ? "gradient-green-card text-white" : ""}`}>
+    <p className={`text-xs font-medium uppercase tracking-wide ${hero ? "text-white/80" : "text-textSecondary"}`}>
       {label}
     </p>
-    <p className={`mt-1 text-2xl font-bold sm:text-3xl ${valueClass}`}>
+    <p className={`mt-1 text-3xl font-bold sm:text-4xl ${hero ? "text-white" : "text-primaryDark"}`}>
       {value}
     </p>
-    {hint && <p className="mt-1 text-xs text-ink-400">{hint}</p>}
+    {hint && (
+      <p className={`mt-1 text-xs ${hero ? "text-white/70" : "text-textSecondary"}`}>
+        {hint}
+      </p>
+    )}
   </div>
 );
 
@@ -87,13 +91,13 @@ const Expenses = () => {
     : "This month";
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6">
-      <div className="flex w-full flex-col gap-4 border-b border-surface-border pb-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
+      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-textPrimary sm:text-3xl">
             Expenses
           </h1>
-          <p className="mt-1 text-sm text-ink-400">
+          <p className="mt-1 text-sm text-textSecondary">
             Track and manage your spending across all categories
           </p>
         </div>
@@ -107,7 +111,7 @@ const Expenses = () => {
           label="Filtered total"
           value={formatCurrency(totalAmount)}
           hint={`${totalCount} expense${totalCount !== 1 ? "s" : ""} in current view`}
-          valueClass="text-accent-expense"
+          hero
         />
         <StatCard
           label="Showing"
@@ -118,7 +122,6 @@ const Expenses = () => {
           label={`${monthLabel} total`}
           value={formatCurrency(stats?.totalAmount)}
           hint="All expenses this month"
-          valueClass="text-accent-expense"
         />
         <StatCard
           label={`${monthLabel} count`}
@@ -136,8 +139,8 @@ const Expenses = () => {
         deleting={deleting}
       />
 
-      <div className="card flex w-full flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <p className="text-sm text-ink-500">
+      <div className="card flex w-full flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-textSecondary">
           {totalCount > 0
             ? `Showing ${expenses.length} of ${totalCount} expenses`
             : "No expenses to display"}
@@ -148,7 +151,7 @@ const Expenses = () => {
             type="button"
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage <= 1 || loading}
-            className="rounded-xl border border-surface-border bg-white px-4 py-2 text-sm font-medium text-ink-700 transition hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl bg-surfaceGray px-4 py-2 text-sm font-medium text-textPrimary transition hover:bg-surfaceLight disabled:cursor-not-allowed disabled:opacity-50"
           >
             Previous
           </button>
@@ -156,7 +159,7 @@ const Expenses = () => {
             type="button"
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage >= totalPages || loading}
-            className="rounded-xl border border-surface-border bg-white px-4 py-2 text-sm font-medium text-ink-700 transition hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl bg-surfaceGray px-4 py-2 text-sm font-medium text-textPrimary transition hover:bg-surfaceLight disabled:cursor-not-allowed disabled:opacity-50"
           >
             Next
           </button>

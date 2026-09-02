@@ -45,7 +45,7 @@ const DateInput = ({
   id,
   name,
   label,
-  labelClassName = "mb-1.5 block text-sm font-medium text-ink-700",
+  labelClassName = "mb-1.5 block text-sm font-medium text-textPrimary",
   value,
   onChange,
   error,
@@ -82,13 +82,13 @@ const DateInput = ({
           } ${error ? "date-field-error" : ""}`}
         />
 
-        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-ink-400">
+        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-textSecondary">
           <CalendarIcon />
         </span>
       </div>
 
       {error && (
-        <p className="mt-1 text-xs text-accent-expense">{error}</p>
+        <p className="mt-1 text-xs text-red-500">{error}</p>
       )}
     </div>
   );

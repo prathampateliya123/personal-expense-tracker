@@ -1,6 +1,6 @@
 /**
  * layouts/DashboardLayout.jsx
- * Authenticated app shell — sidebar, header, content.
+ * Authenticated app shell — light sidebar, header, mobile bottom nav.
  */
 
 import { useState } from "react";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { logoutUser } from "../redux/slices/authSlice";
 import Sidebar from "../components/layout/Sidebar";
 import DashboardHeader from "../components/layout/DashboardHeader";
+import MobileBottomNav from "../components/layout/MobileBottomNav";
 
 const DashboardLayout = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-appBg">
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -38,12 +39,14 @@ const DashboardLayout = () => {
           logoutLoading={loading}
         />
 
-        <main className="dashboard-content w-full min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main className="dashboard-content w-full min-w-0 flex-1 bg-surfaceLight px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="w-full min-w-0">
             <Outlet />
           </div>
         </main>
       </div>
+
+      <MobileBottomNav />
     </div>
   );
 };

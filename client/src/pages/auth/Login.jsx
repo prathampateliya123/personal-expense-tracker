@@ -53,7 +53,7 @@ const Login = () => {
       title="Welcome back"
       subtitle="Sign in to your expense tracker account"
       footer={
-        <p className="text-center text-sm text-ink-400">
+        <p className="text-center text-sm text-textSecondary">
           Don&apos;t have an account?{" "}
           <Link to="/register" className={authLinkClass}>
             Create account
@@ -63,7 +63,7 @@ const Login = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             Email
           </label>
           <input
@@ -82,10 +82,10 @@ const Login = () => {
 
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <label className="text-sm font-medium text-ink-700">Password</label>
+            <label className="text-sm font-medium text-textPrimary">Password</label>
             <Link
               to="/forgot-password"
-              className="text-xs font-medium text-brand-600 hover:text-brand-700"
+              className="text-xs font-medium text-accentGreen hover:text-primaryMid"
             >
               Forgot password?
             </Link>

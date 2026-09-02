@@ -1,6 +1,6 @@
 /**
  * app/toastConfig.js
- * Global react-hot-toast options.
+ * Global react-hot-toast options — light fintech theme.
  */
 
 export const toastOptions = {
@@ -8,15 +8,18 @@ export const toastOptions = {
   toastOptions: {
     duration: 3000,
     style: {
-      background: "#14201D",
-      color: "#F6F9F8",
+      background: "#FFFFFF",
+      color: "#111827",
       fontSize: "14px",
+      border: "1px solid #E5E7EB",
+      borderRadius: "16px",
+      boxShadow: "0 4px 24px rgba(17, 24, 39, 0.08)",
     },
     success: {
-      iconTheme: { primary: "#10B981", secondary: "#14201D" },
+      iconTheme: { primary: "#22A96C", secondary: "#DCFCE7" },
     },
     error: {
-      iconTheme: { primary: "#F43F5E", secondary: "#14201D" },
+      iconTheme: { primary: "#EF4444", secondary: "#FEE2E2" },
     },
   },
 };

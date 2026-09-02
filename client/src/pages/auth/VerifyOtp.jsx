@@ -102,24 +102,24 @@ const VerifyOtp = () => {
       title={meta.title}
       subtitle={meta.subtitle}
       footer={
-        <p className="text-center text-sm text-ink-400">
+        <p className="text-center text-sm text-textSecondary">
           <Link to="/login" className={authLinkClass}>
             Back to sign in
           </Link>
         </p>
       }
     >
-      <p className="mb-6 text-center text-sm text-ink-500">
+      <p className="mb-6 text-center text-sm text-textSecondary">
         Code sent to{" "}
-        <span className="font-medium text-ink-800">{email}</span>
+        <span className="font-medium text-textPrimary">{email}</span>
       </p>
 
       {devOtp && (
-        <div className="mb-6 rounded-xl border border-brand-200 bg-brand-50 p-4 text-center">
-          <p className="text-xs font-medium uppercase tracking-wide text-brand-700">
+        <div className="mb-6 rounded-xl border border-accentGreen/20 bg-successBg p-4 text-center">
+          <p className="text-xs font-medium uppercase tracking-wide text-primaryMid">
             Your OTP
           </p>
-          <p className="mt-1 text-2xl font-bold tracking-[0.3em] text-brand-800">
+          <p className="mt-1 text-2xl font-bold tracking-[0.3em] text-primaryDark">
             {devOtp}
           </p>
         </div>
@@ -141,7 +141,7 @@ const VerifyOtp = () => {
         type="button"
         onClick={handleResend}
         disabled={loading}
-        className="mt-4 w-full text-center text-sm font-medium text-brand-600 hover:text-brand-700 disabled:opacity-60"
+        className="mt-4 w-full text-center text-sm font-medium text-accentGreen hover:text-primaryMid disabled:opacity-60"
       >
         Resend OTP
       </button>

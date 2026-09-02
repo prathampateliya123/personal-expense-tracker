@@ -1,6 +1,6 @@
 /**
  * components/expenses/ExpenseFilters.jsx
- * Full-width filter bar with category, payment mode, date range, and search.
+ * Filter bar — fintech light styling.
  */
 
 import { useEffect, useState } from "react";
@@ -17,10 +17,7 @@ import {
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 
-const fieldClass =
-  "w-full rounded-xl border border-surface-border bg-white px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
-
-const labelClass = "mb-1 block text-xs font-medium text-ink-500";
+const labelClass = "mb-1 block text-xs font-medium text-textSecondary";
 
 const ExpenseFilters = () => {
   const dispatch = useDispatch();
@@ -70,14 +67,14 @@ const ExpenseFilters = () => {
     filters.search;
 
   return (
-    <div className="card w-full p-4 sm:p-5">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold text-ink-800">Filters</h2>
+    <div className="card w-full p-5 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold text-textPrimary">Filters</h2>
         {hasActiveFilters && (
           <button
             type="button"
             onClick={handleClear}
-            className="text-sm font-medium text-brand-600 transition hover:text-brand-700"
+            className="text-sm font-medium text-accentGreen hover:text-primaryMid"
           >
             Clear all
           </button>
@@ -92,7 +89,7 @@ const ExpenseFilters = () => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search by title..."
-            className={`${fieldClass} placeholder:text-ink-300`}
+            className="fintech-input"
           />
         </div>
 

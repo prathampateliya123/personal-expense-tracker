@@ -11,10 +11,9 @@ import {
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 
-const inputClass =
-  "w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition placeholder:text-ink-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
+const inputClass = "fintech-input";
 
-const labelClass = "mb-1.5 block text-sm font-medium text-ink-700";
+const labelClass = "mb-1.5 block text-sm font-medium text-textPrimary";
 
 const toDateInputValue = (date) => {
   if (!date) return new Date().toISOString().split("T")[0];
@@ -129,7 +128,7 @@ const ExpenseForm = ({
             placeholder="e.g. Grocery shopping"
           />
           {errors.title && (
-            <p className="mt-1 text-xs text-accent-expense">{errors.title}</p>
+            <p className="mt-1 text-xs text-red-500">{errors.title}</p>
           )}
         </div>
 
@@ -151,7 +150,7 @@ const ExpenseForm = ({
                 placeholder="0"
               />
               {errors.amount && (
-                <p className="mt-1 text-xs text-accent-expense">{errors.amount}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.amount}</p>
               )}
             </div>
             <DateInput
@@ -185,7 +184,7 @@ const ExpenseForm = ({
               placeholder="0"
             />
             {errors.amount && (
-              <p className="mt-1 text-xs text-accent-expense">{errors.amount}</p>
+              <p className="mt-1 text-xs text-red-500">{errors.amount}</p>
             )}
           </div>
 
@@ -267,7 +266,7 @@ const ExpenseForm = ({
       <div
         className={`flex gap-3 ${
           isPage
-            ? "border-t border-surface-border pt-6 sm:justify-end"
+            ? "border-t border-border pt-6 sm:justify-end"
             : "pt-2"
         }`}
       >
@@ -276,7 +275,7 @@ const ExpenseForm = ({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className={`rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-surface-muted disabled:opacity-60 ${
+            className={`rounded-2xl border border-border bg-white px-4 py-2.5 text-sm font-semibold text-textPrimary transition hover:bg-surfaceGray disabled:opacity-60 ${
               isPage ? "sm:min-w-[140px]" : "flex-1"
             }`}
           >

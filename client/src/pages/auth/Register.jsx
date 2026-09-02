@@ -49,7 +49,7 @@ const Register = () => {
       title="Create your account"
       subtitle="Start tracking your expenses in minutes"
       footer={
-        <p className="text-center text-sm text-ink-400">
+        <p className="text-center text-sm text-textSecondary">
           Already have an account?{" "}
           <Link to="/login" className={authLinkClass}>
             Sign in
@@ -59,7 +59,7 @@ const Register = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             Full name
           </label>
           <input
@@ -77,7 +77,7 @@ const Register = () => {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             Email
           </label>
           <input
@@ -95,7 +95,7 @@ const Register = () => {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             Password
           </label>
           <input

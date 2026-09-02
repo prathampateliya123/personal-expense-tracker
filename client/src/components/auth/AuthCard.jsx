@@ -1,5 +1,5 @@
 /**
- * components/AuthCard.jsx
+ * components/auth/AuthCard.jsx
  * Shared card wrapper for auth form pages.
  */
 
@@ -7,11 +7,11 @@ const AuthCard = ({ title, subtitle, children, footer }) => {
   return (
     <div className="card p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-ink-900">
+        <h1 className="text-2xl font-bold tracking-tight text-textPrimary">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-2 text-sm text-ink-400">{subtitle}</p>
+          <p className="mt-2 text-sm text-textSecondary">{subtitle}</p>
         )}
       </div>
       {children}
@@ -21,12 +21,12 @@ const AuthCard = ({ title, subtitle, children, footer }) => {
 };
 
 export const authInputClass =
-  "w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition placeholder:text-ink-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15";
+  "fintech-input";
 
 export const authButtonClass =
-  "w-full rounded-xl bg-brand-600 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/20 transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:cursor-not-allowed disabled:opacity-60";
+  "btn-primary w-full";
 
 export const authLinkClass =
-  "font-medium text-brand-600 transition hover:text-brand-700";
+  "font-medium text-accentGreen transition hover:text-primaryMid";
 
 export default AuthCard;

@@ -45,7 +45,7 @@ const ForgotPassword = () => {
       title="Forgot password?"
       subtitle="Enter your email and we'll send you an OTP"
       footer={
-        <p className="text-center text-sm text-ink-400">
+        <p className="text-center text-sm text-textSecondary">
           Remember your password?{" "}
           <Link to="/login" className={authLinkClass}>
             Sign in
@@ -55,7 +55,7 @@ const ForgotPassword = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             Email
           </label>
           <input

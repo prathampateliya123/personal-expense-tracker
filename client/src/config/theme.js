@@ -4,25 +4,17 @@
  */
 
 export const colors = {
-  brand: {
-    primary: "#059669",
-    light: "#D1FAE5",
-    dark: "#022C22",
-  },
-  ink: {
-    text: "#14201D",
-    muted: "#4D6B63",
-    subtle: "#9BB3AD",
-  },
-  surface: {
-    bg: "#F6F9F8",
-    card: "#FFFFFF",
-    border: "#E2EAE7",
-  },
-  accent: {
-    income: "#10B981",
-    expense: "#F43F5E",
-    warning: "#F59E0B",
-    info: "#0EA5E9",
-  },
+  background: "#FFFFFF", // Tailwind: appBg
+  appBg: "#FFFFFF",
+  surfaceLight: "#F8F9FA",
+  surfaceGray: "#F1F3F5",
+  primaryDark: "#0D3B2E",
+  primaryMid: "#1F5C42",
+  primaryLight: "#3D8B5F",
+  accentGreen: "#22A96C",
+  successBg: "#DCFCE7",
+  successText: "#22C55E",
+  textPrimary: "#111827",
+  textSecondary: "#6B7280",
+  border: "#E5E7EB",
 };

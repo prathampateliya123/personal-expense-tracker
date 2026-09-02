@@ -13,8 +13,8 @@ const ProtectedRoute = () => {
 
   if (initializing) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-surface">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-appBg">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-accentGreen border-t-transparent" />
       </div>
     );
   }

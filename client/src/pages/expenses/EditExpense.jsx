@@ -54,7 +54,7 @@ const EditExpense = () => {
   if (detailLoading) {
     return (
       <div className="flex min-h-[50vh] w-full items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-accentGreen border-t-transparent" />
       </div>
     );
   }
@@ -64,7 +64,7 @@ const EditExpense = () => {
   }
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6">
+    <div className="flex w-full min-w-0 flex-col gap-6 pb-24 lg:pb-6">
       <ExpensePageHeader
         title="Edit expense"
         subtitle={`Update details for "${currentExpense.title}"`}

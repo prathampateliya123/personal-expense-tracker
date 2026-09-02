@@ -61,21 +61,21 @@ const ResetPassword = () => {
       title="Set new password"
       subtitle="Choose a strong password with at least 6 characters"
       footer={
-        <p className="text-center text-sm text-ink-400">
+        <p className="text-center text-sm text-textSecondary">
           <Link to="/login" className={authLinkClass}>
             Back to sign in
           </Link>
         </p>
       }
     >
-      <p className="mb-5 text-center text-sm text-ink-500">
+      <p className="mb-5 text-center text-sm text-textSecondary">
         Resetting password for{" "}
-        <span className="font-medium text-ink-800">{email}</span>
+        <span className="font-medium text-textPrimary">{email}</span>
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             New password
           </label>
           <input
@@ -92,7 +92,7 @@ const ResetPassword = () => {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">
+          <label className="mb-1.5 block text-sm font-medium text-textPrimary">
             Confirm password
           </label>
           <input

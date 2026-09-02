@@ -1,6 +1,6 @@
 /**
  * index.css
- * Global styles — SpendWise-inspired fintech palette.
+ * Light green fintech design system.
  */
 
 @tailwind base;
@@ -13,22 +13,37 @@
   }
 
   body {
-    @apply bg-surface font-sans text-ink-900 antialiased;
+    @apply bg-appBg font-sans text-textPrimary antialiased;
   }
 
   ::selection {
-    background-color: #d1fae5;
-    color: #022c22;
+    background-color: #dcfce7;
+    color: #0d3b2e;
   }
 }
 
 @layer components {
+  .gradient-green-card {
+    background: linear-gradient(135deg, #0d3b2e 0%, #1f5c42 50%, #3d8b5f 100%);
+  }
+
   .btn-primary {
-    @apply rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply rounded-2xl bg-accentGreen px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition;
+    @apply hover:bg-primaryLight focus:outline-none focus:ring-2 focus:ring-accentGreen/30;
+    @apply active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .card {
-    @apply rounded-2xl border border-surface-border bg-surface-card shadow-card;
+    @apply rounded-3xl bg-white shadow-md;
+  }
+
+  .card-flat {
+    @apply rounded-3xl bg-white shadow-sm;
+  }
+
+  .fintech-input {
+    @apply w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm text-textPrimary outline-none transition;
+    @apply placeholder:text-textSecondary/60 focus:border-accentGreen focus:ring-2 focus:ring-accentGreen/15;
   }
 
   .sidebar-scroll::-webkit-scrollbar {
@@ -36,7 +51,7 @@
   }
 
   .sidebar-scroll::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-white/10;
+    @apply rounded-full bg-border;
   }
 
   .dashboard-content {
@@ -44,38 +59,34 @@
   }
 
   .select-field {
-    @apply w-full cursor-pointer appearance-none rounded-xl border border-surface-border bg-white shadow-sm outline-none transition;
-    @apply hover:border-brand-200 hover:bg-brand-50/30;
-    @apply focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15;
-    @apply disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-muted disabled:text-ink-400 disabled:opacity-70;
+    @apply w-full cursor-pointer appearance-none rounded-2xl border border-border bg-white text-textPrimary shadow-sm outline-none transition;
+    @apply hover:border-primaryLight/40 hover:bg-surfaceLight;
+    @apply focus:border-accentGreen focus:ring-2 focus:ring-accentGreen/15;
+    @apply disabled:cursor-not-allowed disabled:bg-surfaceGray disabled:text-textSecondary disabled:opacity-70;
   }
 
   .select-field-error {
-    @apply border-accent-expense focus:border-accent-expense focus:ring-accent-expense/15;
+    @apply border-red-400 focus:border-red-400 focus:ring-red-400/15;
   }
 
   .select-field option {
-    @apply bg-white text-ink-900;
-  }
-
-  .select-field option:checked {
-    @apply bg-brand-50 text-brand-800;
+    @apply bg-white text-textPrimary;
   }
 
   .date-field {
-    @apply w-full cursor-pointer rounded-xl border border-surface-border bg-white text-ink-900 shadow-sm outline-none transition;
-    @apply hover:border-brand-200 hover:bg-brand-50/30;
-    @apply focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15;
-    @apply disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-muted disabled:text-ink-400 disabled:opacity-70;
+    @apply w-full cursor-pointer rounded-2xl border border-border bg-white text-textPrimary shadow-sm outline-none transition;
+    @apply hover:border-primaryLight/40 hover:bg-surfaceLight;
+    @apply focus:border-accentGreen focus:ring-2 focus:ring-accentGreen/15;
+    @apply disabled:cursor-not-allowed disabled:bg-surfaceGray disabled:text-textSecondary disabled:opacity-70;
     color-scheme: light;
   }
 
   .date-field-error {
-    @apply border-accent-expense focus:border-accent-expense focus:ring-accent-expense/15;
+    @apply border-red-400 focus:border-red-400 focus:ring-red-400/15;
   }
 
   .date-field-empty {
-    @apply text-ink-300;
+    @apply text-textSecondary;
   }
 
   .date-field::-webkit-calendar-picker-indicator {
@@ -86,15 +97,20 @@
     @apply w-9;
   }
 
-  .date-field::-webkit-datetime-edit-fields-wrapper {
-    @apply py-0;
-  }
-
   .date-field-empty::-webkit-datetime-edit {
-    @apply text-ink-300;
+    @apply text-textSecondary;
   }
 
   .date-field:not(.date-field-empty)::-webkit-datetime-edit {
-    @apply text-ink-900;
+    @apply text-textPrimary;
+  }
+
+  .quick-action-btn {
+    @apply flex flex-col items-center justify-center gap-2 rounded-2xl bg-surfaceGray px-4 py-4 shadow-sm transition;
+    @apply hover:bg-surfaceLight active:scale-95;
+  }
+
+  .category-chip {
+    @apply inline-flex rounded-xl px-2.5 py-1 text-xs font-semibold;
   }
 }
