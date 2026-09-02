@@ -18,7 +18,7 @@ import { debounce } from "../../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../../utils/constants";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
 import Select from "../ui/Select";
-import DateInput from "../ui/DateInput";
+import DateRangePicker from "../ui/DateRangePicker";
 import ConfirmModal from "../modal/ConfirmModal";
 import TableSearch from "../table/TableSearch";
 import TablePager, { TableLimit } from "../table/TablePager";
@@ -289,21 +289,23 @@ const ExpenseTable = ({
                   </div>
 
                   <div className="table-toolbar__date">
-                    <DateInput
-                      id="filter-start-date"
-                      value={filters.startDate}
-                      onChange={(e) => applyFilter({ startDate: e.target.value })}
-                      size="sm"
-                    />
-                  </div>
-
-                  <div className="table-toolbar__date">
-                    <DateInput
-                      id="filter-end-date"
-                      value={filters.endDate}
-                      onChange={(e) => applyFilter({ endDate: e.target.value })}
-                      size="sm"
-                      min={filters.startDate || undefined}
+                    <DateRangePicker
+                      className="w-full"
+                      startDate={filters.startDate || null}
+                      endDate={filters.endDate || null}
+                      operator="between"
+                      hideOperatorSelect
+                      preferDateRangeLabel
+                      showApplyToast={false}
+                      onApply={(next) => {
+                        applyFilter({
+                          startDate: next.startDate || "",
+                          endDate: next.endDate || "",
+                        });
+                      }}
+                      onClear={() => {
+                        applyFilter({ startDate: "", endDate: "" });
+                      }}
                     />
                   </div>
                 </div>

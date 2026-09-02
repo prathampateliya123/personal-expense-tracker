@@ -141,6 +141,33 @@
     @apply inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold;
   }
 
+  .dropdown-menu__option {
+    @apply flex w-full cursor-pointer items-center justify-between gap-2 whitespace-nowrap px-3.5 py-2.5 text-left text-sm font-medium text-textPrimary transition-colors duration-150;
+    @apply hover:bg-successBg hover:text-primaryDark;
+  }
+
+  .dropdown-menu__option--active {
+    @apply bg-accentGreen font-semibold text-white hover:bg-accentGreen hover:text-white;
+  }
+
+  .dropdown-menu__option--danger {
+    @apply rounded-lg text-red-600 hover:bg-red-50 hover:text-red-600;
+  }
+
+  .date-range-picker {
+    --drp-accent: #22c55e;
+    --drp-accent-soft: #dcfce7;
+    --drp-accent-strong: #15803d;
+    --drp-ink: #1a2e1a;
+    --drp-ink-muted: #5b6b5b;
+    --drp-ink-subtle: #8b9a8b;
+    --drp-border: #e5e7eb;
+    --drp-border-strong: #d1d5db;
+    --drp-surface: #ffffff;
+    --drp-canvas: #f4f7f5;
+    --drp-sidebar-bg: #0d3b2e;
+  }
+
   .expense-table-wrap {
     @apply overflow-x-auto;
   }
@@ -234,18 +261,9 @@
     max-width: min(100%, 180px);
   }
 
-  .table-toolbar__type .select-field {
-    height: 42px;
-  }
-
   .table-toolbar__limit {
     flex: 0 0 auto;
     width: auto;
-  }
-
-  .table-toolbar__limit .select-field {
-    height: 42px;
-    min-width: 72px;
   }
 
   .table-toolbar__date {
@@ -288,8 +306,8 @@
 
     .table-toolbar__date {
       order: 2;
-      flex: 1 1 10rem;
-      max-width: 11rem;
+      flex: 1 1 12rem;
+      max-width: 15rem;
       width: auto;
     }
 
@@ -304,8 +322,8 @@
     }
 
     .table-toolbar__date {
-      flex: 0 0 11rem;
-      max-width: 11rem;
+      flex: 0 0 15rem;
+      max-width: 15rem;
     }
   }
 }

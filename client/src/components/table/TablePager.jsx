@@ -132,6 +132,10 @@ export function TableLimit({ value = DEFAULT_TABLE_LIMIT, onChange, options = TA
       onChange={(event) => onChange?.(Number(event.target.value))}
       options={menuOptions}
       size="sm"
+      autoWidth
+      menuAlign="right"
+      menuMinWidth={72}
+      ariaLabel="Rows per page"
       className="table-toolbar__limit shrink-0"
     />
   );
