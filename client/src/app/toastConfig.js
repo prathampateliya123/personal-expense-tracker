@@ -12,7 +12,7 @@ export const toastOptions = {
       color: "#111827",
       fontSize: "14px",
       border: "1px solid #E5E7EB",
-      borderRadius: "16px",
+      borderRadius: "8px",
       boxShadow: "0 4px 24px rgba(17, 24, 39, 0.08)",
     },
     success: {
