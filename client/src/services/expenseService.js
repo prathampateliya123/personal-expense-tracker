@@ -10,6 +10,8 @@ export const INITIAL_EXPENSE_FILTERS = {
   paymentMode: "",
   startDate: "",
   endDate: "",
+  dateOperator: "",
+  datePreset: "",
   search: "",
   page: 1,
   limit: 10,
@@ -23,6 +25,8 @@ export const buildExpenseQueryParams = (filters = {}) => {
   if (filters.paymentMode) params.set("paymentMode", filters.paymentMode);
   if (filters.startDate) params.set("startDate", filters.startDate);
   if (filters.endDate) params.set("endDate", filters.endDate);
+  if (filters.dateOperator) params.set("dateOperator", filters.dateOperator);
+  if (filters.datePreset) params.set("datePreset", filters.datePreset);
   if (filters.search?.trim()) params.set("search", filters.search.trim());
   if (filters.page) params.set("page", String(filters.page));
   if (filters.limit) params.set("limit", String(filters.limit));

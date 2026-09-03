@@ -154,7 +154,8 @@
     @apply rounded-lg text-red-600 hover:bg-red-50 hover:text-red-600;
   }
 
-  .date-range-picker {
+  .date-range-picker,
+  .date-range-picker-panel {
     --drp-accent: #22c55e;
     --drp-accent-soft: #dcfce7;
     --drp-accent-strong: #15803d;
@@ -166,6 +167,23 @@
     --drp-surface: #ffffff;
     --drp-canvas: #f4f7f5;
     --drp-sidebar-bg: #0d3b2e;
+  }
+
+  .date-range-picker-panel {
+    background-color: var(--drp-surface);
+    color: var(--drp-ink);
+  }
+
+  .date-range-picker-panel .drp-btn-apply:not(:disabled) {
+    background-color: var(--drp-accent);
+    color: #ffffff;
+  }
+
+  .date-range-picker-panel .drp-btn-apply:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    opacity: 1;
+    cursor: not-allowed;
   }
 
   .expense-table-wrap {
@@ -306,8 +324,8 @@
 
     .table-toolbar__date {
       order: 2;
-      flex: 1 1 12rem;
-      max-width: 15rem;
+      flex: 1 1 14rem;
+      max-width: 16rem;
       width: auto;
     }
 
@@ -322,8 +340,8 @@
     }
 
     .table-toolbar__date {
-      flex: 0 0 15rem;
-      max-width: 15rem;
+      flex: 0 0 16rem;
+      max-width: 16rem;
     }
   }
 }

@@ -215,6 +215,7 @@ const ExpenseTable = ({
     filters.paymentMode ||
     filters.startDate ||
     filters.endDate ||
+    filters.dateOperator ||
     filters.search;
 
   const handleDeleteClick = (expense) => setDeleteTarget(expense);
@@ -293,18 +294,24 @@ const ExpenseTable = ({
                       className="w-full"
                       startDate={filters.startDate || null}
                       endDate={filters.endDate || null}
-                      operator="between"
-                      hideOperatorSelect
-                      preferDateRangeLabel
+                      operator={filters.dateOperator || null}
+                      preset={filters.datePreset || null}
                       showApplyToast={false}
                       onApply={(next) => {
                         applyFilter({
+                          dateOperator: next.operator || "",
                           startDate: next.startDate || "",
                           endDate: next.endDate || "",
+                          datePreset: next.preset || "",
                         });
                       }}
                       onClear={() => {
-                        applyFilter({ startDate: "", endDate: "" });
+                        applyFilter({
+                          dateOperator: "",
+                          startDate: "",
+                          endDate: "",
+                          datePreset: "",
+                        });
                       }}
                     />
                   </div>

@@ -1226,14 +1226,14 @@ export default function DateRangePicker({
 
       {createPortal(
       <AnimatePresence>
-        {open && isMobileSheet ? (
+        {open ? (
           <motion.div
-            key="date-sheet-backdrop"
+            key="date-filter-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[70] bg-[var(--drp-sidebar-bg)]/45 sm:hidden"
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className={`fixed inset-0 z-[9998] ${isMobileSheet ? "bg-primaryDark/45 sm:hidden" : "hidden bg-textPrimary/20 md:block"}`}
             onMouseDown={() => setOpen(false)}
             aria-hidden
           />
@@ -1262,7 +1262,7 @@ export default function DateRangePicker({
             }
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             style={panelStyle || undefined}
-            className={`z-[9999] box-border flex max-h-[inherit] min-h-0 min-w-0 flex-col overflow-hidden border border-[var(--drp-border)] bg-[var(--drp-surface)] shadow-[0_18px_50px_rgba(17,24,39,0.16)] ${isMobileSheet ? "rounded-t-[16px] border-b-0" : "rounded-[12px]"
+            className={`date-range-picker-panel z-[9999] box-border flex max-h-[inherit] min-h-0 min-w-0 flex-col overflow-hidden border border-[var(--drp-border)] bg-[var(--drp-surface)] shadow-[0_18px_50px_rgba(13,59,46,0.18)] ${isMobileSheet ? "rounded-t-2xl border-b-0" : "rounded-xl"
               }`}
             onMouseDown={(event) => event.stopPropagation()}
             onWheel={(event) => event.stopPropagation()}
@@ -1453,12 +1453,12 @@ export default function DateRangePicker({
                   </div>
                 </div>
 
-                <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-[var(--drp-canvas)] bg-[var(--drp-surface)] px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+                <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-[var(--drp-border)] bg-[var(--drp-surface)] px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
                   <button
                     type="button"
                     onClick={handleClear}
                     disabled={!canClear}
-                    className="inline-flex h-[38px] w-full items-center justify-center rounded-[7px] border border-[var(--drp-border-strong)] bg-[var(--drp-surface)] px-3 text-[13px] font-semibold text-[var(--drp-ink-muted)] transition-colors hover:border-[var(--drp-ink-subtle)] hover:bg-[var(--drp-canvas)] hover:text-[var(--drp-ink)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:px-4"
+                    className="inline-flex h-[38px] w-full items-center justify-center rounded-lg border border-[var(--drp-border-strong)] bg-[var(--drp-surface)] px-3 text-[13px] font-semibold text-[var(--drp-ink-muted)] transition-colors hover:border-[var(--drp-ink-subtle)] hover:bg-[var(--drp-canvas)] hover:text-[var(--drp-ink)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:px-4"
                   >
                     Clear Filter
                   </button>
@@ -1466,7 +1466,7 @@ export default function DateRangePicker({
                     <button
                       type="button"
                       onClick={handleCancel}
-                      className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[7px] border border-[var(--drp-border-strong)] bg-[var(--drp-surface)] px-4 text-[13px] font-semibold text-[var(--drp-ink)] transition-colors hover:bg-[var(--drp-canvas)] cursor-pointer sm:flex-none"
+                      className="inline-flex h-[38px] flex-1 items-center justify-center rounded-lg border border-[var(--drp-border-strong)] bg-[var(--drp-surface)] px-4 text-[13px] font-semibold text-[var(--drp-ink)] transition-colors hover:bg-[var(--drp-canvas)] cursor-pointer sm:flex-none"
                     >
                       Cancel
                     </button>
@@ -1474,7 +1474,7 @@ export default function DateRangePicker({
                       type="button"
                       onClick={handleApply}
                       disabled={!canApply}
-                      className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[7px] bg-[var(--drp-accent)] px-4 text-[13px] font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
+                      className="drp-btn-apply inline-flex h-[38px] flex-1 items-center justify-center rounded-lg px-4 text-[13px] font-semibold transition hover:opacity-90 cursor-pointer sm:flex-none"
                     >
                       Apply
                     </button>

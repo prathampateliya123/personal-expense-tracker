@@ -26,15 +26,33 @@ const buildExpenseFilter = (userId, query) => {
     filter.title = { $regex: query.search.trim(), $options: "i" };
   }
 
-  if (query.startDate || query.endDate) {
+  const dateOperator = String(query.dateOperator || "between").toLowerCase();
+  const startDate = query.startDate?.trim();
+  const endDate = query.endDate?.trim();
+
+  if (dateOperator === "between" && (startDate || endDate)) {
     filter.date = {};
-    if (query.startDate) {
-      filter.date.$gte = new Date(query.startDate);
+    if (startDate) {
+      filter.date.$gte = new Date(startDate);
     }
-    if (query.endDate) {
-      const end = new Date(query.endDate);
+    if (endDate) {
+      const end = new Date(endDate);
       end.setHours(23, 59, 59, 999);
       filter.date.$lte = end;
+    }
+  } else if (startDate || endDate) {
+    const day = startDate || endDate;
+    const start = new Date(day);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(day);
+    end.setHours(23, 59, 59, 999);
+
+    if (dateOperator === "on") {
+      filter.date = { $gte: start, $lte: end };
+    } else if (dateOperator === "before") {
+      filter.date = { $lt: start };
+    } else if (dateOperator === "after") {
+      filter.date = { $gt: end };
     }
   }
 
