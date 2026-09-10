@@ -3,7 +3,7 @@
  * Category management — list, create, edit, delete.
  */
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../components/ui/Button";
 import ConfirmModal from "../components/modal/ConfirmModal";
@@ -152,14 +152,6 @@ const Categories = () => {
     onError: handleApiError,
   });
 
-  const editForm = useMemo(
-    () =>
-      editing
-        ? { name: editing.name, color: editing.color || "slate" }
-        : form,
-    [editing, form]
-  );
-
   const handleCreate = (e) => {
     e.preventDefault();
     const name = form.name.trim();
@@ -173,14 +165,14 @@ const Categories = () => {
   const handleUpdate = (e) => {
     e.preventDefault();
     if (!editing) return;
-    const name = editForm.name.trim();
+    const name = form.name.trim();
     if (!name) {
       handleApiError({ message: "Category name is required" });
       return;
     }
     updateMutation.mutate({
       id: editing._id,
-      payload: { name, color: editForm.color },
+      payload: { name, color: form.color },
     });
   };
 
@@ -241,7 +233,7 @@ const Categories = () => {
       {editing ? (
         <CategoryFormCard
           title={`Edit “${editing.name}”`}
-          form={editForm}
+          form={form}
           setForm={setForm}
           onSubmit={handleUpdate}
           onCancel={cancelEdit}
@@ -366,7 +358,17 @@ const Categories = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setDeleteTarget(category)}
+                    onClick={() => {
+                      if ((category.expenseCount ?? 0) > 0) {
+                        handleApiError({
+                          message: `Cannot delete "${category.name}" — ${category.expenseCount} expense${
+                            category.expenseCount === 1 ? "" : "s"
+                          } still use it.`,
+                        });
+                        return;
+                      }
+                      setDeleteTarget(category);
+                    }}
                     className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-textSecondary"
                     aria-label={`Delete ${category.name}`}
                   >
@@ -384,11 +386,7 @@ const Categories = () => {
         title="Delete category?"
         description={
           deleteTarget
-            ? deleteTarget.expenseCount > 0
-              ? `"${deleteTarget.name}" is used by ${deleteTarget.expenseCount} expense${
-                  deleteTarget.expenseCount === 1 ? "" : "s"
-                }. Reassign those expenses before deleting.`
-              : `Delete "${deleteTarget.name}"? This cannot be undone.`
+            ? `Delete "${deleteTarget.name}"? This cannot be undone.`
             : ""
         }
         confirmLabel="Delete"
@@ -398,10 +396,7 @@ const Categories = () => {
           if (!deleteMutation.isPending) setDeleteTarget(null);
         }}
         onConfirm={() => {
-          if (!deleteTarget || deleteTarget.expenseCount > 0) {
-            setDeleteTarget(null);
-            return;
-          }
+          if (!deleteTarget) return;
           deleteMutation.mutate(deleteTarget._id);
         }}
       />

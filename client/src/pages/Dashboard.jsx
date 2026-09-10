@@ -139,8 +139,9 @@ const Dashboard = () => {
 
       <div>
         <h2 className="mb-3 text-sm font-semibold text-textPrimary">Quick Actions</h2>
-        <div className="grid max-w-xs grid-cols-1 gap-3 sm:gap-4">
+        <div className="grid max-w-md grid-cols-2 gap-3 sm:gap-4">
           <QuickAction to="/expenses/add" icon="+" label="Add expense" />
+          <QuickAction to="/categories" icon="≡" label="Categories" />
         </div>
       </div>
 

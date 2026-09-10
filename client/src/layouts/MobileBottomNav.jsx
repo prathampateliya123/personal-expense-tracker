@@ -14,7 +14,7 @@ const NAV_ICONS = {
 };
 
 const MobileBottomNav = () => (
-  <nav className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-xs -translate-x-1/2 lg:hidden">
+  <nav className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 lg:hidden">
     <div className="flex items-center justify-around rounded-full bg-primaryDark px-2 py-2 shadow-pill">
       {NAV_ITEMS.map((item) => {
         const Icon = NAV_ICONS[item.key];
