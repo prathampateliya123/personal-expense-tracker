@@ -1,13 +1,16 @@
 /**
  * utils/setupAxiosInterceptors.js
  * Global axios interceptors — 401 session reset and normalized error messages.
+ *
+ * Important: never removeQueries on the active user profile key. That tears down
+ * an observed query and React Query immediately refetches → 401 loop.
  */
 
 import axiosInstance from "./axiosInstance";
 import { PUBLIC_AUTH_URLS } from "./constants";
 import { getApiErrorMessage } from "./helper";
 import { queryClient } from "../lib/queryClient";
-import { userKeys } from "../services/queryKeys";
+import { expenseKeys, userKeys } from "../services/queryKeys";
 
 const isPublicAuthRequest = (url = "") =>
   PUBLIC_AUTH_URLS.some((path) => url.includes(path));
@@ -25,8 +28,10 @@ export const setupAxiosInterceptors = () => {
       }
 
       if (status === 401 && !isPublicAuthRequest(requestUrl)) {
+        // Mark logged-out without destroying the observed profile query
         queryClient.setQueryData(userKeys.profile(), null);
-        queryClient.removeQueries({ queryKey: userKeys.all });
+        // Drop protected resource caches only
+        queryClient.removeQueries({ queryKey: expenseKeys.all });
       }
 
       return Promise.reject(error);

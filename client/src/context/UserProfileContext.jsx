@@ -13,11 +13,16 @@ export function UserProfileProvider({ children }) {
         const data = await authService.getProfile();
         return data.user ?? null;
       } catch (error) {
+        // Unauthenticated — settle as null once (do not throw / retry)
         if (error?.response?.status === 401) return null;
         throw error;
       }
     },
     retry: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   const ensureLoaded = useCallback(() => {
