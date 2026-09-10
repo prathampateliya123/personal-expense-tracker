@@ -27,6 +27,7 @@ import Categories from "./pages/Categories";
 import PaymentMethods from "./pages/PaymentMethods";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
+import SettingsLayout from "./layouts/SettingsLayout";
 
 const AuthLoading = () => (
   <div className="flex min-h-screen items-center justify-center bg-appBg">
@@ -78,9 +79,16 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/payment-methods" element={<PaymentMethods />} />
           <Route path="/expenses/add" element={<AddExpense />} />
           <Route path="/expenses/:id/edit" element={<EditExpense />} />
+          <Route path="/settings" element={<SettingsLayout />}>
+            <Route index element={<Navigate to="payment-methods" replace />} />
+            <Route path="payment-methods" element={<PaymentMethods />} />
+          </Route>
+          <Route
+            path="/payment-methods"
+            element={<Navigate to="/settings/payment-methods" replace />}
+          />
         </Route>
       </Route>
 

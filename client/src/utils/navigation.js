@@ -4,12 +4,23 @@
  */
 
 export const SIDEBAR_WIDTH = 272;
+export const SETTINGS_SIDEBAR_WIDTH = 240;
 
+/** Main app navigation */
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "categories", to: "/categories", label: "Categories" },
-  { key: "paymentMethods", to: "/payment-methods", label: "Payments" },
+  { key: "settings", to: "/settings", label: "Settings" },
+];
+
+/** Nested settings sidebar */
+export const SETTINGS_NAV_ITEMS = [
+  {
+    key: "paymentMethods",
+    to: "/settings/payment-methods",
+    label: "Payment methods",
+  },
 ];
 
 export const PAGE_META = {
@@ -33,10 +44,15 @@ export const PAGE_META = {
     subtitle: "Organize expenses with custom categories",
     breadcrumb: ["Home", "Categories"],
   },
-  "/payment-methods": {
+  "/settings": {
+    title: "Settings",
+    subtitle: "Manage app preferences",
+    breadcrumb: ["Home", "Settings"],
+  },
+  "/settings/payment-methods": {
     title: "Payment methods",
     subtitle: "Manage Cash, UPI, Card, and more",
-    breadcrumb: ["Home", "Payment methods"],
+    breadcrumb: ["Home", "Settings", "Payment methods"],
   },
 };
 
