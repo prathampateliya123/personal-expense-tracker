@@ -1,20 +1,21 @@
 /**
  * utils/theme.js
- * Central color tokens for JS usage (charts, inline styles, etc.)
+ * Central color tokens — forest mint palette.
  */
 
 export const colors = {
-  background: "#FFFFFF", // Tailwind: appBg
+  background: "#FFFFFF",
   appBg: "#FFFFFF",
-  surfaceLight: "#F8F9FA",
-  surfaceGray: "#F1F3F5",
-  primaryDark: "#0D3B2E",
-  primaryMid: "#1F5C42",
-  primaryLight: "#3D8B5F",
-  accentGreen: "#22A96C",
-  successBg: "#DCFCE7",
-  successText: "#22C55E",
-  textPrimary: "#111827",
-  textSecondary: "#6B7280",
-  border: "#E5E7EB",
+  surfaceLight: "#DAF1DE",
+  surfaceGray: "#E8F5EB",
+  primaryDark: "#051F20",
+  primaryMid: "#0B2B26",
+  primaryLight: "#163832",
+  accentGreen: "#235347",
+  accentSage: "#8EB69B",
+  successBg: "#DAF1DE",
+  successText: "#235347",
+  textPrimary: "#051F20",
+  textSecondary: "#4A6B5E",
+  border: "#BFD9C8",
 };

@@ -1,6 +1,6 @@
 /**
  * utils/toastConfig.js
- * Global react-hot-toast options — light fintech theme.
+ * Global react-hot-toast options — forest mint theme.
  */
 
 export const toastOptions = {
@@ -9,14 +9,14 @@ export const toastOptions = {
     duration: 3000,
     style: {
       background: "#FFFFFF",
-      color: "#111827",
+      color: "#051F20",
       fontSize: "14px",
-      border: "1px solid #E5E7EB",
+      border: "1px solid #BFD9C8",
       borderRadius: "8px",
       boxShadow: "none",
     },
     success: {
-      iconTheme: { primary: "#22A96C", secondary: "#DCFCE7" },
+      iconTheme: { primary: "#235347", secondary: "#DAF1DE" },
     },
     error: {
       iconTheme: { primary: "#EF4444", secondary: "#FEE2E2" },

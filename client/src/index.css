@@ -1,6 +1,6 @@
 /**
  * index.css
- * Light green fintech design system.
+ * Forest mint design system.
  */
 
 @tailwind base;
@@ -19,20 +19,21 @@
   }
 
   ::selection {
-    background-color: #dcfce7;
-    color: #0d3b2e;
+    background-color: #daf1de;
+    color: #051f20;
   }
 }
 
 @layer components {
-  .gradient-green-card {
-    background: linear-gradient(135deg, #0d3b2e 0%, #1f5c42 50%, #3d8b5f 100%);
+  .gradient-green-card,
+  .gradient-brand-card {
+    background: linear-gradient(135deg, #051f20 0%, #0b2b26 40%, #235347 100%);
     border-radius: 8px;
   }
 
   .btn-primary {
     @apply rounded-lg bg-accentGreen px-4 py-2.5 text-sm font-semibold text-white transition;
-    @apply hover:bg-primaryLight focus:outline-none focus:ring-2 focus:ring-accentGreen/30;
+    @apply hover:bg-primaryLight focus:outline-none focus:ring-2 focus:ring-accentGreen/40;
     @apply active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
   }
 
@@ -65,7 +66,7 @@
 
   .dashboard-main-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #e5e7eb transparent;
+    scrollbar-color: #bfd9c8 transparent;
   }
 
   .dashboard-main-scroll::-webkit-scrollbar {
@@ -156,17 +157,17 @@
 
   .date-range-picker,
   .date-range-picker-panel {
-    --drp-accent: #22c55e;
-    --drp-accent-soft: #dcfce7;
-    --drp-accent-strong: #15803d;
-    --drp-ink: #1a2e1a;
-    --drp-ink-muted: #5b6b5b;
-    --drp-ink-subtle: #8b9a8b;
-    --drp-border: #e5e7eb;
-    --drp-border-strong: #d1d5db;
+    --drp-accent: #235347;
+    --drp-accent-soft: #daf1de;
+    --drp-accent-strong: #163832;
+    --drp-ink: #051f20;
+    --drp-ink-muted: #4a6b5e;
+    --drp-ink-subtle: #8eb69b;
+    --drp-border: #bfd9c8;
+    --drp-border-strong: #8eb69b;
     --drp-surface: #ffffff;
-    --drp-canvas: #f4f7f5;
-    --drp-sidebar-bg: #0d3b2e;
+    --drp-canvas: #daf1de;
+    --drp-sidebar-bg: #0b2b26;
   }
 
   .date-range-picker-panel {

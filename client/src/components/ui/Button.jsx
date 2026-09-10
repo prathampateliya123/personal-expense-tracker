@@ -16,7 +16,7 @@ export default function Button({
 }) {
   const variants = {
     primary:
-      "bg-primaryDark text-white hover:bg-primaryMid disabled:opacity-70",
+      "bg-accentGreen text-white hover:bg-primaryLight disabled:opacity-70",
     secondary:
       "border border-border bg-white text-textPrimary hover:bg-surfaceLight disabled:opacity-50",
     ghost:
