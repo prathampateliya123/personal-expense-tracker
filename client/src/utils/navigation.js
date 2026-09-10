@@ -9,6 +9,7 @@ export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "categories", to: "/categories", label: "Categories" },
+  { key: "paymentMethods", to: "/payment-methods", label: "Payments" },
 ];
 
 export const PAGE_META = {
@@ -31,6 +32,11 @@ export const PAGE_META = {
     title: "Categories",
     subtitle: "Organize expenses with custom categories",
     breadcrumb: ["Home", "Categories"],
+  },
+  "/payment-methods": {
+    title: "Payment methods",
+    subtitle: "Manage Cash, UPI, Card, and more",
+    breadcrumb: ["Home", "Payment methods"],
   },
 };
 

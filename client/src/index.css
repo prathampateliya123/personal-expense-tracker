@@ -195,8 +195,10 @@
     min-width: 0;
     max-width: 100%;
     border: 1px solid theme("colors.border");
+    border-radius: 8px;
     background-color: #ffffff;
     box-shadow: none;
+    overflow: hidden;
   }
 
   .table-panel table {

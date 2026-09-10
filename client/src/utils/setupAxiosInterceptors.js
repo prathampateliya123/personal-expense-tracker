@@ -33,6 +33,7 @@ export const setupAxiosInterceptors = () => {
         // Drop protected resource caches only
         queryClient.removeQueries({ queryKey: expenseKeys.all });
         queryClient.removeQueries({ queryKey: ["categories"] });
+        queryClient.removeQueries({ queryKey: ["paymentMethods"] });
       }
 
       return Promise.reject(error);

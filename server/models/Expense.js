@@ -18,8 +18,6 @@ export const EXPENSE_CATEGORIES = [
   "Other",
 ];
 
-export const PAYMENT_MODES = ["Cash", "UPI", "Card", "Bank Transfer"];
-
 const expenseSchema = new mongoose.Schema(
   {
     userId: {
@@ -45,8 +43,8 @@ const expenseSchema = new mongoose.Schema(
     },
     paymentMode: {
       type: String,
-      enum: PAYMENT_MODES,
-      default: "Cash",
+      required: [true, "Payment method is required"],
+      trim: true,
     },
     date: {
       type: Date,

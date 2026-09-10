@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
-  PAYMENT_MODES,
   formatCurrency,
   formatExpenseDate,
 } from "../../utils/expenseConstants";
@@ -18,7 +17,8 @@ import {
 } from "../../utils/categoryColors";
 import { INITIAL_EXPENSE_FILTERS } from "../../services/expenseService";
 import categoryService from "../../services/categoryService";
-import { categoryKeys } from "../../services/queryKeys";
+import paymentMethodService from "../../services/paymentMethodService";
+import { categoryKeys, paymentMethodKeys } from "../../services/queryKeys";
 import { debounce } from "../../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../../utils/constants";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
@@ -206,7 +206,16 @@ const ExpenseTable = ({
     },
   });
 
+  const paymentMethodsQuery = useQuery({
+    queryKey: paymentMethodKeys.options(),
+    queryFn: async () => {
+      const data = await paymentMethodService.options();
+      return data.paymentMethods ?? [];
+    },
+  });
+
   const categoryOptions = (categoriesQuery.data ?? []).map((c) => c.name);
+  const paymentOptions = (paymentMethodsQuery.data ?? []).map((p) => p.name);
   const colorMap = useMemo(
     () => buildCategoryColorMap(categoriesQuery.data ?? []),
     [categoriesQuery.data]
@@ -294,7 +303,7 @@ const ExpenseTable = ({
                         value={filters.paymentMode}
                         onChange={(e) => applyFilter({ paymentMode: e.target.value })}
                         placeholder="Payment"
-                        options={PAYMENT_MODES}
+                        options={paymentOptions}
                         size="sm"
                         className="table-toolbar__type"
                       />

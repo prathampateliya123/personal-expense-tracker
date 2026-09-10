@@ -5,16 +5,17 @@
 
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS } from "../utils/navigation";
-import { IconDashboard, IconExpenses, IconCategories } from "../components/ui/Icons";
+import { IconDashboard, IconExpenses, IconCategories, IconPayments } from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
   categories: IconCategories,
+  paymentMethods: IconPayments,
 };
 
 const MobileBottomNav = () => (
-  <nav className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 lg:hidden">
+  <nav className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 lg:hidden">
     <div className="flex items-center justify-around rounded-full bg-primaryDark px-2 py-2">
       {NAV_ITEMS.map((item) => {
         const Icon = NAV_ICONS[item.key];

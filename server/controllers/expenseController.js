@@ -3,8 +3,9 @@
  * CRUD and stats for logged-in user's expenses.
  */
 
-import Expense, { PAYMENT_MODES } from "../models/Expense.js";
+import Expense from "../models/Expense.js";
 import Category from "../models/Category.js";
+import PaymentMethod from "../models/PaymentMethod.js";
 
 /**
  * Build a MongoDB filter from query params for the current user.
@@ -16,8 +17,8 @@ const buildExpenseFilter = (userId, query) => {
     filter.category = query.category.trim();
   }
 
-  if (query.paymentMode && PAYMENT_MODES.includes(query.paymentMode)) {
-    filter.paymentMode = query.paymentMode;
+  if (query.paymentMode?.trim()) {
+    filter.paymentMode = query.paymentMode.trim();
   }
 
   if (query.search?.trim()) {
@@ -102,6 +103,7 @@ const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
       return "Amount is required";
     }
     if (!category) return "Category is required";
+    if (!paymentMode) return "Payment method is required";
   }
 
   if (title !== undefined && !String(title).trim()) {
@@ -123,8 +125,12 @@ const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
     if (!exists) return "Invalid category";
   }
 
-  if (paymentMode !== undefined && !PAYMENT_MODES.includes(paymentMode)) {
-    return "Invalid payment mode";
+  if (paymentMode !== undefined) {
+    const exists = await PaymentMethod.findOne({
+      userId,
+      name: String(paymentMode).trim(),
+    });
+    if (!exists) return "Invalid payment method";
   }
 
   return null;
@@ -150,7 +156,7 @@ export const addExpense = async (req, res, next) => {
       title: title.trim(),
       amount: Number(amount),
       category: String(category).trim(),
-      paymentMode: paymentMode || "Cash",
+      paymentMode: String(paymentMode).trim(),
       date: date ? new Date(date) : new Date(),
       description: description?.trim() || "",
       receiptUrl: receiptUrl?.trim() || "",
@@ -325,7 +331,7 @@ export const updateExpense = async (req, res, next) => {
     if (title !== undefined) expense.title = title.trim();
     if (amount !== undefined) expense.amount = Number(amount);
     if (category !== undefined) expense.category = String(category).trim();
-    if (paymentMode !== undefined) expense.paymentMode = paymentMode;
+    if (paymentMode !== undefined) expense.paymentMode = String(paymentMode).trim();
     if (date !== undefined) expense.date = new Date(date);
     if (description !== undefined) expense.description = description.trim();
     if (receiptUrl !== undefined) expense.receiptUrl = receiptUrl.trim();

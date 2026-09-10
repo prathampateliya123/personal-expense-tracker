@@ -1,9 +1,7 @@
 /**
  * utils/expenseConstants.js
- * Shared payment modes and formatting helpers.
+ * Shared formatting helpers for expenses.
  */
-
-export const PAYMENT_MODES = ["Cash", "UPI", "Card", "Bank Transfer"];
 
 export const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {

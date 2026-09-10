@@ -107,6 +107,10 @@ const connectDB = async () => {
     console.log(`MongoDB connected: ${conn.connection.host}`);
     const { ensureCategoryIndexes } = await import("../models/Category.js");
     await ensureCategoryIndexes();
+    const { ensurePaymentMethodIndexes } = await import(
+      "../models/PaymentMethod.js"
+    );
+    await ensurePaymentMethodIndexes();
   } catch (error) {
     const isSrvError =
       error.message.includes("querySrv") ||

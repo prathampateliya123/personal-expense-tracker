@@ -5,11 +5,11 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { PAYMENT_MODES } from "../../utils/expenseConstants";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 import categoryService from "../../services/categoryService";
-import { categoryKeys } from "../../services/queryKeys";
+import paymentMethodService from "../../services/paymentMethodService";
+import { categoryKeys, paymentMethodKeys } from "../../services/queryKeys";
 
 const inputClass = "fintech-input";
 
@@ -24,7 +24,7 @@ const emptyForm = {
   title: "",
   amount: "",
   category: "",
-  paymentMode: "Cash",
+  paymentMode: "",
   date: toDateInputValue(),
   description: "",
 };
@@ -57,7 +57,16 @@ const ExpenseForm = ({
     },
   });
 
+  const paymentMethodsQuery = useQuery({
+    queryKey: paymentMethodKeys.options(),
+    queryFn: async () => {
+      const data = await paymentMethodService.options();
+      return data.paymentMethods ?? [];
+    },
+  });
+
   const categoryOptions = (categoriesQuery.data ?? []).map((c) => c.name);
+  const paymentOptions = (paymentMethodsQuery.data ?? []).map((p) => p.name);
 
   useEffect(() => {
     if (initialData) {
@@ -65,7 +74,7 @@ const ExpenseForm = ({
         title: initialData.title || "",
         amount: String(initialData.amount ?? ""),
         category: initialData.category || "",
-        paymentMode: initialData.paymentMode || "Cash",
+        paymentMode: initialData.paymentMode || "",
         date: toDateInputValue(initialData.date),
         description: initialData.description || "",
       });
@@ -97,6 +106,10 @@ const ExpenseForm = ({
 
     if (!form.category) {
       nextErrors.category = "Category is required";
+    }
+
+    if (!form.paymentMode) {
+      nextErrors.paymentMode = "Payment method is required";
     }
 
     setErrors(nextErrors);
@@ -227,7 +240,9 @@ const ExpenseForm = ({
             labelClassName={labelClass}
             value={form.paymentMode}
             onChange={handleChange}
-            options={PAYMENT_MODES}
+            placeholder="Select payment method"
+            options={paymentOptions}
+            error={errors.paymentMode}
           />
         </div>
       )}
@@ -253,7 +268,9 @@ const ExpenseForm = ({
             labelClassName={labelClass}
             value={form.paymentMode}
             onChange={handleChange}
-            options={PAYMENT_MODES}
+            placeholder="Select payment method"
+            options={paymentOptions}
+            error={errors.paymentMode}
           />
         </div>
       )}
