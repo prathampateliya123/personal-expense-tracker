@@ -1,21 +1,9 @@
 /**
  * models/Category.js
- * Per-user expense categories (seeded with defaults on first use).
+ * Per-user expense categories (fully dynamic — no seeded defaults).
  */
 
 import mongoose from "mongoose";
-
-export const DEFAULT_CATEGORIES = [
-  { name: "Food", color: "amber", sortOrder: 1 },
-  { name: "Travel", color: "sky", sortOrder: 2 },
-  { name: "Shopping", color: "violet", sortOrder: 3 },
-  { name: "Bills", color: "rose", sortOrder: 4 },
-  { name: "Entertainment", color: "pink", sortOrder: 5 },
-  { name: "Health", color: "emerald", sortOrder: 6 },
-  { name: "Education", color: "indigo", sortOrder: 7 },
-  { name: "Rent", color: "orange", sortOrder: 8 },
-  { name: "Other", color: "slate", sortOrder: 9 },
-];
 
 export const CATEGORY_COLOR_KEYS = [
   "amber",
@@ -54,10 +42,6 @@ const categorySchema = new mongoose.Schema(
     sortOrder: {
       type: Number,
       default: 0,
-    },
-    isDefault: {
-      type: Boolean,
-      default: false,
     },
   },
   {

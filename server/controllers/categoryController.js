@@ -1,31 +1,15 @@
 /**
  * controllers/categoryController.js
- * CRUD for logged-in user's expense categories.
+ * CRUD for logged-in user's expense categories — search + pagination.
  */
 
-import Category, {
-  CATEGORY_COLOR_KEYS,
-  DEFAULT_CATEGORIES,
-} from "../models/Category.js";
+import Category, { CATEGORY_COLOR_KEYS } from "../models/Category.js";
 import Expense from "../models/Expense.js";
 
 const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
 
-/**
- * Seed default categories once per user (idempotent).
- */
-export const ensureDefaultCategories = async (userId) => {
-  const count = await Category.countDocuments({ userId });
-  if (count > 0) return;
-
-  await Category.insertMany(
-    DEFAULT_CATEGORIES.map((item) => ({
-      ...item,
-      userId,
-      isDefault: true,
-    }))
-  );
-};
+const escapeRegex = (value = "") =>
+  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const findOwnedCategory = async (categoryId, userId) => {
   const category = await Category.findById(categoryId);
@@ -46,8 +30,14 @@ const findOwnedCategory = async (categoryId, userId) => {
 };
 
 const withExpenseCounts = async (userId, categories) => {
+  const names = categories.map((cat) =>
+    cat.toObject ? cat.toObject().name : cat.name
+  );
+
+  if (names.length === 0) return [];
+
   const counts = await Expense.aggregate([
-    { $match: { userId } },
+    { $match: { userId, category: { $in: names } } },
     { $group: { _id: "$category", count: { $sum: 1 } } },
   ]);
 
@@ -64,23 +54,72 @@ const withExpenseCounts = async (userId, categories) => {
   });
 };
 
+const buildCategoryFilter = (userId, query = {}) => {
+  const filter = { userId };
+
+  if (query.search?.trim()) {
+    filter.name = {
+      $regex: escapeRegex(query.search.trim()),
+      $options: "i",
+    };
+  }
+
+  if (query.color && CATEGORY_COLOR_KEYS.includes(query.color)) {
+    filter.color = query.color;
+  }
+
+  return filter;
+};
+
 /**
  * @route   GET /api/categories
+ * @desc    Paginated category list with search / color filter
  */
 export const getCategories = async (req, res, next) => {
   try {
-    await ensureDefaultCategories(req.user._id);
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 10));
+    const skip = (page - 1) * limit;
+    const filter = buildCategoryFilter(req.user._id, req.query);
 
-    const categories = await Category.find({ userId: req.user._id }).sort({
-      sortOrder: 1,
-      name: 1,
-    });
+    const [categories, totalCount] = await Promise.all([
+      Category.find(filter)
+        .sort({ sortOrder: 1, name: 1 })
+        .skip(skip)
+        .limit(limit),
+      Category.countDocuments(filter),
+    ]);
 
     const withCounts = await withExpenseCounts(req.user._id, categories);
+    const totalPages = Math.ceil(totalCount / limit) || 1;
 
     res.status(200).json({
       success: true,
       categories: withCounts,
+      totalCount,
+      totalPages,
+      currentPage: page,
+      limit,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @route   GET /api/categories/options
+ * @desc    Lightweight list for expense form/filter dropdowns
+ */
+export const getCategoryOptions = async (req, res, next) => {
+  try {
+    const categories = await Category.find({ userId: req.user._id })
+      .sort({ sortOrder: 1, name: 1 })
+      .select("name color")
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      categories,
     });
   } catch (error) {
     next(error);
@@ -92,8 +131,6 @@ export const getCategories = async (req, res, next) => {
  */
 export const createCategory = async (req, res, next) => {
   try {
-    await ensureDefaultCategories(req.user._id);
-
     const name = normalizeName(req.body.name);
     const color = req.body.color || "slate";
 
@@ -114,7 +151,7 @@ export const createCategory = async (req, res, next) => {
 
     const existing = await Category.findOne({
       userId: req.user._id,
-      name: { $regex: `^${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+      name: { $regex: `^${escapeRegex(name)}$`, $options: "i" },
     });
 
     if (existing) {
@@ -186,7 +223,7 @@ export const updateCategory = async (req, res, next) => {
       userId: req.user._id,
       _id: { $ne: category._id },
       name: {
-        $regex: `^${nextName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+        $regex: `^${escapeRegex(nextName)}$`,
         $options: "i",
       },
     });

@@ -66,9 +66,9 @@ const Dashboard = () => {
   });
 
   const categoriesQuery = useQuery({
-    queryKey: categoryKeys.list(),
+    queryKey: categoryKeys.options(),
     queryFn: async () => {
-      const data = await categoryService.list();
+      const data = await categoryService.options();
       return data.categories ?? [];
     },
   });

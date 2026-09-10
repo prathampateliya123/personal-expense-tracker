@@ -1,19 +1,24 @@
 /**
  * pages/Categories.jsx
- * Category management — list, create, edit, delete.
+ * Category management — backend search, filters, and pagination.
  */
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../components/ui/Button";
+import Select from "../components/ui/Select";
 import ConfirmModal from "../components/modal/ConfirmModal";
+import TableSearch from "../components/table/TableSearch";
+import TablePager, { TableLimit } from "../components/table/TablePager";
 import {
   PencilSquareIcon,
   TrashIcon,
   IconPlus,
 } from "../components/ui/Icons";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
-import categoryService from "../services/categoryService";
+import categoryService, {
+  INITIAL_CATEGORY_FILTERS,
+} from "../services/categoryService";
 import { categoryKeys, expenseKeys } from "../services/queryKeys";
 import {
   CATEGORY_COLOR_OPTIONS,
@@ -21,6 +26,8 @@ import {
   getCategoryChipClass,
   getCategoryColorMeta,
 } from "../utils/categoryColors";
+import { debounce } from "../utils/helper";
+import { DEFAULT_DEBOUNCE_MS } from "../utils/constants";
 
 const emptyForm = { name: "", color: "slate" };
 
@@ -62,7 +69,10 @@ const CategoryFormCard = ({
   >
     <h2 className="text-base font-semibold text-textPrimary">{title}</h2>
     <div>
-      <label htmlFor="category-name" className="mb-1.5 block text-sm font-medium text-textPrimary">
+      <label
+        htmlFor="category-name"
+        className="mb-1.5 block text-sm font-medium text-textPrimary"
+      >
         Name
       </label>
       <input
@@ -85,7 +95,12 @@ const CategoryFormCard = ({
     </div>
     <div className="flex flex-wrap gap-2 sm:justify-end">
       {onCancel ? (
-        <Button type="button" variant="secondary" onClick={onCancel} disabled={loading}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          disabled={loading}
+        >
           Cancel
         </Button>
       ) : null}
@@ -98,20 +113,40 @@ const CategoryFormCard = ({
 
 const Categories = () => {
   const queryClient = useQueryClient();
+  const [filters, setFilters] = useState({ ...INITIAL_CATEGORY_FILTERS });
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
 
+  const debounceSearch = useMemo(
+    () => debounce(setDebouncedSearch, DEFAULT_DEBOUNCE_MS),
+    []
+  );
+
+  useEffect(() => {
+    debounceSearch(searchInput);
+    return () => debounceSearch.cancel();
+  }, [searchInput, debounceSearch]);
+
+  useEffect(() => {
+    if (debouncedSearch === filters.search) return;
+    setFilters((prev) => ({ ...prev, search: debouncedSearch, page: 1 }));
+  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const listQuery = useQuery({
-    queryKey: categoryKeys.list(),
-    queryFn: async () => {
-      const data = await categoryService.list();
-      return data.categories ?? [];
-    },
+    queryKey: categoryKeys.list(filters),
+    queryFn: () => categoryService.list(filters),
+    placeholderData: (previous) => previous,
   });
 
-  const categories = listQuery.data ?? [];
+  const categories = listQuery.data?.categories ?? [];
+  const totalCount = listQuery.data?.totalCount ?? 0;
+  const totalPages = listQuery.data?.totalPages ?? 1;
+  const currentPage = listQuery.data?.currentPage ?? filters.page;
+  const loading = listQuery.isLoading || listQuery.isFetching;
 
   const invalidateRelated = async () => {
     await Promise.all([
@@ -187,7 +222,34 @@ const Categories = () => {
     setForm(emptyForm);
   };
 
-  const loading = listQuery.isLoading;
+  const applyFilter = (updates) => {
+    setFilters((prev) => ({ ...prev, ...updates, page: 1 }));
+  };
+
+  const handleClear = () => {
+    setSearchInput("");
+    setDebouncedSearch("");
+    setFilters({ ...INITIAL_CATEGORY_FILTERS });
+  };
+
+  const hasActiveFilters = Boolean(filters.search || filters.color);
+
+  const colorFilterOptions = CATEGORY_COLOR_OPTIONS.map((opt) => ({
+    value: opt.key,
+    label: opt.label,
+  }));
+
+  const requestDelete = (category) => {
+    if ((category.expenseCount ?? 0) > 0) {
+      handleApiError({
+        message: `Cannot delete "${category.name}" — ${category.expenseCount} expense${
+          category.expenseCount === 1 ? "" : "s"
+        } still use it.`,
+      });
+      return;
+    }
+    setDeleteTarget(category);
+  };
 
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
@@ -243,17 +305,73 @@ const Categories = () => {
       ) : null}
 
       <div className="table-panel card w-full overflow-hidden">
-        {loading ? (
+        <div className="border-b border-border/60 bg-surfaceLight/50 px-3 py-2.5 sm:px-4 sm:py-3">
+          <div className="table-toolbar">
+            <div className="table-toolbar__row">
+              <div className="table-toolbar__search">
+                <div className="table-toolbar__search-field">
+                  <TableSearch
+                    value={searchInput}
+                    onChange={setSearchInput}
+                    placeholder="Search categories..."
+                  />
+                </div>
+              </div>
+
+              <div className="table-toolbar__controls">
+                <div className="table-toolbar__control-row">
+                  <div className="table-toolbar__tools-wrap">
+                    <div className="table-toolbar__tools table-toolbar__controls-start">
+                      <Select
+                        id="filter-category-color"
+                        value={filters.color}
+                        onChange={(e) => applyFilter({ color: e.target.value })}
+                        placeholder="Color"
+                        options={colorFilterOptions}
+                        size="sm"
+                        className="table-toolbar__type"
+                      />
+
+                      <TableLimit
+                        value={filters.limit}
+                        onChange={(limit) => applyFilter({ limit })}
+                      />
+
+                      {hasActiveFilters ? (
+                        <button
+                          type="button"
+                          onClick={handleClear}
+                          className="shrink-0 text-sm font-medium text-accentGreen hover:text-primaryMid"
+                        >
+                          Clear
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {loading && categories.length === 0 ? (
           <div className="space-y-3 p-5">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-14 animate-pulse rounded-lg bg-surfaceGray" />
+              <div
+                key={i}
+                className="h-14 animate-pulse rounded-lg bg-surfaceGray"
+              />
             ))}
           </div>
         ) : categories.length === 0 ? (
           <div className="px-6 py-16 text-center">
-            <h3 className="text-lg font-semibold text-textPrimary">No categories yet</h3>
+            <h3 className="text-lg font-semibold text-textPrimary">
+              {hasActiveFilters ? "No categories found" : "No categories yet"}
+            </h3>
             <p className="mt-1 text-sm text-textSecondary">
-              Add your first category to start organizing expenses.
+              {hasActiveFilters
+                ? "Try adjusting your search or color filter."
+                : "Add your first category to start organizing expenses."}
             </p>
           </div>
         ) : (
@@ -281,16 +399,15 @@ const Categories = () => {
                           >
                             {category.name?.[0] || "?"}
                           </div>
-                          <div>
-                            <p className="font-semibold text-textPrimary">{category.name}</p>
-                            {category.isDefault ? (
-                              <p className="text-xs text-textSecondary">Default</p>
-                            ) : null}
-                          </div>
+                          <p className="font-semibold text-textPrimary">
+                            {category.name}
+                          </p>
                         </div>
                       </td>
                       <td className="px-5 py-4">
-                        <span className={`category-chip ${getCategoryChipClass(category)}`}>
+                        <span
+                          className={`category-chip ${getCategoryChipClass(category)}`}
+                        >
                           {getCategoryColorMeta(category.color).label}
                         </span>
                       </td>
@@ -309,17 +426,7 @@ const Categories = () => {
                           </button>
                           <button
                             type="button"
-                            onClick={() => {
-                              if ((category.expenseCount ?? 0) > 0) {
-                                handleApiError({
-                                  message: `Cannot delete "${category.name}" — ${category.expenseCount} expense${
-                                    category.expenseCount === 1 ? "" : "s"
-                                  } still use it.`,
-                                });
-                                return;
-                              }
-                              setDeleteTarget(category);
-                            }}
+                            onClick={() => requestDelete(category)}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
                             aria-label={`Delete ${category.name}`}
                           >
@@ -342,7 +449,9 @@ const Categories = () => {
                     {category.name?.[0] || "?"}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold text-textPrimary">{category.name}</p>
+                    <p className="truncate font-semibold text-textPrimary">
+                      {category.name}
+                    </p>
                     <p className="text-xs text-textSecondary">
                       {category.expenseCount ?? 0} expense
                       {(category.expenseCount ?? 0) === 1 ? "" : "s"}
@@ -358,17 +467,7 @@ const Categories = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      if ((category.expenseCount ?? 0) > 0) {
-                        handleApiError({
-                          message: `Cannot delete "${category.name}" — ${category.expenseCount} expense${
-                            category.expenseCount === 1 ? "" : "s"
-                          } still use it.`,
-                        });
-                        return;
-                      }
-                      setDeleteTarget(category);
-                    }}
+                    onClick={() => requestDelete(category)}
                     className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-textSecondary"
                     aria-label={`Delete ${category.name}`}
                   >
@@ -379,6 +478,19 @@ const Categories = () => {
             </div>
           </>
         )}
+
+        <TablePager
+          page={currentPage}
+          totalPages={totalPages}
+          totalRecords={totalCount}
+          pageSize={filters.limit}
+          entityName="categories"
+          disabled={loading || deleteMutation.isPending}
+          onPageChange={(page) => {
+            if (page < 1 || page > totalPages) return;
+            setFilters((prev) => ({ ...prev, page }));
+          }}
+        />
       </div>
 
       <ConfirmModal

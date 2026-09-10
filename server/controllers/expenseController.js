@@ -5,7 +5,6 @@
 
 import Expense, { PAYMENT_MODES } from "../models/Expense.js";
 import Category from "../models/Category.js";
-import { ensureDefaultCategories } from "./categoryController.js";
 
 /**
  * Build a MongoDB filter from query params for the current user.
@@ -117,7 +116,6 @@ const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
   }
 
   if (category !== undefined) {
-    await ensureDefaultCategories(userId);
     const exists = await Category.findOne({
       userId,
       name: String(category).trim(),

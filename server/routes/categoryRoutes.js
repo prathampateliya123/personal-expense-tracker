@@ -6,6 +6,7 @@
 import express from "express";
 import {
   getCategories,
+  getCategoryOptions,
   createCategory,
   updateCategory,
   deleteCategory,
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.use(protect, requireDb);
 
+router.get("/options", getCategoryOptions);
 router.get("/", getCategories);
 router.post("/", createCategory);
 router.put("/:id", updateCategory);

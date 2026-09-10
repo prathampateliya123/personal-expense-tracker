@@ -22,7 +22,8 @@ export const expenseKeys = {
 export const categoryKeys = {
   all: queryKeys.categories,
   lists: () => [...categoryKeys.all, "list"],
-  list: () => [...categoryKeys.lists()],
+  list: (filters = {}) => [...categoryKeys.lists(), filters],
+  options: () => [...categoryKeys.all, "options"],
 };
 
 export const authKeys = {
