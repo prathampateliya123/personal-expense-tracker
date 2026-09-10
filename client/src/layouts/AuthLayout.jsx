@@ -55,7 +55,7 @@ const AuthLayout = () => {
 
       <main className="flex flex-1 flex-col items-center justify-center bg-surfaceLight px-4 py-10 sm:px-6">
         <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-          <span className="gradient-green-card flex h-10 w-10 items-center justify-center rounded-2xl text-sm font-bold text-white shadow-sm">
+          <span className="gradient-green-card flex h-10 w-10 items-center justify-center rounded-2xl text-sm font-bold text-white">
             ₹
           </span>
           <span className="text-lg font-semibold tracking-tight text-primaryDark">

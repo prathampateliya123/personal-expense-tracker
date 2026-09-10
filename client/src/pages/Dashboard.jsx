@@ -102,7 +102,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="gradient-green-card rounded-3xl p-6 text-white shadow-soft sm:p-8">
+        <div className="gradient-green-card rounded-3xl p-6 text-white sm:p-8">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm font-medium text-white/80">Today&apos;s Spend</p>

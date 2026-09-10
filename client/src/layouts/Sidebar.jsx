@@ -60,7 +60,7 @@ const Sidebar = ({ isOpen, onClose }) => (
     >
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4 sm:h-16 sm:px-5">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="gradient-green-card flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm">
+          <span className="gradient-green-card flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white">
             ₹
           </span>
           <span className="truncate text-sm font-semibold text-primaryDark">

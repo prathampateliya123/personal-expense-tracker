@@ -69,7 +69,7 @@ const ActionButtons = ({ expense, onDelete }) => (
 );
 
 const SkeletonRow = () => (
-  <tr className="animate-pulse border-b border-border/40">
+  <tr className="animate-pulse border-b border-border">
     <td className="px-5 py-4">
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-lg bg-surfaceGray" />
@@ -91,7 +91,7 @@ const SkeletonRow = () => (
 );
 
 const ExpenseRow = ({ expense, onDelete, colorMap }) => (
-  <tr className="group border-b border-border/40 transition last:border-0 hover:bg-surfaceLight/70">
+  <tr className="group border-b border-border transition last:border-0 hover:bg-surfaceLight/70">
     <td className="px-5 py-4">
       <div className="flex min-w-[220px] items-center gap-3">
         <ExpenseAvatar category={expense.category} colorMap={colorMap} />
@@ -136,7 +136,7 @@ const ExpenseRow = ({ expense, onDelete, colorMap }) => (
 );
 
 const ExpenseMobileCard = ({ expense, onDelete, colorMap }) => (
-  <div className="border-b border-border/40 p-4 last:border-0 hover:bg-surfaceLight/70">
+  <div className="border-b border-border p-4 last:border-0 hover:bg-surfaceLight/70">
     <div className="flex items-start gap-3">
       <ExpenseAvatar category={expense.category} colorMap={colorMap} />
       <div className="min-w-0 flex-1">
@@ -262,8 +262,8 @@ const ExpenseTable = ({
 
   return (
     <>
-      <div className="table-panel card w-full overflow-hidden">
-        <div className="border-b border-border/60 bg-surfaceLight/50 px-3 py-2.5 sm:px-4 sm:py-3">
+      <div className="table-panel w-full overflow-hidden">
+        <div className="border-b border-border bg-surfaceLight/50 px-3 py-2.5 sm:px-4 sm:py-3">
           <div className="table-toolbar">
             <div className="table-toolbar__row">
               <div className="table-toolbar__search">
@@ -353,7 +353,7 @@ const ExpenseTable = ({
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[920px] text-left text-sm">
                 <thead>
-                  <tr className="border-b border-border/60 bg-surfaceLight/80">
+                  <tr className="border-b border-border bg-surfaceLight/80">
                     {COLUMNS.map((label) => (
                       <th
                         key={label || "actions"}
@@ -384,7 +384,7 @@ const ExpenseTable = ({
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[920px] border-collapse text-left text-sm">
                 <thead className="sticky top-0 z-10 bg-surfaceLight/95 backdrop-blur-sm">
-                  <tr className="border-b border-border/60">
+                  <tr className="border-b border-border">
                     {COLUMNS.map((label) => (
                       <th
                         key={label || "actions"}
@@ -397,7 +397,7 @@ const ExpenseTable = ({
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/40 bg-white">
+                <tbody className="divide-y divide-border bg-white">
                   {expenses.map((expense) => (
                     <ExpenseRow
                       key={expense._id}

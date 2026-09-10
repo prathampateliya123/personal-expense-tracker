@@ -32,9 +32,17 @@ export default {
         border: "#E5E7EB",
       },
       boxShadow: {
-        soft: "0 4px 24px rgba(17, 24, 39, 0.06)",
-        card: "0 2px 12px rgba(17, 24, 39, 0.05)",
-        pill: "0 8px 32px rgba(13, 59, 46, 0.18)",
+        soft: "none",
+        card: "none",
+        pill: "none",
+        sm: "none",
+        DEFAULT: "none",
+        md: "none",
+        lg: "none",
+        xl: "none",
+        "2xl": "none",
+        inner: "none",
+        none: "none",
       },
       backgroundImage: {
         "gradient-green-card":

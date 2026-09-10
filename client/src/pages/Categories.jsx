@@ -161,6 +161,9 @@ const Categories = () => {
       showSuccessToast("Category created");
       setForm(emptyForm);
       setShowAdd(false);
+      setSearchInput("");
+      setDebouncedSearch("");
+      setFilters({ ...INITIAL_CATEGORY_FILTERS });
       await invalidateRelated();
     },
     onError: handleApiError,
@@ -304,8 +307,8 @@ const Categories = () => {
         />
       ) : null}
 
-      <div className="table-panel card w-full overflow-hidden">
-        <div className="border-b border-border/60 bg-surfaceLight/50 px-3 py-2.5 sm:px-4 sm:py-3">
+      <div className="table-panel w-full overflow-hidden">
+        <div className="border-b border-border bg-surfaceLight/50 px-3 py-2.5 sm:px-4 sm:py-3">
           <div className="table-toolbar">
             <div className="table-toolbar__row">
               <div className="table-toolbar__search">
@@ -390,7 +393,7 @@ const Categories = () => {
                   {categories.map((category) => (
                     <tr
                       key={category._id}
-                      className="border-b border-border/40 last:border-0 hover:bg-surfaceLight/70"
+                      className="border-b border-border last:border-0 hover:bg-surfaceLight/70"
                     >
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
@@ -440,7 +443,7 @@ const Categories = () => {
               </table>
             </div>
 
-            <div className="divide-y divide-border/40 md:hidden">
+            <div className="divide-y divide-border md:hidden">
               {categories.map((category) => (
                 <div key={category._id} className="flex items-center gap-3 p-4">
                   <div

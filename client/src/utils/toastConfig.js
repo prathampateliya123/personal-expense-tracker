@@ -13,7 +13,7 @@ export const toastOptions = {
       fontSize: "14px",
       border: "1px solid #E5E7EB",
       borderRadius: "8px",
-      boxShadow: "0 4px 24px rgba(17, 24, 39, 0.08)",
+      boxShadow: "none",
     },
     success: {
       iconTheme: { primary: "#22A96C", secondary: "#DCFCE7" },

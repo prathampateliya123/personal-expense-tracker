@@ -64,7 +64,7 @@ export default function TablePager({
     "inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-white text-textPrimary transition hover:bg-surfaceLight disabled:cursor-not-allowed disabled:opacity-40 sm:h-[38px] sm:w-[38px]";
 
   return (
-    <div className="flex flex-col items-center gap-3 border-t border-border/60 px-3 py-3 text-center sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5 sm:text-left">
+    <div className="flex flex-col items-center gap-3 border-t border-border px-3 py-3 text-center sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5 sm:text-left">
       <p className="text-xs leading-snug text-textSecondary sm:text-sm">{label}</p>
 
       {safeTotalPages > 1 && (

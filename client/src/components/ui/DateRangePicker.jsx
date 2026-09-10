@@ -82,7 +82,7 @@ function HeaderSelectButton({
       onClick={onClick}
       className={`inline-flex min-w-0 items-center justify-between gap-1.5 rounded-[7px] border bg-[var(--drp-surface)] text-left font-semibold text-[var(--drp-ink)] outline-none transition-[border-color,box-shadow] ${
         open
-          ? "border-[var(--drp-accent)] shadow-[0_0_0_3px_rgba(34,197,94,0.15)]"
+          ? "border-[var(--drp-accent)] ring-2 ring-[var(--drp-accent)]/20"
           : "border-[var(--drp-border)] hover:border-[var(--drp-border-strong)]"
       } ${triggerClassName} ${className}`}
     >
@@ -140,7 +140,7 @@ function AsideFieldSelect({
       {open ? (
         <div
           role="listbox"
-          className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-52 overflow-y-auto overscroll-contain rounded-[7px] border border-[var(--drp-border)] bg-[var(--drp-surface)] py-1 shadow-[0_12px_28px_rgba(17,24,39,0.16)]"
+          className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-52 overflow-y-auto overscroll-contain rounded-[7px] border border-[var(--drp-border)] bg-[var(--drp-surface)] py-1"
         >
           {options.map((option) => {
             const active = String(option.value) === String(value);
@@ -1262,7 +1262,7 @@ export default function DateRangePicker({
             }
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             style={panelStyle || undefined}
-            className={`date-range-picker-panel z-[9999] box-border flex max-h-[inherit] min-h-0 min-w-0 flex-col overflow-hidden border border-[var(--drp-border)] bg-[var(--drp-surface)] shadow-[0_18px_50px_rgba(13,59,46,0.18)] ${isMobileSheet ? "rounded-t-2xl border-b-0" : "rounded-xl"
+            className={`date-range-picker-panel z-[9999] box-border flex max-h-[inherit] min-h-0 min-w-0 flex-col overflow-hidden border border-[var(--drp-border)] bg-[var(--drp-surface)] ${isMobileSheet ? "rounded-t-2xl border-b-0" : "rounded-xl"
               }`}
             onMouseDown={(event) => event.stopPropagation()}
             onWheel={(event) => event.stopPropagation()}
@@ -1327,7 +1327,7 @@ export default function DateRangePicker({
                       <div
                         className={`min-w-0 rounded-[7px] border px-2.5 py-2 sm:px-3 sm:py-2.5 ${pickingEnd || !draftStart
                             ? "border-[var(--drp-border-strong)]"
-                            : "border-[var(--drp-accent)] shadow-[0_0_0_1px_rgba(34,197,94,0.15)]"
+                            : "border-[var(--drp-accent)] "
                           }`}
                       >
                         <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--drp-ink-subtle)]">
@@ -1339,7 +1339,7 @@ export default function DateRangePicker({
                       </div>
                       <div
                         className={`min-w-0 rounded-[7px] border px-2.5 py-2 sm:px-3 sm:py-2.5 ${pickingEnd
-                            ? "border-[var(--drp-accent)] shadow-[0_0_0_1px_rgba(34,197,94,0.15)]"
+                            ? "border-[var(--drp-accent)] "
                             : "border-[var(--drp-border-strong)]"
                           }`}
                       >
@@ -1358,7 +1358,7 @@ export default function DateRangePicker({
                   ) : (
                     <div
                       className={`mb-3 rounded-[7px] border px-2.5 py-2 sm:mb-4 sm:px-3 sm:py-2.5 ${draftStart
-                          ? "border-[var(--drp-accent)] shadow-[0_0_0_1px_rgba(34,197,94,0.15)]"
+                          ? "border-[var(--drp-accent)] "
                           : "border-[var(--drp-border-strong)]"
                         }`}
                     >

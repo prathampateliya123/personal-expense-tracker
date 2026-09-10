@@ -85,7 +85,7 @@ const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
             ref={menuRef}
             role="menu"
             style={menuStyle}
-            className="dropdown-panel z-[10050] overflow-hidden rounded-lg border border-border bg-white shadow-[0_12px_40px_rgba(13,59,46,0.14)]"
+            className="dropdown-panel z-[10050] overflow-hidden rounded-lg border border-border bg-white"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <div className="border-b border-border bg-surfaceLight/80 px-4 py-3.5">
@@ -120,7 +120,7 @@ const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
       : null;
 
   return (
-    <header className="relative z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center justify-between gap-2 border-b border-border bg-white px-3 pt-[env(safe-area-inset-top)] shadow-sm sm:h-[calc(4rem+env(safe-area-inset-top))] sm:gap-3 sm:px-4 lg:px-6">
+    <header className="relative z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center justify-between gap-2 border-b border-border bg-white px-3 pt-[env(safe-area-inset-top)] sm:h-[calc(4rem+env(safe-area-inset-top))] sm:gap-3 sm:px-4 lg:px-6">
       <button
         type="button"
         onClick={onMenuClick}
@@ -138,7 +138,7 @@ const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
           aria-expanded={menuOpen}
           className={`inline-flex max-w-[min(100vw-5rem,320px)] items-center gap-2 rounded-lg border bg-white px-1.5 py-1.5 text-left transition-[border-color,box-shadow] duration-200 sm:gap-2.5 sm:px-2 ${
             menuOpen
-              ? "border-accentGreen shadow-[0_0_0_3px_rgba(74,222,128,0.2)]"
+              ? "border-accentGreen ring-2 ring-accentGreen/20"
               : "border-border hover:border-primaryLight/50 hover:bg-surfaceLight/60"
           }`}
         >

@@ -1,6 +1,7 @@
 /**
  * models/Category.js
  * Per-user expense categories (fully dynamic — no seeded defaults).
+ * nameKey used for case-insensitive uniqueness per user.
  */
 
 import mongoose from "mongoose";
@@ -34,6 +35,13 @@ const categorySchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, "Category name cannot exceed 40 characters"],
     },
+    /** Lowercase key for case-insensitive unique check (Food === food) */
+    nameKey: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "",
+    },
     color: {
       type: String,
       enum: CATEGORY_COLOR_KEYS,
@@ -49,7 +57,21 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-categorySchema.index({ userId: 1, name: 1 }, { unique: true });
+categorySchema.pre("validate", function setNameKey(next) {
+  if (this.name) {
+    this.nameKey = String(this.name).trim().toLowerCase();
+  }
+  next();
+});
+
+// Case-insensitive uniqueness (only when nameKey is present)
+categorySchema.index(
+  { userId: 1, nameKey: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { nameKey: { $type: "string", $gt: "" } },
+  }
+);
 
 const Category = mongoose.model("Category", categorySchema);
 

@@ -11,6 +11,8 @@ const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
 const escapeRegex = (value = "") =>
   String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+const toNameKey = (name = "") => normalizeName(name).toLowerCase();
+
 const findOwnedCategory = async (categoryId, userId) => {
   const category = await Category.findById(categoryId);
 
@@ -27,6 +29,25 @@ const findOwnedCategory = async (categoryId, userId) => {
   }
 
   return { category, status: null, message: null };
+};
+
+const findDuplicateCategory = async (userId, name, excludeId = null) => {
+  const nameKey = toNameKey(name);
+  if (!nameKey) return null;
+
+  const filter = {
+    userId,
+    $or: [
+      { nameKey },
+      { name: { $regex: `^${escapeRegex(normalizeName(name))}$`, $options: "i" } },
+    ],
+  };
+
+  if (excludeId) {
+    filter._id = { $ne: excludeId };
+  }
+
+  return Category.findOne(filter);
 };
 
 const withExpenseCounts = async (userId, categories) => {
@@ -84,7 +105,7 @@ export const getCategories = async (req, res, next) => {
 
     const [categories, totalCount] = await Promise.all([
       Category.find(filter)
-        .sort({ sortOrder: 1, name: 1 })
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
       Category.countDocuments(filter),
@@ -113,7 +134,7 @@ export const getCategories = async (req, res, next) => {
 export const getCategoryOptions = async (req, res, next) => {
   try {
     const categories = await Category.find({ userId: req.user._id })
-      .sort({ sortOrder: 1, name: 1 })
+      .sort({ createdAt: -1 })
       .select("name color")
       .lean();
 
@@ -149,26 +170,17 @@ export const createCategory = async (req, res, next) => {
       throw new Error("Invalid category color");
     }
 
-    const existing = await Category.findOne({
-      userId: req.user._id,
-      name: { $regex: `^${escapeRegex(name)}$`, $options: "i" },
-    });
-
+    const existing = await findDuplicateCategory(req.user._id, name);
     if (existing) {
       res.status(400);
       throw new Error("A category with this name already exists");
     }
 
-    const maxSort = await Category.findOne({ userId: req.user._id })
-      .sort({ sortOrder: -1 })
-      .select("sortOrder");
-
     const category = await Category.create({
       userId: req.user._id,
       name,
+      nameKey: toNameKey(name),
       color,
-      sortOrder: (maxSort?.sortOrder || 0) + 1,
-      isDefault: false,
     });
 
     res.status(201).json({
@@ -219,14 +231,11 @@ export const updateCategory = async (req, res, next) => {
       throw new Error("Invalid category color");
     }
 
-    const duplicate = await Category.findOne({
-      userId: req.user._id,
-      _id: { $ne: category._id },
-      name: {
-        $regex: `^${escapeRegex(nextName)}$`,
-        $options: "i",
-      },
-    });
+    const duplicate = await findDuplicateCategory(
+      req.user._id,
+      nextName,
+      category._id
+    );
 
     if (duplicate) {
       res.status(400);
@@ -235,6 +244,7 @@ export const updateCategory = async (req, res, next) => {
 
     const previousName = category.name;
     category.name = nextName;
+    category.nameKey = toNameKey(nextName);
     category.color = nextColor;
     await category.save();
 

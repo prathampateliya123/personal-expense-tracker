@@ -166,10 +166,10 @@ const Select = ({
       ? "cursor-not-allowed border-border bg-surfaceGray text-textSecondary opacity-70"
       : error
         ? open
-          ? "cursor-pointer border-red-400 shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
+          ? "cursor-pointer border-red-400 ring-2 ring-red-400/20"
           : "cursor-pointer border-red-400 hover:border-red-400"
         : open
-          ? "cursor-pointer border-accentGreen shadow-[0_0_0_3px_rgba(74,222,128,0.2)]"
+          ? "cursor-pointer border-accentGreen ring-2 ring-accentGreen/20"
           : "cursor-pointer border-border hover:border-primaryLight/50 hover:bg-surfaceLight/60"
   }`;
 
@@ -193,7 +193,7 @@ const Select = ({
             ref={menuRef}
             id={listId}
             role="listbox"
-            className="dropdown-menu dashboard-main-scroll z-[10050] max-h-[inherit] overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg border border-border bg-white py-1 shadow-[0_12px_40px_rgba(13,59,46,0.12)]"
+            className="dropdown-menu dashboard-main-scroll z-[10050] max-h-[inherit] overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg border border-border bg-white py-1"
             style={menuStyle}
             onMouseDown={(event) => event.stopPropagation()}
           >
