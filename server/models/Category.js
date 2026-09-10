@@ -64,15 +64,41 @@ categorySchema.pre("validate", function setNameKey(next) {
   next();
 });
 
-// Case-insensitive uniqueness (only when nameKey is present)
+// Case-insensitive uniqueness (skip empty nameKey)
 categorySchema.index(
   { userId: 1, nameKey: 1 },
   {
     unique: true,
-    partialFilterExpression: { nameKey: { $type: "string", $gt: "" } },
+    name: "userId_nameKey_unique",
+    partialFilterExpression: { nameKey: { $gt: "" } },
   }
 );
 
 const Category = mongoose.model("Category", categorySchema);
+
+/** Drop legacy conflicting indexes once (safe to call repeatedly). */
+export const ensureCategoryIndexes = async () => {
+  try {
+    const collection = Category.collection;
+    const indexes = await collection.indexes();
+    const dropNames = indexes
+      .map((idx) => idx.name)
+      .filter(
+        (name) =>
+          name &&
+          name !== "_id_" &&
+          name !== "userId_nameKey_unique" &&
+          (name.includes("nameKey") || name === "userId_1_name_1")
+      );
+
+    for (const name of dropNames) {
+      await collection.dropIndex(name).catch(() => {});
+    }
+
+    await Category.syncIndexes();
+  } catch (error) {
+    console.warn("Category index sync skipped:", error.message);
+  }
+};
 
 export default Category;

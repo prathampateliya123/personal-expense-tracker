@@ -105,6 +105,8 @@ const connectDB = async () => {
     const conn = await connectWithUri(uri);
     placeholderWarned = false;
     console.log(`MongoDB connected: ${conn.connection.host}`);
+    const { ensureCategoryIndexes } = await import("../models/Category.js");
+    await ensureCategoryIndexes();
   } catch (error) {
     const isSrvError =
       error.message.includes("querySrv") ||

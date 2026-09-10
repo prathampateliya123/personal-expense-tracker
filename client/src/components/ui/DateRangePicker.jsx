@@ -80,7 +80,7 @@ function HeaderSelectButton({
       aria-label={ariaLabel}
       aria-expanded={open}
       onClick={onClick}
-      className={`inline-flex min-w-0 items-center justify-between gap-1.5 rounded-[7px] border bg-[var(--drp-surface)] text-left font-semibold text-[var(--drp-ink)] outline-none transition-[border-color,box-shadow] ${
+      className={`inline-flex min-w-0 items-center justify-between gap-1.5 rounded-lg border bg-[var(--drp-surface)] text-left font-semibold text-[var(--drp-ink)] outline-none transition-[border-color,box-shadow] ${
         open
           ? "border-[var(--drp-accent)] ring-2 ring-[var(--drp-accent)]/20"
           : "border-[var(--drp-border)] hover:border-[var(--drp-border-strong)]"
@@ -140,7 +140,7 @@ function AsideFieldSelect({
       {open ? (
         <div
           role="listbox"
-          className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-52 overflow-y-auto overscroll-contain rounded-[7px] border border-[var(--drp-border)] bg-[var(--drp-surface)] py-1"
+          className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-52 overflow-y-auto overscroll-contain rounded-lg border border-[var(--drp-border)] bg-[var(--drp-surface)] py-1"
         >
           {options.map((option) => {
             const active = String(option.value) === String(value);
@@ -375,7 +375,7 @@ function MonthCalendar({
     maxYear != null && Number(year) > maxYear;
 
   const pickerCellClass = (active, disabled = false) =>
-    `flex h-full min-h-0 w-full items-center justify-center rounded-[7px] text-[13px] font-semibold transition-colors ${
+    `flex h-full min-h-0 w-full items-center justify-center rounded-lg text-[13px] font-semibold transition-colors ${
       disabled
         ? "cursor-not-allowed text-[var(--drp-ink-subtle)]/40"
         : active
@@ -443,7 +443,7 @@ function MonthCalendar({
               <button
                 type="button"
                 onClick={() => setYearStart((prev) => prev - YEAR_GRID_SIZE)}
-                className="inline-flex h-7 w-7 items-center justify-center rounded-[6px] text-[var(--drp-ink-muted)] transition-colors hover:bg-[var(--drp-accent-soft)] hover:text-[var(--drp-accent-strong)] cursor-pointer"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[var(--drp-ink-muted)] transition-colors hover:bg-[var(--drp-accent-soft)] hover:text-[var(--drp-accent-strong)] cursor-pointer"
                 aria-label="Previous years"
               >
                 <IconChevronLeft className="h-4 w-4" />
@@ -458,7 +458,7 @@ function MonthCalendar({
                   if (!canGoNextYearPage) return;
                   setYearStart((prev) => prev + YEAR_GRID_SIZE);
                 }}
-                className={`inline-flex h-7 w-7 items-center justify-center rounded-[6px] transition-colors ${
+                className={`inline-flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
                   canGoNextYearPage
                     ? "cursor-pointer text-[var(--drp-ink-muted)] hover:bg-[var(--drp-accent-soft)] hover:text-[var(--drp-accent-strong)]"
                     : "cursor-not-allowed text-[var(--drp-ink-subtle)]/40"
@@ -615,7 +615,7 @@ function computePanelStyle(triggerEl, panelEl, { isBetween = false } = {}) {
         width: "100%",
         maxWidth: "100%",
         maxHeight: Math.min(viewportH * 0.92, isBetween ? 640 : 560),
-        borderRadius: "16px 16px 0 0"
+        borderRadius: "8px 8px 0 0"
       };
     }
     return {
@@ -663,7 +663,7 @@ function computePanelStyle(triggerEl, panelEl, { isBetween = false } = {}) {
     top = "auto";
     bottom = 0;
     maxHeight = Math.min(viewportH * 0.92, isBetween ? 640 : 560);
-    borderRadius = "16px 16px 0 0";
+    borderRadius = "8px 8px 0 0";
   } else {
     top = trigger.bottom + PANEL_GAP;
 
@@ -1194,7 +1194,7 @@ export default function DateRangePicker({
         ref={triggerRef}
         type="button"
         onClick={() => (open ? setOpen(false) : handleOpen())}
-        className={`inline-flex h-[42px] w-full max-w-full items-center gap-2 rounded-[7px] border bg-[var(--drp-surface)] px-2.5 sm:px-3 text-left text-[12px] sm:text-[13px] font-semibold transition-colors hover:border-[var(--drp-ink-subtle)] cursor-pointer ${hasActiveDateFilter
+        className={`inline-flex h-[42px] w-full max-w-full items-center gap-2 rounded-lg border bg-[var(--drp-surface)] px-2.5 sm:px-3 text-left text-[12px] sm:text-[13px] font-semibold transition-colors hover:border-[var(--drp-ink-subtle)] cursor-pointer ${hasActiveDateFilter
             ? "border-[var(--drp-accent)] text-[var(--drp-ink)] bg-[var(--drp-accent-soft)]/30"
             : "border-[var(--drp-border-strong)] text-[var(--drp-ink)]"
           }`}
@@ -1325,7 +1325,7 @@ export default function DateRangePicker({
                   {draftOperator === "between" ? (
                     <div className="mb-3 grid grid-cols-2 gap-2 sm:mb-4">
                       <div
-                        className={`min-w-0 rounded-[7px] border px-2.5 py-2 sm:px-3 sm:py-2.5 ${pickingEnd || !draftStart
+                        className={`min-w-0 rounded-lg border px-2.5 py-2 sm:px-3 sm:py-2.5 ${pickingEnd || !draftStart
                             ? "border-[var(--drp-border-strong)]"
                             : "border-[var(--drp-accent)] "
                           }`}
@@ -1338,7 +1338,7 @@ export default function DateRangePicker({
                         </p>
                       </div>
                       <div
-                        className={`min-w-0 rounded-[7px] border px-2.5 py-2 sm:px-3 sm:py-2.5 ${pickingEnd
+                        className={`min-w-0 rounded-lg border px-2.5 py-2 sm:px-3 sm:py-2.5 ${pickingEnd
                             ? "border-[var(--drp-accent)] "
                             : "border-[var(--drp-border-strong)]"
                           }`}
@@ -1357,7 +1357,7 @@ export default function DateRangePicker({
                     </div>
                   ) : (
                     <div
-                      className={`mb-3 rounded-[7px] border px-2.5 py-2 sm:mb-4 sm:px-3 sm:py-2.5 ${draftStart
+                      className={`mb-3 rounded-lg border px-2.5 py-2 sm:mb-4 sm:px-3 sm:py-2.5 ${draftStart
                           ? "border-[var(--drp-accent)] "
                           : "border-[var(--drp-border-strong)]"
                         }`}
@@ -1380,7 +1380,7 @@ export default function DateRangePicker({
                       <button
                         type="button"
                         onClick={() => setLeftMonth((prev) => addMonths(prev, -1))}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-[7px] border border-[var(--drp-border)] text-[var(--drp-ink-muted)] transition-colors hover:bg-[var(--drp-canvas)] cursor-pointer"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--drp-border)] text-[var(--drp-ink-muted)] transition-colors hover:bg-[var(--drp-canvas)] cursor-pointer"
                         aria-label="Previous month"
                       >
                         <IconChevronLeft className="h-4 w-4" />
@@ -1392,7 +1392,7 @@ export default function DateRangePicker({
                           if (!canGoNextMonth) return;
                           setLeftMonth((prev) => addMonths(prev, 1));
                         }}
-                        className={`inline-flex h-8 w-8 items-center justify-center rounded-[7px] border border-[var(--drp-border)] transition-colors ${
+                        className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--drp-border)] transition-colors ${
                           canGoNextMonth
                             ? "cursor-pointer text-[var(--drp-ink-muted)] hover:bg-[var(--drp-canvas)]"
                             : "cursor-not-allowed text-[var(--drp-ink-subtle)]/40"
