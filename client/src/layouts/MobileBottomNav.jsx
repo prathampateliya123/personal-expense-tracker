@@ -5,11 +5,12 @@
 
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS } from "../utils/navigation";
-import { IconDashboard, IconExpenses } from "../components/ui/Icons";
+import { IconDashboard, IconExpenses, IconCategories } from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
+  categories: IconCategories,
 };
 
 const MobileBottomNav = () => (

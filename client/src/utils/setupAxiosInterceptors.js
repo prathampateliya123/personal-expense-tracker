@@ -32,6 +32,7 @@ export const setupAxiosInterceptors = () => {
         queryClient.setQueryData(userKeys.profile(), null);
         // Drop protected resource caches only
         queryClient.removeQueries({ queryKey: expenseKeys.all });
+        queryClient.removeQueries({ queryKey: ["categories"] });
       }
 
       return Promise.reject(error);

@@ -3,10 +3,9 @@
  * CRUD and stats for logged-in user's expenses.
  */
 
-import Expense, {
-  EXPENSE_CATEGORIES,
-  PAYMENT_MODES,
-} from "../models/Expense.js";
+import Expense, { PAYMENT_MODES } from "../models/Expense.js";
+import Category from "../models/Category.js";
+import { ensureDefaultCategories } from "./categoryController.js";
 
 /**
  * Build a MongoDB filter from query params for the current user.
@@ -14,8 +13,8 @@ import Expense, {
 const buildExpenseFilter = (userId, query) => {
   const filter = { userId };
 
-  if (query.category && EXPENSE_CATEGORIES.includes(query.category)) {
-    filter.category = query.category;
+  if (query.category?.trim()) {
+    filter.category = query.category.trim();
   }
 
   if (query.paymentMode && PAYMENT_MODES.includes(query.paymentMode)) {
@@ -93,8 +92,9 @@ const findOwnedExpense = async (expenseId, userId) => {
 
 /**
  * Validate required expense fields for create/update.
+ * Category must belong to the authenticated user.
  */
-const validateExpenseBody = (body, { isUpdate = false } = {}) => {
+const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
   const { title, amount, category, paymentMode } = body;
 
   if (!isUpdate) {
@@ -116,8 +116,13 @@ const validateExpenseBody = (body, { isUpdate = false } = {}) => {
     }
   }
 
-  if (category !== undefined && !EXPENSE_CATEGORIES.includes(category)) {
-    return "Invalid category";
+  if (category !== undefined) {
+    await ensureDefaultCategories(userId);
+    const exists = await Category.findOne({
+      userId,
+      name: String(category).trim(),
+    });
+    if (!exists) return "Invalid category";
   }
 
   if (paymentMode !== undefined && !PAYMENT_MODES.includes(paymentMode)) {
@@ -133,7 +138,7 @@ const validateExpenseBody = (body, { isUpdate = false } = {}) => {
  */
 export const addExpense = async (req, res, next) => {
   try {
-    const validationError = validateExpenseBody(req.body);
+    const validationError = await validateExpenseBody(req.body, req.user._id);
     if (validationError) {
       res.status(400);
       throw new Error(validationError);
@@ -146,7 +151,7 @@ export const addExpense = async (req, res, next) => {
       userId: req.user._id,
       title: title.trim(),
       amount: Number(amount),
-      category,
+      category: String(category).trim(),
       paymentMode: paymentMode || "Cash",
       date: date ? new Date(date) : new Date(),
       description: description?.trim() || "",
@@ -298,7 +303,9 @@ export const getExpenseById = async (req, res, next) => {
  */
 export const updateExpense = async (req, res, next) => {
   try {
-    const validationError = validateExpenseBody(req.body, { isUpdate: true });
+    const validationError = await validateExpenseBody(req.body, req.user._id, {
+      isUpdate: true,
+    });
     if (validationError) {
       res.status(400);
       throw new Error(validationError);
@@ -319,7 +326,7 @@ export const updateExpense = async (req, res, next) => {
 
     if (title !== undefined) expense.title = title.trim();
     if (amount !== undefined) expense.amount = Number(amount);
-    if (category !== undefined) expense.category = category;
+    if (category !== undefined) expense.category = String(category).trim();
     if (paymentMode !== undefined) expense.paymentMode = paymentMode;
     if (date !== undefined) expense.date = new Date(date);
     if (description !== undefined) expense.description = description.trim();

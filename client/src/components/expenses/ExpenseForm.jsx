@@ -4,12 +4,12 @@
  */
 
 import { useState, useEffect } from "react";
-import {
-  EXPENSE_CATEGORIES,
-  PAYMENT_MODES,
-} from "../../utils/expenseConstants";
+import { useQuery } from "@tanstack/react-query";
+import { PAYMENT_MODES } from "../../utils/expenseConstants";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
+import categoryService from "../../services/categoryService";
+import { categoryKeys } from "../../services/queryKeys";
 
 const inputClass = "fintech-input";
 
@@ -48,6 +48,16 @@ const ExpenseForm = ({
   const isPage = variant === "page";
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
+
+  const categoriesQuery = useQuery({
+    queryKey: categoryKeys.list(),
+    queryFn: async () => {
+      const data = await categoryService.list();
+      return data.categories ?? [];
+    },
+  });
+
+  const categoryOptions = (categoriesQuery.data ?? []).map((c) => c.name);
 
   useEffect(() => {
     if (initialData) {
@@ -206,7 +216,7 @@ const ExpenseForm = ({
             value={form.category}
             onChange={handleChange}
             placeholder="Select category"
-            options={EXPENSE_CATEGORIES}
+            options={categoryOptions}
             error={errors.category}
           />
 
@@ -232,7 +242,7 @@ const ExpenseForm = ({
             value={form.category}
             onChange={handleChange}
             placeholder="Select category"
-            options={EXPENSE_CATEGORIES}
+            options={categoryOptions}
             error={errors.category}
           />
 

@@ -8,6 +8,7 @@ export const SIDEBAR_WIDTH = 272;
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
+  { key: "categories", to: "/categories", label: "Categories" },
 ];
 
 export const PAGE_META = {
@@ -25,6 +26,11 @@ export const PAGE_META = {
     title: "Add expense",
     subtitle: "Record a new transaction",
     breadcrumb: ["Home", "Expenses", "Add"],
+  },
+  "/categories": {
+    title: "Categories",
+    subtitle: "Organize expenses with custom categories",
+    breadcrumb: ["Home", "Categories"],
   },
 };
 

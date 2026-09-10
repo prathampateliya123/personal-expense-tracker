@@ -10,12 +10,13 @@ import { useUserProfile } from "../context/UserProfileContext";
 import CircularProgress from "../components/dashboard/CircularProgress";
 import {
   formatCurrency,
-  CATEGORY_AVATAR_BG,
   formatExpenseDate,
   formatExpenseTime,
 } from "../utils/expenseConstants";
+import { getCategoryAvatarClass, buildCategoryColorMap } from "../utils/categoryColors";
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
-import { expenseKeys } from "../services/queryKeys";
+import categoryService from "../services/categoryService";
+import { expenseKeys, categoryKeys } from "../services/queryKeys";
 
 const QuickAction = ({ to, icon, label }) => (
   <Link to={to} className="quick-action-btn">
@@ -63,6 +64,19 @@ const Dashboard = () => {
     queryKey: expenseKeys.list(recentFilters),
     queryFn: () => expenseService.list(recentFilters),
   });
+
+  const categoriesQuery = useQuery({
+    queryKey: categoryKeys.list(),
+    queryFn: async () => {
+      const data = await categoryService.list();
+      return data.categories ?? [];
+    },
+  });
+
+  const colorMap = useMemo(
+    () => buildCategoryColorMap(categoriesQuery.data ?? []),
+    [categoriesQuery.data]
+  );
 
   const firstName = user?.name?.split(" ")[0] || "there";
   const stats = statsQuery.data;
@@ -162,10 +176,9 @@ const Dashboard = () => {
                 className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
               >
                 <div
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-bold ${
-                    CATEGORY_AVATAR_BG[expense.category] ||
-                    CATEGORY_AVATAR_BG.Other
-                  }`}
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-bold ${getCategoryAvatarClass(
+                    colorMap[expense.category] || expense.category
+                  )}`}
                 >
                   {expense.category?.[0] || "₹"}
                 </div>

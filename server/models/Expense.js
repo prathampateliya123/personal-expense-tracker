@@ -5,6 +5,7 @@
 
 import mongoose from "mongoose";
 
+/** @deprecated Prefer Category model — kept for seed / migration fallbacks */
 export const EXPENSE_CATEGORIES = [
   "Food",
   "Travel",
@@ -40,7 +41,7 @@ const expenseSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "Category is required"],
-      enum: EXPENSE_CATEGORIES,
+      trim: true,
     },
     paymentMode: {
       type: String,

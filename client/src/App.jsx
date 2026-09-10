@@ -23,6 +23,7 @@ import VerifyOtp from "./pages/auth/VerifyOtp";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
+import Categories from "./pages/Categories";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
 
@@ -75,6 +76,7 @@ const App = () => (
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/expenses" element={<Expenses />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/expenses/add" element={<AddExpense />} />
           <Route path="/expenses/:id/edit" element={<EditExpense />} />
         </Route>

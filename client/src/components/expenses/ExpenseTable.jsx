@@ -5,15 +5,20 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
-  CATEGORY_COLORS,
-  CATEGORY_AVATAR_BG,
-  EXPENSE_CATEGORIES,
   PAYMENT_MODES,
   formatCurrency,
   formatExpenseDate,
 } from "../../utils/expenseConstants";
+import {
+  getCategoryAvatarClass,
+  getCategoryChipClass,
+  buildCategoryColorMap,
+} from "../../utils/categoryColors";
 import { INITIAL_EXPENSE_FILTERS } from "../../services/expenseService";
+import categoryService from "../../services/categoryService";
+import { categoryKeys } from "../../services/queryKeys";
 import { debounce } from "../../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../../utils/constants";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
@@ -25,11 +30,11 @@ import TablePager, { TableLimit } from "../table/TablePager";
 
 const COLUMNS = ["Expense", "Category", "Payment", "Date", "Amount", ""];
 
-const ExpenseAvatar = ({ category }) => (
+const ExpenseAvatar = ({ category, colorMap }) => (
   <div
-    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${
-      CATEGORY_AVATAR_BG[category] || CATEGORY_AVATAR_BG.Other
-    }`}
+    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${getCategoryAvatarClass(
+      colorMap?.[category] || category
+    )}`}
   >
     {category?.[0] || "₹"}
   </div>
@@ -85,11 +90,11 @@ const SkeletonRow = () => (
   </tr>
 );
 
-const ExpenseRow = ({ expense, onDelete }) => (
+const ExpenseRow = ({ expense, onDelete, colorMap }) => (
   <tr className="group border-b border-border/40 transition last:border-0 hover:bg-surfaceLight/70">
     <td className="px-5 py-4">
       <div className="flex min-w-[220px] items-center gap-3">
-        <ExpenseAvatar category={expense.category} />
+        <ExpenseAvatar category={expense.category} colorMap={colorMap} />
         <div className="min-w-0">
           <p className="truncate font-semibold text-textPrimary" title={expense.title}>
             {expense.title}
@@ -105,7 +110,11 @@ const ExpenseRow = ({ expense, onDelete }) => (
       </div>
     </td>
     <td className="px-5 py-4">
-      <span className={`category-chip whitespace-nowrap ${CATEGORY_COLORS[expense.category] || CATEGORY_COLORS.Other}`}>
+      <span
+        className={`category-chip whitespace-nowrap ${getCategoryChipClass(
+          colorMap?.[expense.category] || expense.category
+        )}`}
+      >
         {expense.category}
       </span>
     </td>
@@ -126,10 +135,10 @@ const ExpenseRow = ({ expense, onDelete }) => (
   </tr>
 );
 
-const ExpenseMobileCard = ({ expense, onDelete }) => (
+const ExpenseMobileCard = ({ expense, onDelete, colorMap }) => (
   <div className="border-b border-border/40 p-4 last:border-0 hover:bg-surfaceLight/70">
     <div className="flex items-start gap-3">
-      <ExpenseAvatar category={expense.category} />
+      <ExpenseAvatar category={expense.category} colorMap={colorMap} />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -143,7 +152,11 @@ const ExpenseMobileCard = ({ expense, onDelete }) => (
           </p>
         </div>
         <div className="mt-3 flex items-center justify-between gap-2">
-          <span className={`category-chip ${CATEGORY_COLORS[expense.category] || CATEGORY_COLORS.Other}`}>
+          <span
+            className={`category-chip ${getCategoryChipClass(
+              colorMap?.[expense.category] || expense.category
+            )}`}
+          >
             {expense.category}
           </span>
           <ActionButtons expense={expense} onDelete={onDelete} />
@@ -183,6 +196,20 @@ const ExpenseTable = ({
   const debounceSearch = useMemo(
     () => debounce(setDebouncedSearch, DEFAULT_DEBOUNCE_MS),
     []
+  );
+
+  const categoriesQuery = useQuery({
+    queryKey: categoryKeys.list(),
+    queryFn: async () => {
+      const data = await categoryService.list();
+      return data.categories ?? [];
+    },
+  });
+
+  const categoryOptions = (categoriesQuery.data ?? []).map((c) => c.name);
+  const colorMap = useMemo(
+    () => buildCategoryColorMap(categoriesQuery.data ?? []),
+    [categoriesQuery.data]
   );
 
   useEffect(() => {
@@ -257,7 +284,7 @@ const ExpenseTable = ({
                         value={filters.category}
                         onChange={(e) => applyFilter({ category: e.target.value })}
                         placeholder="Category"
-                        options={EXPENSE_CATEGORIES}
+                        options={categoryOptions}
                         size="sm"
                         className="table-toolbar__type"
                       />
@@ -376,6 +403,7 @@ const ExpenseTable = ({
                       key={expense._id}
                       expense={expense}
                       onDelete={handleDeleteClick}
+                      colorMap={colorMap}
                     />
                   ))}
                 </tbody>
@@ -388,6 +416,7 @@ const ExpenseTable = ({
                   key={expense._id}
                   expense={expense}
                   onDelete={handleDeleteClick}
+                  colorMap={colorMap}
                 />
               ))}
             </div>

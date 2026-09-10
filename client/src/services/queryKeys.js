@@ -1,6 +1,7 @@
 export const queryKeys = {
   user: ["user"],
   expenses: ["expenses"],
+  categories: ["categories"],
   auth: ["auth"],
 };
 
@@ -16,6 +17,12 @@ export const expenseKeys = {
   details: () => [...expenseKeys.all, "detail"],
   detail: (id) => [...expenseKeys.details(), String(id || "")],
   stats: () => [...expenseKeys.all, "stats"],
+};
+
+export const categoryKeys = {
+  all: queryKeys.categories,
+  lists: () => [...categoryKeys.all, "list"],
+  list: () => [...categoryKeys.lists()],
 };
 
 export const authKeys = {
