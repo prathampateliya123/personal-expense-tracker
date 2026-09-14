@@ -1,6 +1,7 @@
 export const queryKeys = {
   user: ["user"],
   expenses: ["expenses"],
+  incomes: ["incomes"],
   categories: ["categories"],
   paymentMethods: ["paymentMethods"],
   auth: ["auth"],
@@ -20,11 +21,20 @@ export const expenseKeys = {
   stats: () => [...expenseKeys.all, "stats"],
 };
 
+export const incomeKeys = {
+  all: queryKeys.incomes,
+  lists: () => [...incomeKeys.all, "list"],
+  list: (filters = {}) => [...incomeKeys.lists(), filters],
+  details: () => [...incomeKeys.all, "detail"],
+  detail: (id) => [...incomeKeys.details(), String(id || "")],
+  stats: () => [...incomeKeys.all, "stats"],
+};
+
 export const categoryKeys = {
   all: queryKeys.categories,
   lists: () => [...categoryKeys.all, "list"],
   list: (filters = {}) => [...categoryKeys.lists(), filters],
-  options: () => [...categoryKeys.all, "options"],
+  options: (type = "all") => [...categoryKeys.all, "options", type],
 };
 
 export const paymentMethodKeys = {

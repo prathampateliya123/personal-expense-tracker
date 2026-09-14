@@ -6,6 +6,7 @@
 import apiService from "./apiService";
 
 export const INITIAL_CATEGORY_FILTERS = {
+  type: "expense",
   search: "",
   color: "",
   page: 1,
@@ -15,6 +16,7 @@ export const INITIAL_CATEGORY_FILTERS = {
 export const buildCategoryQueryParams = (filters = {}) => {
   const params = new URLSearchParams();
 
+  if (filters.type) params.set("type", filters.type);
   if (filters.search?.trim()) params.set("search", filters.search.trim());
   if (filters.color) params.set("color", filters.color);
   if (filters.page) params.set("page", String(filters.page));
@@ -29,7 +31,10 @@ export const categoryService = {
     return apiService.get(`/categories?${query}`);
   },
 
-  options: () => apiService.get("/categories/options"),
+  options: (type) => {
+    const query = type ? `?type=${encodeURIComponent(type)}` : "";
+    return apiService.get(`/categories/options${query}`);
+  },
 
   create: (payload) => apiService.post("/categories", payload),
 
