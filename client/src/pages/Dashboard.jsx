@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useUserProfile } from "../context/UserProfileContext";
 import CircularProgress from "../components/dashboard/CircularProgress";
+import NoDataFound from "../components/ui/NoDataFound";
 import {
   formatCurrency,
   formatExpenseDate,
@@ -204,15 +205,7 @@ const Dashboard = () => {
             ))}
           </div>
         ) : expenses.length === 0 ? (
-          <div className="py-10 text-center">
-            <p className="text-sm text-textSecondary">No expenses yet.</p>
-            <Link
-              to="/expenses/add"
-              className="mt-2 inline-block text-sm font-medium text-accentGreen"
-            >
-              Add your first expense
-            </Link>
-          </div>
+          <NoDataFound className="py-10" />
         ) : (
           <ul className="divide-y divide-border/60">
             {expenses.map((expense) => (

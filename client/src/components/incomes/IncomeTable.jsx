@@ -27,6 +27,7 @@ import DateRangePicker from "../ui/DateRangePicker";
 import ConfirmModal from "../modal/ConfirmModal";
 import TableSearch from "../table/TableSearch";
 import TablePager, { TableLimit } from "../table/TablePager";
+import NoDataFound from "../ui/NoDataFound";
 
 const COLUMNS = ["Income", "Category", "Payment", "Date", "Amount", ""];
 
@@ -163,18 +164,6 @@ const IncomeMobileCard = ({ income, onDelete, colorMap }) => (
         </div>
       </div>
     </div>
-  </div>
-);
-
-const EmptyState = () => (
-  <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-successBg text-2xl">
-      ₹
-    </div>
-    <h3 className="text-lg font-semibold text-textPrimary">No incomes found</h3>
-    <p className="mt-1 max-w-sm text-sm text-textSecondary">
-      Try adjusting your filters or add your first income to get started.
-    </p>
   </div>
 );
 
@@ -387,7 +376,7 @@ const IncomeTable = ({
             </div>
           </>
         ) : showEmpty ? (
-          <EmptyState />
+          <NoDataFound />
         ) : showTableContent ? (
           <>
             <div className="hidden overflow-x-auto md:block">

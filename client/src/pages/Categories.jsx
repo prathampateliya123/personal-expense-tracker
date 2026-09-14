@@ -10,6 +10,7 @@ import Select from "../components/ui/Select";
 import ConfirmModal from "../components/modal/ConfirmModal";
 import TableSearch from "../components/table/TableSearch";
 import TablePager, { TableLimit } from "../components/table/TablePager";
+import NoDataFound from "../components/ui/NoDataFound";
 import {
   PencilSquareIcon,
   TrashIcon,
@@ -421,16 +422,7 @@ const Categories = () => {
             ))}
           </div>
         ) : categories.length === 0 ? (
-          <div className="px-6 py-16 text-center">
-            <h3 className="text-lg font-semibold text-textPrimary">
-              {hasActiveFilters ? "No categories found" : "No categories yet"}
-            </h3>
-            <p className="mt-1 text-sm text-textSecondary">
-              {hasActiveFilters
-                ? "Try adjusting your search or color filter."
-                : `Add your first ${activeType} category to start organizing ${usageWord}s.`}
-            </p>
-          </div>
+          <NoDataFound />
         ) : (
           <>
             <div className="hidden overflow-x-auto md:block">
