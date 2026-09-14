@@ -82,11 +82,11 @@ const Sidebar = ({ isOpen, onClose }) => (
         <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-textSecondary/70">
           Menu
         </p>
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.map(({ key, ...item }) => (
           <NavItem
-            key={item.key}
+            key={key}
             {...item}
-            icon={NAV_ICONS[item.key]}
+            icon={NAV_ICONS[key]}
             onNavigate={onClose}
           />
         ))}

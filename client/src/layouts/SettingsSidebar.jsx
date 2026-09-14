@@ -46,11 +46,11 @@ const SettingsSidebar = () => (
     </div>
 
     <nav className="sidebar-scroll min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4">
-      {SETTINGS_NAV_ITEMS.map((item) => (
+      {SETTINGS_NAV_ITEMS.map(({ key, ...item }) => (
         <SettingsNavItem
-          key={item.key}
+          key={key}
           {...item}
-          icon={SETTINGS_ICONS[item.key]}
+          icon={SETTINGS_ICONS[key]}
         />
       ))}
     </nav>
