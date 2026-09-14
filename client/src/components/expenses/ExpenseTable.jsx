@@ -199,9 +199,9 @@ const ExpenseTable = ({
   );
 
   const categoriesQuery = useQuery({
-    queryKey: categoryKeys.options(),
+    queryKey: categoryKeys.options("expense"),
     queryFn: async () => {
-      const data = await categoryService.options();
+      const data = await categoryService.options("expense");
       return data.categories ?? [];
     },
   });

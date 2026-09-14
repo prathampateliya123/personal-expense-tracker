@@ -8,6 +8,7 @@ import { NAV_ITEMS } from "../utils/navigation";
 import {
   IconDashboard,
   IconExpenses,
+  IconIncomes,
   IconCategories,
   IconSettings,
 } from "../components/ui/Icons";
@@ -15,6 +16,7 @@ import {
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
+  incomes: IconIncomes,
   categories: IconCategories,
   settings: IconSettings,
 };

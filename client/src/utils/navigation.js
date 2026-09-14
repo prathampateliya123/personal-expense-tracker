@@ -10,6 +10,7 @@ export const SETTINGS_SIDEBAR_WIDTH = 240;
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
+  { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "categories", to: "/categories", label: "Categories" },
   { key: "settings", to: "/settings", label: "Settings" },
 ];
@@ -39,9 +40,19 @@ export const PAGE_META = {
     subtitle: "Record a new transaction",
     breadcrumb: ["Home", "Expenses", "Add"],
   },
+  "/incomes": {
+    title: "Incomes",
+    subtitle: "Track and manage money you receive",
+    breadcrumb: ["Home", "Incomes"],
+  },
+  "/incomes/add": {
+    title: "Add income",
+    subtitle: "Record a new income entry",
+    breadcrumb: ["Home", "Incomes", "Add"],
+  },
   "/categories": {
     title: "Categories",
-    subtitle: "Organize expenses with custom categories",
+    subtitle: "Organize expenses and incomes with custom categories",
     breadcrumb: ["Home", "Categories"],
   },
   "/settings": {

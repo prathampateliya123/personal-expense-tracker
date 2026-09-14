@@ -19,7 +19,7 @@ import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import categoryService, {
   INITIAL_CATEGORY_FILTERS,
 } from "../services/categoryService";
-import { categoryKeys, expenseKeys } from "../services/queryKeys";
+import { categoryKeys, expenseKeys, incomeKeys } from "../services/queryKeys";
 import {
   CATEGORY_COLOR_OPTIONS,
   getCategoryAvatarClass,
@@ -30,6 +30,11 @@ import { debounce } from "../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../utils/constants";
 
 const emptyForm = { name: "", color: "slate" };
+
+const TYPE_TABS = [
+  { key: "expense", label: "Expense" },
+  { key: "income", label: "Income" },
+];
 
 const ColorPicker = ({ value, onChange }) => (
   <div className="flex flex-wrap gap-2">
@@ -152,6 +157,7 @@ const Categories = () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: categoryKeys.all }),
       queryClient.invalidateQueries({ queryKey: expenseKeys.all }),
+      queryClient.invalidateQueries({ queryKey: incomeKeys.all }),
     ]);
   };
 
@@ -163,7 +169,10 @@ const Categories = () => {
       setShowAdd(false);
       setSearchInput("");
       setDebouncedSearch("");
-      setFilters({ ...INITIAL_CATEGORY_FILTERS });
+      setFilters((prev) => ({
+        ...INITIAL_CATEGORY_FILTERS,
+        type: prev.type || "expense",
+      }));
       await invalidateRelated();
     },
     onError: handleApiError,

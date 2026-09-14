@@ -5,11 +5,12 @@
 
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS, SIDEBAR_WIDTH } from "../utils/navigation";
-import { IconClose, IconDashboard, IconExpenses, IconCategories, IconSettings } from "../components/ui/Icons";
+import { IconClose, IconDashboard, IconExpenses, IconIncomes, IconCategories, IconSettings } from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
+  incomes: IconIncomes,
   categories: IconCategories,
   settings: IconSettings,
 };
