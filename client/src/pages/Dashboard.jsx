@@ -1,6 +1,6 @@
 /**
  * pages/Dashboard.jsx
- * Fintech-style overview — TanStack Query for dashboard data.
+ * Fintech-style overview — expenses, incomes, and net balance.
  */
 
 import { useMemo } from "react";
@@ -15,8 +15,9 @@ import {
 } from "../utils/expenseConstants";
 import { getCategoryAvatarClass, buildCategoryColorMap } from "../utils/categoryColors";
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
+import incomeService, { INITIAL_INCOME_FILTERS } from "../services/incomeService";
 import categoryService from "../services/categoryService";
-import { expenseKeys, categoryKeys } from "../services/queryKeys";
+import { expenseKeys, incomeKeys, categoryKeys } from "../services/queryKeys";
 
 const QuickAction = ({ to, icon, label }) => (
   <Link to={to} className="quick-action-btn">
@@ -29,7 +30,7 @@ const Dashboard = () => {
   const { user } = useUserProfile();
   const today = new Date().toISOString().split("T")[0];
 
-  const todayFilters = useMemo(
+  const todayExpenseFilters = useMemo(
     () => ({
       ...INITIAL_EXPENSE_FILTERS,
       startDate: today,
@@ -39,7 +40,17 @@ const Dashboard = () => {
     [today]
   );
 
-  const recentFilters = useMemo(
+  const todayIncomeFilters = useMemo(
+    () => ({
+      ...INITIAL_INCOME_FILTERS,
+      startDate: today,
+      endDate: today,
+      limit: 50,
+    }),
+    [today]
+  );
+
+  const recentExpenseFilters = useMemo(
     () => ({
       ...INITIAL_EXPENSE_FILTERS,
       limit: 5,
@@ -47,7 +58,7 @@ const Dashboard = () => {
     []
   );
 
-  const statsQuery = useQuery({
+  const expenseStatsQuery = useQuery({
     queryKey: expenseKeys.stats(),
     queryFn: async () => {
       const data = await expenseService.getStats();
@@ -55,20 +66,33 @@ const Dashboard = () => {
     },
   });
 
-  const todayQuery = useQuery({
-    queryKey: expenseKeys.list(todayFilters),
-    queryFn: () => expenseService.list(todayFilters),
+  const incomeStatsQuery = useQuery({
+    queryKey: incomeKeys.stats(),
+    queryFn: async () => {
+      const data = await incomeService.getStats();
+      return data.stats;
+    },
+  });
+
+  const todayExpenseQuery = useQuery({
+    queryKey: expenseKeys.list(todayExpenseFilters),
+    queryFn: () => expenseService.list(todayExpenseFilters),
+  });
+
+  const todayIncomeQuery = useQuery({
+    queryKey: incomeKeys.list(todayIncomeFilters),
+    queryFn: () => incomeService.list(todayIncomeFilters),
   });
 
   const recentQuery = useQuery({
-    queryKey: expenseKeys.list(recentFilters),
-    queryFn: () => expenseService.list(recentFilters),
+    queryKey: expenseKeys.list(recentExpenseFilters),
+    queryFn: () => expenseService.list(recentExpenseFilters),
   });
 
   const categoriesQuery = useQuery({
-    queryKey: categoryKeys.options(),
+    queryKey: categoryKeys.options("expense"),
     queryFn: async () => {
-      const data = await categoryService.options();
+      const data = await categoryService.options("expense");
       return data.categories ?? [];
     },
   });
@@ -79,18 +103,22 @@ const Dashboard = () => {
   );
 
   const firstName = user?.name?.split(" ")[0] || "there";
-  const stats = statsQuery.data;
-  const todaySpend = todayQuery.data?.totalAmount || 0;
+  const expenseStats = expenseStatsQuery.data;
+  const incomeStats = incomeStatsQuery.data;
+  const todaySpend = todayExpenseQuery.data?.totalAmount || 0;
+  const todayIncome = todayIncomeQuery.data?.totalAmount || 0;
   const expenses = recentQuery.data?.expenses ?? [];
   const loading = recentQuery.isLoading;
 
-  const monthlyTotal = stats?.totalAmount || 0;
-  const monthlyBudget = Math.max(monthlyTotal * 1.25, 10000);
+  const monthlyExpense = expenseStats?.totalAmount || 0;
+  const monthlyIncome = incomeStats?.totalAmount || 0;
+  const monthlyNet = monthlyIncome - monthlyExpense;
+  const monthlyBudget = Math.max(monthlyExpense * 1.25, 10000);
   const spendPercent = Math.min(
     100,
-    Math.round((monthlyTotal / monthlyBudget) * 100)
+    Math.round((monthlyExpense / monthlyBudget) * 100)
   );
-  const remaining = Math.max(0, monthlyBudget - monthlyTotal);
+  const remaining = Math.max(0, monthlyBudget - monthlyExpense);
 
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
@@ -111,11 +139,13 @@ const Dashboard = () => {
               </p>
             </div>
             <span className="rounded-xl bg-successBg px-3 py-1 text-xs font-semibold text-successText">
-              {stats?.count ? `${stats.count} this month` : "On track"}
+              {expenseStats?.count
+                ? `${expenseStats.count} expenses this month`
+                : "On track"}
             </span>
           </div>
           <p className="mt-4 text-sm text-white/70">
-            Keep your daily spending steady for better monthly savings.
+            Today&apos;s income: {formatCurrency(todayIncome)}
           </p>
         </div>
 
@@ -123,7 +153,17 @@ const Dashboard = () => {
           <div>
             <p className="text-sm font-medium text-textSecondary">Monthly Overview</p>
             <p className="mt-2 text-4xl font-bold text-primaryDark">
-              {formatCurrency(monthlyTotal)}
+              {formatCurrency(monthlyExpense)}
+            </p>
+            <p className="mt-1 text-sm text-textSecondary">
+              Income {formatCurrency(monthlyIncome)} · Net{" "}
+              <span
+                className={
+                  monthlyNet >= 0 ? "font-semibold text-accentGreen" : "font-semibold text-red-500"
+                }
+              >
+                {formatCurrency(monthlyNet)}
+              </span>
             </p>
             <p className="mt-1 text-sm text-textSecondary">
               {remaining > 0
@@ -139,15 +179,16 @@ const Dashboard = () => {
 
       <div>
         <h2 className="mb-3 text-sm font-semibold text-textPrimary">Quick Actions</h2>
-        <div className="grid max-w-md grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
           <QuickAction to="/expenses/add" icon="+" label="Add expense" />
+          <QuickAction to="/incomes/add" icon="↑" label="Add income" />
           <QuickAction to="/categories" icon="≡" label="Categories" />
         </div>
       </div>
 
       <div className="card p-5 sm:p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-textPrimary">Recent Transactions</h2>
+          <h2 className="text-lg font-semibold text-textPrimary">Recent Expenses</h2>
           <Link
             to="/expenses"
             className="text-sm font-medium text-accentGreen hover:text-primaryMid"
@@ -164,8 +205,11 @@ const Dashboard = () => {
           </div>
         ) : expenses.length === 0 ? (
           <div className="py-10 text-center">
-            <p className="text-sm text-textSecondary">No transactions yet.</p>
-            <Link to="/expenses/add" className="mt-2 inline-block text-sm font-medium text-accentGreen">
+            <p className="text-sm text-textSecondary">No expenses yet.</p>
+            <Link
+              to="/expenses/add"
+              className="mt-2 inline-block text-sm font-medium text-accentGreen"
+            >
               Add your first expense
             </Link>
           </div>
@@ -196,7 +240,8 @@ const Dashboard = () => {
                     {formatCurrency(expense.amount)}
                   </p>
                   <p className="text-xs text-textSecondary">
-                    {formatExpenseDate(expense.date)} · {formatExpenseTime(expense.createdAt || expense.date)}
+                    {formatExpenseDate(expense.date)} ·{" "}
+                    {formatExpenseTime(expense.createdAt || expense.date)}
                   </p>
                 </div>
               </li>

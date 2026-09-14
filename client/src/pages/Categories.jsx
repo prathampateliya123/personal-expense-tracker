@@ -67,6 +67,7 @@ const CategoryFormCard = ({
   onCancel,
   loading,
   submitLabel,
+  namePlaceholder = "e.g. Groceries",
 }) => (
   <form
     onSubmit={onSubmit}
@@ -87,7 +88,7 @@ const CategoryFormCard = ({
         value={form.name}
         onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
         className="fintech-input"
-        placeholder="e.g. Groceries"
+        placeholder={namePlaceholder}
         autoFocus
       />
     </div>
@@ -206,7 +207,11 @@ const Categories = () => {
       handleApiError({ message: "Category name is required" });
       return;
     }
-    createMutation.mutate({ name, color: form.color });
+    createMutation.mutate({
+      name,
+      color: form.color,
+      type: filters.type || "expense",
+    });
   };
 
   const handleUpdate = (e) => {
@@ -241,10 +246,16 @@ const Categories = () => {
   const handleClear = () => {
     setSearchInput("");
     setDebouncedSearch("");
-    setFilters({ ...INITIAL_CATEGORY_FILTERS });
+    setFilters((prev) => ({
+      ...INITIAL_CATEGORY_FILTERS,
+      type: prev.type || "expense",
+    }));
   };
 
   const hasActiveFilters = Boolean(filters.search || filters.color);
+  const activeType = filters.type || "expense";
+  const usageLabel = activeType === "income" ? "Incomes" : "Expenses";
+  const usageWord = activeType === "income" ? "income" : "expense";
 
   const colorFilterOptions = CATEGORY_COLOR_OPTIONS.map((opt) => ({
     value: opt.key,
@@ -252,15 +263,26 @@ const Categories = () => {
   }));
 
   const requestDelete = (category) => {
-    if ((category.expenseCount ?? 0) > 0) {
+    const usage = category.usageCount ?? category.expenseCount ?? 0;
+    if (usage > 0) {
       handleApiError({
-        message: `Cannot delete "${category.name}" — ${category.expenseCount} expense${
-          category.expenseCount === 1 ? "" : "s"
+        message: `Cannot delete "${category.name}" — ${usage} ${usageWord}${
+          usage === 1 ? "" : "s"
         } still use it.`,
       });
       return;
     }
     setDeleteTarget(category);
+  };
+
+  const switchType = (type) => {
+    if (type === filters.type) return;
+    setShowAdd(false);
+    setEditing(null);
+    setForm(emptyForm);
+    setSearchInput("");
+    setDebouncedSearch("");
+    setFilters({ ...INITIAL_CATEGORY_FILTERS, type });
   };
 
   return (
@@ -271,7 +293,7 @@ const Categories = () => {
             Categories
           </h1>
           <p className="mt-1 text-sm text-textSecondary">
-            Create and manage categories for your expenses
+            Create and manage categories for expenses and incomes
           </p>
         </div>
         {!showAdd && !editing ? (
@@ -289,9 +311,26 @@ const Categories = () => {
         ) : null}
       </div>
 
+      <div className="flex w-fit gap-1 rounded-lg border border-border bg-surfaceLight p-1">
+        {TYPE_TABS.map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => switchType(tab.key)}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+              activeType === tab.key
+                ? "bg-white text-primaryDark shadow-sm"
+                : "text-textSecondary hover:text-textPrimary"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {showAdd ? (
         <CategoryFormCard
-          title="New category"
+          title={`New ${activeType} category`}
           form={form}
           setForm={setForm}
           onSubmit={handleCreate}
@@ -301,6 +340,9 @@ const Categories = () => {
           }}
           loading={createMutation.isPending}
           submitLabel="Create category"
+          namePlaceholder={
+            activeType === "income" ? "e.g. Salary, Freelance" : "e.g. Groceries"
+          }
         />
       ) : null}
 
@@ -313,6 +355,9 @@ const Categories = () => {
           onCancel={cancelEdit}
           loading={updateMutation.isPending}
           submitLabel="Save changes"
+          namePlaceholder={
+            activeType === "income" ? "e.g. Salary, Freelance" : "e.g. Groceries"
+          }
         />
       ) : null}
 
@@ -383,7 +428,7 @@ const Categories = () => {
             <p className="mt-1 text-sm text-textSecondary">
               {hasActiveFilters
                 ? "Try adjusting your search or color filter."
-                : "Add your first category to start organizing expenses."}
+                : `Add your first ${activeType} category to start organizing ${usageWord}s.`}
             </p>
           </div>
         ) : (
@@ -394,7 +439,7 @@ const Categories = () => {
                   <tr className="border-b border-border bg-surfaceLight/60 text-xs font-semibold uppercase tracking-wide text-textSecondary">
                     <th className="px-5 py-3">Category</th>
                     <th className="px-5 py-3">Color</th>
-                    <th className="px-5 py-3">Expenses</th>
+                    <th className="px-5 py-3">{usageLabel}</th>
                     <th className="px-5 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -424,7 +469,7 @@ const Categories = () => {
                         </span>
                       </td>
                       <td className="px-5 py-4 text-sm text-textSecondary">
-                        {category.expenseCount ?? 0}
+                        {category.usageCount ?? category.expenseCount ?? 0}
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center justify-end gap-1.5">
@@ -465,8 +510,11 @@ const Categories = () => {
                       {category.name}
                     </p>
                     <p className="text-xs text-textSecondary">
-                      {category.expenseCount ?? 0} expense
-                      {(category.expenseCount ?? 0) === 1 ? "" : "s"}
+                      {category.usageCount ?? category.expenseCount ?? 0}{" "}
+                      {usageWord}
+                      {(category.usageCount ?? category.expenseCount ?? 0) === 1
+                        ? ""
+                        : "s"}
                     </p>
                   </div>
                   <button
