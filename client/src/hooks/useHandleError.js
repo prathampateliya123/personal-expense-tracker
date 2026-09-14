@@ -9,9 +9,9 @@ import { getApiErrorMessage } from "../utils/helper";
 
 export const showErrorToast = (error, customMessage = null) => {
   const message =
-    customMessage ||
+    (typeof customMessage === "string" && customMessage.trim()) ||
     (typeof error === "string" ? error : getApiErrorMessage(error));
-  toast.error(message);
+  toast.error(typeof message === "string" ? message : getApiErrorMessage(error));
 };
 
 export const showSuccessToast = (message) => {

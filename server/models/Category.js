@@ -57,11 +57,10 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-categorySchema.pre("validate", function setNameKey(next) {
+categorySchema.pre("validate", function setNameKey() {
   if (this.name) {
     this.nameKey = String(this.name).trim().toLowerCase();
   }
-  next();
 });
 
 // Case-insensitive uniqueness (skip empty nameKey)

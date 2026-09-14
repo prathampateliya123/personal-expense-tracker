@@ -23,17 +23,31 @@ export const formatHeaderDate = () =>
 
 export const dash = (value) => (value == null || value === "" ? "—" : value);
 
+const flattenErrorValue = (value) => {
+  if (value == null) return null;
+  if (typeof value === "string") return value.trim() || null;
+  if (typeof value === "object") {
+    if (typeof value.message === "string" && value.message.trim()) {
+      return value.message.trim();
+    }
+    const nested = Object.values(value)
+      .map((item) => flattenErrorValue(item))
+      .filter(Boolean);
+    return nested.length ? nested.join(", ") : null;
+  }
+  return String(value);
+};
+
 export const getApiErrorMessage = (error, fallback = "Something went wrong") => {
   const data = error?.response?.data;
-  const apiMessage = data?.message || data?.detail || data?.error;
+  const apiMessage = flattenErrorValue(
+    data?.message || data?.detail || data?.error || data?.errors
+  );
 
-  if (typeof apiMessage === "string" && apiMessage.trim()) {
-    return apiMessage;
-  }
+  if (apiMessage) return apiMessage;
 
-  if (error?.message && typeof error.message === "string") {
-    return error.message;
-  }
+  const localMessage = flattenErrorValue(error?.message);
+  if (localMessage) return localMessage;
 
   return fallback;
 };

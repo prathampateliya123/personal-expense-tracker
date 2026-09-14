@@ -31,11 +31,10 @@ const paymentMethodSchema = new mongoose.Schema(
   }
 );
 
-paymentMethodSchema.pre("validate", function setNameKey(next) {
+paymentMethodSchema.pre("validate", function setNameKey() {
   if (this.name) {
     this.nameKey = String(this.name).trim().toLowerCase();
   }
-  next();
 });
 
 paymentMethodSchema.index(
