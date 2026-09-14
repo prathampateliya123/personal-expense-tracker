@@ -5,6 +5,7 @@
 
 import PaymentMethod from "../models/PaymentMethod.js";
 import Expense from "../models/Expense.js";
+import Income from "../models/Income.js";
 
 const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
 
@@ -57,21 +58,31 @@ const findDuplicate = async (userId, name, excludeId = null) => {
   return PaymentMethod.findOne(filter);
 };
 
-const withExpenseCounts = async (userId, items) => {
+const withUsageCounts = async (userId, items) => {
   const names = items.map((item) =>
     item.toObject ? item.toObject().name : item.name
   );
 
   if (names.length === 0) return [];
 
-  const counts = await Expense.aggregate([
-    { $match: { userId, paymentMode: { $in: names } } },
-    { $group: { _id: "$paymentMode", count: { $sum: 1 } } },
+  const [expenseCounts, incomeCounts] = await Promise.all([
+    Expense.aggregate([
+      { $match: { userId, paymentMode: { $in: names } } },
+      { $group: { _id: "$paymentMode", count: { $sum: 1 } } },
+    ]),
+    Income.aggregate([
+      { $match: { userId, paymentMode: { $in: names } } },
+      { $group: { _id: "$paymentMode", count: { $sum: 1 } } },
+    ]),
   ]);
 
-  const countMap = Object.fromEntries(
-    counts.map((row) => [row._id, row.count])
-  );
+  const countMap = {};
+  for (const row of expenseCounts) {
+    countMap[row._id] = (countMap[row._id] || 0) + row.count;
+  }
+  for (const row of incomeCounts) {
+    countMap[row._id] = (countMap[row._id] || 0) + row.count;
+  }
 
   return items.map((item) => {
     const plain = item.toObject ? item.toObject() : item;
@@ -107,7 +118,7 @@ export const getPaymentMethods = async (req, res, next) => {
       PaymentMethod.countDocuments(filter),
     ]);
 
-    const withCounts = await withExpenseCounts(req.user._id, paymentMethods);
+    const withCounts = await withUsageCounts(req.user._id, paymentMethods);
     const totalPages = Math.ceil(totalCount / limit) || 1;
 
     res.status(200).json({
@@ -230,20 +241,35 @@ export const updatePaymentMethod = async (req, res, next) => {
     await paymentMethod.save();
 
     if (previousName !== nextName) {
-      await Expense.updateMany(
-        { userId: req.user._id, paymentMode: previousName },
-        { $set: { paymentMode: nextName } }
-      );
+      await Promise.all([
+        Expense.updateMany(
+          { userId: req.user._id, paymentMode: previousName },
+          { $set: { paymentMode: nextName } }
+        ),
+        Income.updateMany(
+          { userId: req.user._id, paymentMode: previousName },
+          { $set: { paymentMode: nextName } }
+        ),
+      ]);
     }
 
-    const expenseCount = await Expense.countDocuments({
-      userId: req.user._id,
-      paymentMode: paymentMethod.name,
-    });
+    const [expenseCount, incomeCount] = await Promise.all([
+      Expense.countDocuments({
+        userId: req.user._id,
+        paymentMode: paymentMethod.name,
+      }),
+      Income.countDocuments({
+        userId: req.user._id,
+        paymentMode: paymentMethod.name,
+      }),
+    ]);
 
     res.status(200).json({
       success: true,
-      paymentMethod: { ...paymentMethod.toObject(), expenseCount },
+      paymentMethod: {
+        ...paymentMethod.toObject(),
+        expenseCount: expenseCount + incomeCount,
+      },
     });
   } catch (error) {
     if (error?.code === 11000) {
@@ -269,17 +295,24 @@ export const deletePaymentMethod = async (req, res, next) => {
       throw new Error(message);
     }
 
-    const expenseCount = await Expense.countDocuments({
-      userId: req.user._id,
-      paymentMode: paymentMethod.name,
-    });
+    const [expenseCount, incomeCount] = await Promise.all([
+      Expense.countDocuments({
+        userId: req.user._id,
+        paymentMode: paymentMethod.name,
+      }),
+      Income.countDocuments({
+        userId: req.user._id,
+        paymentMode: paymentMethod.name,
+      }),
+    ]);
+    const usageCount = expenseCount + incomeCount;
 
-    if (expenseCount > 0) {
+    if (usageCount > 0) {
       res.status(400);
       throw new Error(
-        `Cannot delete "${paymentMethod.name}" — ${expenseCount} expense${
-          expenseCount === 1 ? "" : "s"
-        } still use it. Reassign those expenses first.`
+        `Cannot delete "${paymentMethod.name}" — ${usageCount} transaction${
+          usageCount === 1 ? "" : "s"
+        } still use it. Reassign those first.`
       );
     }
 

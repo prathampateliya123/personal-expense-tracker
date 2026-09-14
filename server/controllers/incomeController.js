@@ -1,16 +1,13 @@
 /**
- * controllers/expenseController.js
- * CRUD and stats for logged-in user's expenses.
+ * controllers/incomeController.js
+ * CRUD and stats for logged-in user's incomes.
  */
 
-import Expense from "../models/Expense.js";
+import Income from "../models/Income.js";
 import Category from "../models/Category.js";
 import PaymentMethod from "../models/PaymentMethod.js";
 
-/**
- * Build a MongoDB filter from query params for the current user.
- */
-const buildExpenseFilter = (userId, query) => {
+const buildIncomeFilter = (userId, query) => {
   const filter = { userId };
 
   if (query.category?.trim()) {
@@ -58,9 +55,6 @@ const buildExpenseFilter = (userId, query) => {
   return filter;
 };
 
-/**
- * Parse sort option — default: date descending.
- */
 const parseSort = (sortBy) => {
   const sortMap = {
     date: { date: -1 },
@@ -73,28 +67,25 @@ const parseSort = (sortBy) => {
   return sortMap[sortBy] || sortMap.date;
 };
 
-/**
- * Ensure expense belongs to the authenticated user.
- */
-const findOwnedExpense = async (expenseId, userId) => {
-  const expense = await Expense.findById(expenseId);
+const findOwnedIncome = async (incomeId, userId) => {
+  const income = await Income.findById(incomeId);
 
-  if (!expense) {
-    return { expense: null, status: 404, message: "Expense not found" };
+  if (!income) {
+    return { income: null, status: 404, message: "Income not found" };
   }
 
-  if (expense.userId.toString() !== userId.toString()) {
-    return { expense: null, status: 403, message: "Not authorized to access this expense" };
+  if (income.userId.toString() !== userId.toString()) {
+    return {
+      income: null,
+      status: 403,
+      message: "Not authorized to access this income",
+    };
   }
 
-  return { expense, status: null, message: null };
+  return { income, status: null, message: null };
 };
 
-/**
- * Validate required expense fields for create/update.
- * Category must belong to the authenticated user.
- */
-const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
+const validateIncomeBody = async (body, userId, { isUpdate = false } = {}) => {
   const { title, amount, category, paymentMode } = body;
 
   if (!isUpdate) {
@@ -121,9 +112,9 @@ const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
     const exists = await Category.findOne({
       userId,
       name: String(category).trim(),
-      type: "expense",
+      type: "income",
     });
-    if (!exists) return "Invalid category";
+    if (!exists) return "Invalid income category";
   }
 
   if (paymentMode !== undefined) {
@@ -138,21 +129,19 @@ const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
 };
 
 /**
- * @route   POST /api/expenses
- * @desc    Create a new expense for the logged-in user
+ * @route   POST /api/incomes
  */
-export const addExpense = async (req, res, next) => {
+export const addIncome = async (req, res, next) => {
   try {
-    const validationError = await validateExpenseBody(req.body, req.user._id);
+    const validationError = await validateIncomeBody(req.body, req.user._id);
     if (validationError) {
       res.status(400);
       throw new Error(validationError);
     }
 
-    const { title, amount, category, paymentMode, date, description, receiptUrl } =
-      req.body;
+    const { title, amount, category, paymentMode, date, description } = req.body;
 
-    const expense = await Expense.create({
+    const income = await Income.create({
       userId: req.user._id,
       title: title.trim(),
       amount: Number(amount),
@@ -160,12 +149,11 @@ export const addExpense = async (req, res, next) => {
       paymentMode: String(paymentMode).trim(),
       date: date ? new Date(date) : new Date(),
       description: description?.trim() || "",
-      receiptUrl: receiptUrl?.trim() || "",
     });
 
     res.status(201).json({
       success: true,
-      expense,
+      income,
     });
   } catch (error) {
     next(error);
@@ -173,21 +161,20 @@ export const addExpense = async (req, res, next) => {
 };
 
 /**
- * @route   GET /api/expenses
- * @desc    List expenses with filters, search, pagination, and sort
+ * @route   GET /api/incomes
  */
-export const getExpenses = async (req, res, next) => {
+export const getIncomes = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 10));
     const skip = (page - 1) * limit;
     const sort = parseSort(req.query.sortBy);
-    const filter = buildExpenseFilter(req.user._id, req.query);
+    const filter = buildIncomeFilter(req.user._id, req.query);
 
-    const [expenses, totalCount, amountAgg] = await Promise.all([
-      Expense.find(filter).sort(sort).skip(skip).limit(limit),
-      Expense.countDocuments(filter),
-      Expense.aggregate([
+    const [incomes, totalCount, amountAgg] = await Promise.all([
+      Income.find(filter).sort(sort).skip(skip).limit(limit),
+      Income.countDocuments(filter),
+      Income.aggregate([
         { $match: filter },
         { $group: { _id: null, totalAmount: { $sum: "$amount" } } },
       ]),
@@ -198,7 +185,7 @@ export const getExpenses = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      expenses,
+      incomes,
       totalCount,
       totalPages,
       currentPage: page,
@@ -210,10 +197,9 @@ export const getExpenses = async (req, res, next) => {
 };
 
 /**
- * @route   GET /api/expenses/stats
- * @desc    Monthly stats — total, count, category-wise breakdown
+ * @route   GET /api/incomes/stats
  */
-export const getExpenseStats = async (req, res, next) => {
+export const getIncomeStats = async (req, res, next) => {
   try {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -233,7 +219,7 @@ export const getExpenseStats = async (req, res, next) => {
     };
 
     const [summary, byCategory] = await Promise.all([
-      Expense.aggregate([
+      Income.aggregate([
         { $match: match },
         {
           $group: {
@@ -243,7 +229,7 @@ export const getExpenseStats = async (req, res, next) => {
           },
         },
       ]),
-      Expense.aggregate([
+      Income.aggregate([
         { $match: match },
         {
           $group: {
@@ -278,24 +264,23 @@ export const getExpenseStats = async (req, res, next) => {
 };
 
 /**
- * @route   GET /api/expenses/:id
- * @desc    Fetch a single expense owned by the user
+ * @route   GET /api/incomes/:id
  */
-export const getExpenseById = async (req, res, next) => {
+export const getIncomeById = async (req, res, next) => {
   try {
-    const { expense, status, message } = await findOwnedExpense(
+    const { income, status, message } = await findOwnedIncome(
       req.params.id,
       req.user._id
     );
 
-    if (!expense) {
+    if (!income) {
       res.status(status);
       throw new Error(message);
     }
 
     res.status(200).json({
       success: true,
-      expense,
+      income,
     });
   } catch (error) {
     next(error);
@@ -303,12 +288,11 @@ export const getExpenseById = async (req, res, next) => {
 };
 
 /**
- * @route   PUT /api/expenses/:id
- * @desc    Update an expense owned by the user
+ * @route   PUT /api/incomes/:id
  */
-export const updateExpense = async (req, res, next) => {
+export const updateIncome = async (req, res, next) => {
   try {
-    const validationError = await validateExpenseBody(req.body, req.user._id, {
+    const validationError = await validateIncomeBody(req.body, req.user._id, {
       isUpdate: true,
     });
     if (validationError) {
@@ -316,32 +300,32 @@ export const updateExpense = async (req, res, next) => {
       throw new Error(validationError);
     }
 
-    const { expense, status, message } = await findOwnedExpense(
+    const { income, status, message } = await findOwnedIncome(
       req.params.id,
       req.user._id
     );
 
-    if (!expense) {
+    if (!income) {
       res.status(status);
       throw new Error(message);
     }
 
-    const { title, amount, category, paymentMode, date, description, receiptUrl } =
-      req.body;
+    const { title, amount, category, paymentMode, date, description } = req.body;
 
-    if (title !== undefined) expense.title = title.trim();
-    if (amount !== undefined) expense.amount = Number(amount);
-    if (category !== undefined) expense.category = String(category).trim();
-    if (paymentMode !== undefined) expense.paymentMode = String(paymentMode).trim();
-    if (date !== undefined) expense.date = new Date(date);
-    if (description !== undefined) expense.description = description.trim();
-    if (receiptUrl !== undefined) expense.receiptUrl = receiptUrl.trim();
+    if (title !== undefined) income.title = title.trim();
+    if (amount !== undefined) income.amount = Number(amount);
+    if (category !== undefined) income.category = String(category).trim();
+    if (paymentMode !== undefined) {
+      income.paymentMode = String(paymentMode).trim();
+    }
+    if (date !== undefined) income.date = new Date(date);
+    if (description !== undefined) income.description = description.trim();
 
-    await expense.save();
+    await income.save();
 
     res.status(200).json({
       success: true,
-      expense,
+      income,
     });
   } catch (error) {
     next(error);
@@ -349,26 +333,25 @@ export const updateExpense = async (req, res, next) => {
 };
 
 /**
- * @route   DELETE /api/expenses/:id
- * @desc    Delete an expense owned by the user
+ * @route   DELETE /api/incomes/:id
  */
-export const deleteExpense = async (req, res, next) => {
+export const deleteIncome = async (req, res, next) => {
   try {
-    const { expense, status, message } = await findOwnedExpense(
+    const { income, status, message } = await findOwnedIncome(
       req.params.id,
       req.user._id
     );
 
-    if (!expense) {
+    if (!income) {
       res.status(status);
       throw new Error(message);
     }
 
-    await expense.deleteOne();
+    await income.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: "Expense deleted successfully",
+      message: "Income deleted successfully",
     });
   } catch (error) {
     next(error);

@@ -1,10 +1,14 @@
 /**
  * controllers/categoryController.js
- * CRUD for logged-in user's expense categories — search + pagination.
+ * CRUD for logged-in user's expense / income categories — search + pagination.
  */
 
-import Category, { CATEGORY_COLOR_KEYS } from "../models/Category.js";
+import Category, {
+  CATEGORY_COLOR_KEYS,
+  CATEGORY_TYPES,
+} from "../models/Category.js";
 import Expense from "../models/Expense.js";
+import Income from "../models/Income.js";
 
 const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
 
@@ -12,6 +16,9 @@ const escapeRegex = (value = "") =>
   String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const toNameKey = (name = "") => normalizeName(name).toLowerCase();
+
+const normalizeType = (type) =>
+  CATEGORY_TYPES.includes(type) ? type : "expense";
 
 const findOwnedCategory = async (categoryId, userId) => {
   const category = await Category.findById(categoryId);
@@ -31,15 +38,26 @@ const findOwnedCategory = async (categoryId, userId) => {
   return { category, status: null, message: null };
 };
 
-const findDuplicateCategory = async (userId, name, excludeId = null) => {
+const findDuplicateCategory = async (
+  userId,
+  name,
+  type,
+  excludeId = null
+) => {
   const nameKey = toNameKey(name);
   if (!nameKey) return null;
 
   const filter = {
     userId,
+    type: normalizeType(type),
     $or: [
       { nameKey },
-      { name: { $regex: `^${escapeRegex(normalizeName(name))}$`, $options: "i" } },
+      {
+        name: {
+          $regex: `^${escapeRegex(normalizeName(name))}$`,
+          $options: "i",
+        },
+      },
     ],
   };
 
@@ -50,33 +68,68 @@ const findDuplicateCategory = async (userId, name, excludeId = null) => {
   return Category.findOne(filter);
 };
 
-const withExpenseCounts = async (userId, categories) => {
-  const names = categories.map((cat) =>
-    cat.toObject ? cat.toObject().name : cat.name
-  );
+const countUsage = async (userId, category) => {
+  const Model = category.type === "income" ? Income : Expense;
+  return Model.countDocuments({
+    userId,
+    category: category.name,
+  });
+};
 
-  if (names.length === 0) return [];
+const withUsageCounts = async (userId, categories) => {
+  if (categories.length === 0) return [];
 
-  const counts = await Expense.aggregate([
-    { $match: { userId, category: { $in: names } } },
-    { $group: { _id: "$category", count: { $sum: 1 } } },
+  const expenseNames = [];
+  const incomeNames = [];
+
+  for (const cat of categories) {
+    const plain = cat.toObject ? cat.toObject() : cat;
+    if (plain.type === "income") incomeNames.push(plain.name);
+    else expenseNames.push(plain.name);
+  }
+
+  const [expenseCounts, incomeCounts] = await Promise.all([
+    expenseNames.length
+      ? Expense.aggregate([
+          { $match: { userId, category: { $in: expenseNames } } },
+          { $group: { _id: "$category", count: { $sum: 1 } } },
+        ])
+      : [],
+    incomeNames.length
+      ? Income.aggregate([
+          { $match: { userId, category: { $in: incomeNames } } },
+          { $group: { _id: "$category", count: { $sum: 1 } } },
+        ])
+      : [],
   ]);
 
-  const countMap = Object.fromEntries(
-    counts.map((row) => [row._id, row.count])
+  const expenseMap = Object.fromEntries(
+    expenseCounts.map((row) => [row._id, row.count])
+  );
+  const incomeMap = Object.fromEntries(
+    incomeCounts.map((row) => [row._id, row.count])
   );
 
   return categories.map((cat) => {
     const plain = cat.toObject ? cat.toObject() : cat;
+    const usageCount =
+      plain.type === "income"
+        ? incomeMap[plain.name] || 0
+        : expenseMap[plain.name] || 0;
     return {
       ...plain,
-      expenseCount: countMap[plain.name] || 0,
+      usageCount,
+      expenseCount: usageCount,
     };
   });
 };
 
 const buildCategoryFilter = (userId, query = {}) => {
   const filter = { userId };
+
+  if (query.type && CATEGORY_TYPES.includes(query.type)) {
+    filter.type = query.type;
+  }
 
   if (query.search?.trim()) {
     filter.name = {
@@ -94,7 +147,6 @@ const buildCategoryFilter = (userId, query = {}) => {
 
 /**
  * @route   GET /api/categories
- * @desc    Paginated category list with search / color filter
  */
 export const getCategories = async (req, res, next) => {
   try {
@@ -111,7 +163,7 @@ export const getCategories = async (req, res, next) => {
       Category.countDocuments(filter),
     ]);
 
-    const withCounts = await withExpenseCounts(req.user._id, categories);
+    const withCounts = await withUsageCounts(req.user._id, categories);
     const totalPages = Math.ceil(totalCount / limit) || 1;
 
     res.status(200).json({
@@ -129,13 +181,18 @@ export const getCategories = async (req, res, next) => {
 
 /**
  * @route   GET /api/categories/options
- * @desc    Lightweight list for expense form/filter dropdowns
+ * @query   type=expense|income (optional)
  */
 export const getCategoryOptions = async (req, res, next) => {
   try {
-    const categories = await Category.find({ userId: req.user._id })
+    const filter = { userId: req.user._id };
+    if (req.query.type && CATEGORY_TYPES.includes(req.query.type)) {
+      filter.type = req.query.type;
+    }
+
+    const categories = await Category.find(filter)
       .sort({ createdAt: -1 })
-      .select("name color")
+      .select("name color type")
       .lean();
 
     res.status(200).json({
@@ -154,6 +211,7 @@ export const createCategory = async (req, res, next) => {
   try {
     const name = normalizeName(req.body.name);
     const color = req.body.color || "slate";
+    const type = normalizeType(req.body.type);
 
     if (!name) {
       res.status(400);
@@ -170,7 +228,7 @@ export const createCategory = async (req, res, next) => {
       throw new Error("Invalid category color");
     }
 
-    const existing = await findDuplicateCategory(req.user._id, name);
+    const existing = await findDuplicateCategory(req.user._id, name, type);
     if (existing) {
       res.status(400);
       throw new Error("A category with this name already exists");
@@ -181,11 +239,16 @@ export const createCategory = async (req, res, next) => {
       name,
       nameKey: toNameKey(name),
       color,
+      type,
     });
 
     res.status(201).json({
       success: true,
-      category: { ...category.toObject(), expenseCount: 0 },
+      category: {
+        ...category.toObject(),
+        usageCount: 0,
+        expenseCount: 0,
+      },
     });
   } catch (error) {
     if (error?.code === 11000) {
@@ -215,6 +278,7 @@ export const updateCategory = async (req, res, next) => {
       req.body.name !== undefined ? normalizeName(req.body.name) : category.name;
     const nextColor =
       req.body.color !== undefined ? req.body.color : category.color;
+    const nextType = category.type || "expense";
 
     if (!nextName) {
       res.status(400);
@@ -234,6 +298,7 @@ export const updateCategory = async (req, res, next) => {
     const duplicate = await findDuplicateCategory(
       req.user._id,
       nextName,
+      nextType,
       category._id
     );
 
@@ -249,20 +314,22 @@ export const updateCategory = async (req, res, next) => {
     await category.save();
 
     if (previousName !== nextName) {
-      await Expense.updateMany(
+      const Model = nextType === "income" ? Income : Expense;
+      await Model.updateMany(
         { userId: req.user._id, category: previousName },
         { $set: { category: nextName } }
       );
     }
 
-    const expenseCount = await Expense.countDocuments({
-      userId: req.user._id,
-      category: category.name,
-    });
+    const usageCount = await countUsage(req.user._id, category);
 
     res.status(200).json({
       success: true,
-      category: { ...category.toObject(), expenseCount },
+      category: {
+        ...category.toObject(),
+        usageCount,
+        expenseCount: usageCount,
+      },
     });
   } catch (error) {
     if (error?.code === 11000) {
@@ -288,17 +355,15 @@ export const deleteCategory = async (req, res, next) => {
       throw new Error(message);
     }
 
-    const expenseCount = await Expense.countDocuments({
-      userId: req.user._id,
-      category: category.name,
-    });
+    const usageCount = await countUsage(req.user._id, category);
+    const label = category.type === "income" ? "income" : "expense";
 
-    if (expenseCount > 0) {
+    if (usageCount > 0) {
       res.status(400);
       throw new Error(
-        `Cannot delete "${category.name}" — ${expenseCount} expense${
-          expenseCount === 1 ? "" : "s"
-        } still use it. Reassign those expenses first.`
+        `Cannot delete "${category.name}" — ${usageCount} ${label}${
+          usageCount === 1 ? "" : "s"
+        } still use it. Reassign those ${label}s first.`
       );
     }
 

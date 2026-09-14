@@ -1,7 +1,7 @@
 /**
  * models/Category.js
- * Per-user expense categories (fully dynamic — no seeded defaults).
- * nameKey used for case-insensitive uniqueness per user.
+ * Per-user categories for expenses or incomes (fully dynamic).
+ * nameKey + type used for case-insensitive uniqueness per user.
  */
 
 import mongoose from "mongoose";
@@ -20,6 +20,8 @@ export const CATEGORY_COLOR_KEYS = [
   "teal",
   "lime",
 ];
+
+export const CATEGORY_TYPES = ["expense", "income"];
 
 const categorySchema = new mongoose.Schema(
   {
@@ -42,6 +44,12 @@ const categorySchema = new mongoose.Schema(
       lowercase: true,
       default: "",
     },
+    type: {
+      type: String,
+      enum: CATEGORY_TYPES,
+      default: "expense",
+      index: true,
+    },
     color: {
       type: String,
       enum: CATEGORY_COLOR_KEYS,
@@ -61,14 +69,17 @@ categorySchema.pre("validate", function setNameKey() {
   if (this.name) {
     this.nameKey = String(this.name).trim().toLowerCase();
   }
+  if (!this.type) {
+    this.type = "expense";
+  }
 });
 
-// Case-insensitive uniqueness (skip empty nameKey)
+// Unique per user + type (Salary can exist for income and expense separately)
 categorySchema.index(
-  { userId: 1, nameKey: 1 },
+  { userId: 1, nameKey: 1, type: 1 },
   {
     unique: true,
-    name: "userId_nameKey_unique",
+    name: "userId_nameKey_type_unique",
     partialFilterExpression: { nameKey: { $gt: "" } },
   }
 );
@@ -80,19 +91,25 @@ export const ensureCategoryIndexes = async () => {
   try {
     const collection = Category.collection;
     const indexes = await collection.indexes();
+    const keep = new Set(["_id_", "userId_nameKey_type_unique"]);
     const dropNames = indexes
       .map((idx) => idx.name)
       .filter(
         (name) =>
           name &&
-          name !== "_id_" &&
-          name !== "userId_nameKey_unique" &&
+          !keep.has(name) &&
           (name.includes("nameKey") || name === "userId_1_name_1")
       );
 
     for (const name of dropNames) {
       await collection.dropIndex(name).catch(() => {});
     }
+
+    // Backfill missing type on legacy docs
+    await Category.updateMany(
+      { type: { $exists: false } },
+      { $set: { type: "expense" } }
+    );
 
     await Category.syncIndexes();
   } catch (error) {
