@@ -1,6 +1,6 @@
 /**
  * pages/Dashboard.jsx
- * Fintech-style overview — expenses, incomes, and net balance.
+ * Fintech-style overview — expenses, incomes, and real budget progress.
  */
 
 import { useMemo } from "react";
@@ -17,8 +17,14 @@ import {
 import { getCategoryAvatarClass, buildCategoryColorMap } from "../utils/categoryColors";
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
 import incomeService, { INITIAL_INCOME_FILTERS } from "../services/incomeService";
+import budgetService, { getCurrentPeriod } from "../services/budgetService";
 import categoryService from "../services/categoryService";
-import { expenseKeys, incomeKeys, categoryKeys } from "../services/queryKeys";
+import {
+  expenseKeys,
+  incomeKeys,
+  categoryKeys,
+  budgetKeys,
+} from "../services/queryKeys";
 
 const QuickAction = ({ to, icon, label }) => (
   <Link to={to} className="quick-action-btn">
@@ -30,6 +36,7 @@ const QuickAction = ({ to, icon, label }) => (
 const Dashboard = () => {
   const { user } = useUserProfile();
   const today = new Date().toISOString().split("T")[0];
+  const period = useMemo(() => getCurrentPeriod(), []);
 
   const todayExpenseFilters = useMemo(
     () => ({
@@ -75,6 +82,11 @@ const Dashboard = () => {
     },
   });
 
+  const budgetQuery = useQuery({
+    queryKey: budgetKeys.current(period.year, period.month),
+    queryFn: () => budgetService.current(period),
+  });
+
   const todayExpenseQuery = useQuery({
     queryKey: expenseKeys.list(todayExpenseFilters),
     queryFn: () => expenseService.list(todayExpenseFilters),
@@ -106,6 +118,8 @@ const Dashboard = () => {
   const firstName = user?.name?.split(" ")[0] || "there";
   const expenseStats = expenseStatsQuery.data;
   const incomeStats = incomeStatsQuery.data;
+  const budget = budgetQuery.data?.budget;
+  const progress = budgetQuery.data?.progress;
   const todaySpend = todayExpenseQuery.data?.totalAmount || 0;
   const todayIncome = todayIncomeQuery.data?.totalAmount || 0;
   const expenses = recentQuery.data?.expenses ?? [];
@@ -114,12 +128,10 @@ const Dashboard = () => {
   const monthlyExpense = expenseStats?.totalAmount || 0;
   const monthlyIncome = incomeStats?.totalAmount || 0;
   const monthlyNet = monthlyIncome - monthlyExpense;
-  const monthlyBudget = Math.max(monthlyExpense * 1.25, 10000);
-  const spendPercent = Math.min(
-    100,
-    Math.round((monthlyExpense / monthlyBudget) * 100)
-  );
-  const remaining = Math.max(0, monthlyBudget - monthlyExpense);
+  const monthlyBudget = progress?.totalAmount || 0;
+  const spendPercent = progress?.percentUsed || 0;
+  const remaining = progress?.remaining || 0;
+  const hasBudget = Boolean(budget);
 
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
@@ -160,29 +172,51 @@ const Dashboard = () => {
               Income {formatCurrency(monthlyIncome)} · Net{" "}
               <span
                 className={
-                  monthlyNet >= 0 ? "font-semibold text-accentGreen" : "font-semibold text-red-500"
+                  monthlyNet >= 0
+                    ? "font-semibold text-accentGreen"
+                    : "font-semibold text-red-500"
                 }
               >
                 {formatCurrency(monthlyNet)}
               </span>
             </p>
-            <p className="mt-1 text-sm text-textSecondary">
-              {remaining > 0
-                ? `${formatCurrency(remaining)} remaining of budget`
-                : "Budget overview"}
-            </p>
+            {hasBudget ? (
+              <p className="mt-1 text-sm text-textSecondary">
+                {progress?.overBudget
+                  ? `Over budget by ${formatCurrency(
+                      Math.max(0, (progress?.totalSpent || 0) - monthlyBudget)
+                    )}`
+                  : `${formatCurrency(remaining)} remaining of ${formatCurrency(
+                      monthlyBudget
+                    )} budget`}
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-textSecondary">
+                No budget set —{" "}
+                <Link
+                  to="/budgets"
+                  className="font-medium text-accentGreen hover:text-primaryMid"
+                >
+                  plan this month
+                </Link>
+              </p>
+            )}
           </div>
           <div className="mt-6 flex items-center justify-center">
-            <CircularProgress percent={spendPercent} label="of budget" />
+            <CircularProgress
+              percent={hasBudget ? spendPercent : 0}
+              label={hasBudget ? (progress?.overBudget ? "Over" : "of budget") : "No budget"}
+            />
           </div>
         </div>
       </div>
 
       <div>
         <h2 className="mb-3 text-sm font-semibold text-textPrimary">Quick Actions</h2>
-        <div className="grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+        <div className="grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           <QuickAction to="/expenses/add" icon="+" label="Add expense" />
           <QuickAction to="/incomes/add" icon="↑" label="Add income" />
+          <QuickAction to="/budgets" icon="◎" label="Budgets" />
           <QuickAction to="/categories" icon="≡" label="Categories" />
         </div>
       </div>
