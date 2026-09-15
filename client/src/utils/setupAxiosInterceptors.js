@@ -34,6 +34,8 @@ export const setupAxiosInterceptors = () => {
         queryClient.removeQueries({ queryKey: expenseKeys.all });
         queryClient.removeQueries({ queryKey: ["incomes"] });
         queryClient.removeQueries({ queryKey: ["budgets"] });
+        queryClient.removeQueries({ queryKey: ["savings"] });
+        queryClient.removeQueries({ queryKey: ["investments"] });
         queryClient.removeQueries({ queryKey: ["categories"] });
         queryClient.removeQueries({ queryKey: ["paymentMethods"] });
       }

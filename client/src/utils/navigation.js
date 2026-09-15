@@ -12,6 +12,7 @@ export const NAV_ITEMS = [
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "budgets", to: "/budgets", label: "Budgets" },
+  { key: "wealth", to: "/wealth", label: "Wealth" },
   { key: "categories", to: "/categories", label: "Categories" },
   { key: "settings", to: "/settings", label: "Settings" },
 ];
@@ -60,6 +61,11 @@ export const PAGE_META = {
     title: "Budget planning",
     subtitle: "Set monthly limits and track category spending",
     breadcrumb: ["Home", "Budgets"],
+  },
+  "/wealth": {
+    title: "Savings & Investments",
+    subtitle: "Manage saving goals and investment portfolio",
+    breadcrumb: ["Home", "Wealth"],
   },
   "/settings": {
     title: "Settings",
