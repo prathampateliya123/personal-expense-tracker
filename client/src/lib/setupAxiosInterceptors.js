@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosInstance";
-import { PUBLIC_AUTH_URLS } from "./constants";
-import { getApiErrorMessage } from "./helper";
-import { queryClient } from "../lib/queryClient";
+import { PUBLIC_AUTH_URLS } from "../utils/constants";
+import { getApiErrorMessage } from "../utils/helper";
+import { queryClient } from "./queryClient";
 import { expenseKeys, userKeys } from "../services/queryKeys";
 
 const isPublicAuthRequest = (url = "") =>
@@ -20,9 +20,7 @@ export const setupAxiosInterceptors = () => {
       }
 
       if (status === 401 && !isPublicAuthRequest(requestUrl)) {
-        
         queryClient.setQueryData(userKeys.profile(), null);
-        
         queryClient.removeQueries({ queryKey: expenseKeys.all });
         queryClient.removeQueries({ queryKey: ["incomes"] });
         queryClient.removeQueries({ queryKey: ["budgets"] });
