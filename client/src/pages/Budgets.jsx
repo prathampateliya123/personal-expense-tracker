@@ -19,39 +19,14 @@ import budgetService, {
 } from "../services/budgetService";
 import categoryService from "../services/categoryService";
 import { budgetKeys, categoryKeys } from "../services/queryKeys";
-import { formatCurrency } from "../utils/expenseConstants";
+import { formatCurrency } from "../utils/formatters";
 import {
   buildCategoryColorMap,
   getCategoryAvatarClass,
   getCategoryChipClass,
 } from "../utils/categoryColors";
-
-const ProgressBar = ({ percent = 0, over = false }) => (
-  <div className="h-2 w-full overflow-hidden rounded-full bg-surfaceGray">
-    <div
-      className={`h-full rounded-full transition-all ${
-        over ? "bg-red-500" : "bg-accentGreen"
-      }`}
-      style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
-    />
-  </div>
-);
-
-const StatCard = ({ label, value, hint, danger = false }) => (
-  <div className="card flex min-h-[96px] flex-col justify-center p-5">
-    <p className="text-xs font-medium uppercase tracking-wide text-textSecondary">
-      {label}
-    </p>
-    <p
-      className={`mt-1 text-2xl font-bold sm:text-3xl ${
-        danger ? "text-red-500" : "text-primaryDark"
-      }`}
-    >
-      {value}
-    </p>
-    {hint ? <p className="mt-1 text-xs text-textSecondary">{hint}</p> : null}
-  </div>
-);
+import StatCard from "../components/common/StatCard";
+import ProgressBar from "../components/common/ProgressBar";
 
 const Budgets = () => {
   const queryClient = useQueryClient();

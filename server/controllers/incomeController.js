@@ -1,66 +1,15 @@
 import Income from "../models/Income.js";
 import Category from "../models/Category.js";
 import PaymentMethod from "../models/PaymentMethod.js";
+import {
+  buildTransactionListFilter,
+  parseTransactionSort,
+} from "../utils/transactionQuery.js";
 
-const buildIncomeFilter = (userId, query) => {
-  const filter = { userId };
+const buildIncomeFilter = (userId, query) =>
+  buildTransactionListFilter(userId, query);
 
-  if (query.category?.trim()) {
-    filter.category = query.category.trim();
-  }
-
-  if (query.paymentMode?.trim()) {
-    filter.paymentMode = query.paymentMode.trim();
-  }
-
-  if (query.search?.trim()) {
-    filter.title = { $regex: query.search.trim(), $options: "i" };
-  }
-
-  const dateOperator = String(query.dateOperator || "between").toLowerCase();
-  const startDate = query.startDate?.trim();
-  const endDate = query.endDate?.trim();
-
-  if (dateOperator === "between" && (startDate || endDate)) {
-    filter.date = {};
-    if (startDate) {
-      filter.date.$gte = new Date(startDate);
-    }
-    if (endDate) {
-      const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-      filter.date.$lte = end;
-    }
-  } else if (startDate || endDate) {
-    const day = startDate || endDate;
-    const start = new Date(day);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(day);
-    end.setHours(23, 59, 59, 999);
-
-    if (dateOperator === "on") {
-      filter.date = { $gte: start, $lte: end };
-    } else if (dateOperator === "before") {
-      filter.date = { $lt: start };
-    } else if (dateOperator === "after") {
-      filter.date = { $gt: end };
-    }
-  }
-
-  return filter;
-};
-
-const parseSort = (sortBy) => {
-  const sortMap = {
-    date: { date: -1 },
-    "date-asc": { date: 1 },
-    amount: { amount: -1 },
-    "amount-asc": { amount: 1 },
-    title: { title: 1 },
-  };
-
-  return sortMap[sortBy] || sortMap.date;
-};
+const parseSort = parseTransactionSort;
 
 const findOwnedIncome = async (incomeId, userId) => {
   const income = await Income.findById(incomeId);

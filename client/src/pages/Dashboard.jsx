@@ -8,7 +8,7 @@ import {
   formatCurrency,
   formatExpenseDate,
   formatExpenseTime,
-} from "../utils/expenseConstants";
+} from "../utils/formatters";
 import { getCategoryAvatarClass, buildCategoryColorMap } from "../utils/categoryColors";
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
 import incomeService, { INITIAL_INCOME_FILTERS } from "../services/incomeService";
