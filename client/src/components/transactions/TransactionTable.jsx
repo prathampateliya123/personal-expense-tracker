@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   formatCurrency,
-  formatExpenseDate,
+  formatDate,
 } from "../../utils/expenseConstants";
 import {
   getCategoryAvatarClass,
   getCategoryChipClass,
   buildCategoryColorMap,
 } from "../../utils/categoryColors";
-import { INITIAL_EXPENSE_FILTERS } from "../../services/expenseService";
+import { INITIAL_TRANSACTION_FILTERS } from "../../services/expenseService";
 import categoryService from "../../services/categoryService";
 import paymentMethodService from "../../services/paymentMethodService";
 import { categoryKeys, paymentMethodKeys } from "../../services/queryKeys";
@@ -26,7 +26,7 @@ import NoDataFound from "../ui/NoDataFound";
 
 const COLUMNS = ["Expense", "Category", "Payment", "Date", "Amount", ""];
 
-const ExpenseAvatar = ({ category, colorMap }) => (
+const TransactionAvatar = ({ category, colorMap }) => (
   <div
     className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${getCategoryAvatarClass(
       colorMap?.[category] || category
@@ -45,9 +45,9 @@ const PaymentBadge = ({ mode }) => (
 const ActionButtons = ({ expense, onDelete }) => (
   <div className="flex items-center justify-end gap-1.5">
     <Link
-      to={`/expenses/${expense._id}/edit`}
+      to={`/expenses/${item._id}/edit`}
       className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-accentGreen/30 hover:bg-successBg hover:text-primaryDark"
-      aria-label={`Edit ${expense.title}`}
+      aria-label={`Edit ${item.title}`}
       title="Edit"
     >
       <PencilSquareIcon />
@@ -56,7 +56,7 @@ const ActionButtons = ({ expense, onDelete }) => (
       type="button"
       onClick={() => onDelete(expense)}
       className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
-      aria-label={`Delete ${expense.title}`}
+      aria-label={`Delete ${item.title}`}
       title="Delete"
     >
       <TrashIcon />
@@ -86,21 +86,21 @@ const SkeletonRow = () => (
   </tr>
 );
 
-const ExpenseRow = ({ expense, onDelete, colorMap }) => (
+const TransactionRow = ({ item, onDelete, colorMap, editBasePath }) => (
   <tr className="group border-b border-border transition last:border-0 hover:bg-surfaceLight/70">
     <td className="px-5 py-4">
       <div className="flex min-w-[220px] items-center gap-3">
-        <ExpenseAvatar category={expense.category} colorMap={colorMap} />
+        <TransactionAvatar category={item.category} colorMap={colorMap} />
         <div className="min-w-0">
-          <p className="truncate font-semibold text-textPrimary" title={expense.title}>
-            {expense.title}
+          <p className="truncate font-semibold text-textPrimary" title={item.title}>
+            {item.title}
           </p>
-          {expense.description ? (
-            <p className="mt-0.5 truncate text-xs text-textSecondary" title={expense.description}>
-              {expense.description}
+          {item.description ? (
+            <p className="mt-0.5 truncate text-xs text-textSecondary" title={item.description}>
+              {item.description}
             </p>
           ) : (
-            <p className="mt-0.5 text-xs text-textSecondary">{expense.paymentMode}</p>
+            <p className="mt-0.5 text-xs text-textSecondary">{item.paymentMode}</p>
           )}
         </div>
       </div>
@@ -108,61 +108,61 @@ const ExpenseRow = ({ expense, onDelete, colorMap }) => (
     <td className="px-5 py-4">
       <span
         className={`category-chip whitespace-nowrap ${getCategoryChipClass(
-          colorMap?.[expense.category] || expense.category
+          colorMap?.[item.category] || item.category
         )}`}
       >
-        {expense.category}
+        {item.category}
       </span>
     </td>
     <td className="px-5 py-4">
-      <PaymentBadge mode={expense.paymentMode} />
+      <PaymentBadge mode={item.paymentMode} />
     </td>
     <td className="whitespace-nowrap px-5 py-4 text-sm text-textSecondary">
-      {formatExpenseDate(expense.date)}
+      {formatDate(item.date)}
     </td>
     <td className="whitespace-nowrap px-5 py-4 text-right">
       <span className="text-base font-bold tabular-nums text-textPrimary">
-        {formatCurrency(expense.amount)}
+        {formatCurrency(item.amount)}
       </span>
     </td>
     <td className="px-5 py-4">
-      <ActionButtons expense={expense} onDelete={onDelete} />
+      <ActionButtons item={item} onDelete={onDelete} editBasePath={editBasePath} />
     </td>
   </tr>
 );
 
-const ExpenseMobileCard = ({ expense, onDelete, colorMap }) => (
+const TransactionMobileCard = ({ item, onDelete, colorMap, editBasePath }) => (
   <div className="border-b border-border p-4 last:border-0 hover:bg-surfaceLight/70">
     <div className="flex items-start gap-3">
-      <ExpenseAvatar category={expense.category} colorMap={colorMap} />
+      <TransactionAvatar category={item.category} colorMap={colorMap} />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate font-semibold text-textPrimary">{expense.title}</p>
+            <p className="truncate font-semibold text-textPrimary">{item.title}</p>
             <p className="mt-0.5 text-xs text-textSecondary">
-              {formatExpenseDate(expense.date)} · {expense.paymentMode}
+              {formatDate(item.date)} · {item.paymentMode}
             </p>
           </div>
           <p className="shrink-0 text-base font-bold tabular-nums text-textPrimary">
-            {formatCurrency(expense.amount)}
+            {formatCurrency(item.amount)}
           </p>
         </div>
         <div className="mt-3 flex items-center justify-between gap-2">
           <span
             className={`category-chip ${getCategoryChipClass(
-              colorMap?.[expense.category] || expense.category
+              colorMap?.[item.category] || item.category
             )}`}
           >
-            {expense.category}
+            {item.category}
           </span>
-          <ActionButtons expense={expense} onDelete={onDelete} />
+          <ActionButtons item={item} onDelete={onDelete} editBasePath={editBasePath} />
         </div>
       </div>
     </div>
   </div>
 );
 
-const ExpenseTable = ({
+const TransactionTable = ({
   filters,
   onFiltersChange,
   expenses,
@@ -227,7 +227,7 @@ const ExpenseTable = ({
   const handleClear = () => {
     setSearchInput("");
     setDebouncedSearch("");
-    onFiltersChange({ ...INITIAL_EXPENSE_FILTERS });
+    onFiltersChange({ ...INITIAL_TRANSACTION_FILTERS });
   };
 
   const hasActiveFilters =
@@ -238,7 +238,7 @@ const ExpenseTable = ({
     filters.dateOperator ||
     filters.search;
 
-  const handleDeleteClick = (expense) => setDeleteTarget(expense);
+  const handleDeleteClick = (item) => setDeleteTarget(item);
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -250,8 +250,8 @@ const ExpenseTable = ({
     }
   };
 
-  const showTableContent = !loading && expenses.length > 0;
-  const showEmpty = !loading && expenses.length === 0;
+  const showTableContent = !loading && items.length > 0;
+  const showEmpty = !loading && items.length === 0;
 
   return (
     <>
@@ -347,7 +347,7 @@ const ExpenseTable = ({
               <table className="w-full min-w-[920px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-border bg-surfaceLight/80">
-                    {COLUMNS.map((label) => (
+                    {[columnLabel, "Category", "Payment", "Date", "Amount", ""].map((label) => (
                       <th
                         key={label || "actions"}
                         className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-textSecondary"
@@ -378,7 +378,7 @@ const ExpenseTable = ({
               <table className="w-full min-w-[920px] border-collapse text-left text-sm">
                 <thead className="sticky top-0 z-10 bg-surfaceLight/95 backdrop-blur-sm">
                   <tr className="border-b border-border">
-                    {COLUMNS.map((label) => (
+                    {[columnLabel, "Category", "Payment", "Date", "Amount", ""].map((label) => (
                       <th
                         key={label || "actions"}
                         className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-textSecondary ${
@@ -391,10 +391,10 @@ const ExpenseTable = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border bg-white">
-                  {expenses.map((expense) => (
-                    <ExpenseRow
-                      key={expense._id}
-                      expense={expense}
+                  {items.map((expense) => (
+                    <TransactionRow
+                      key={item._id}
+                      item={item}
                       onDelete={handleDeleteClick}
                       colorMap={colorMap}
                     />
@@ -404,10 +404,10 @@ const ExpenseTable = ({
             </div>
 
             <div className="md:hidden">
-              {expenses.map((expense) => (
-                <ExpenseMobileCard
-                  key={expense._id}
-                  expense={expense}
+              {items.map((expense) => (
+                <TransactionMobileCard
+                  key={item._id}
+                  item={item}
                   onDelete={handleDeleteClick}
                   colorMap={colorMap}
                 />
@@ -421,7 +421,7 @@ const ExpenseTable = ({
           totalPages={totalPages}
           totalRecords={totalCount}
           pageSize={filters.limit}
-          entityName="expenses"
+          entityName={entityName}
           onPageChange={onPageChange}
           disabled={loading}
         />
@@ -429,7 +429,7 @@ const ExpenseTable = ({
 
       <ConfirmModal
         open={Boolean(deleteTarget)}
-        title="Delete expense?"
+        title={deleteTitle}
         description={
           deleteTarget
             ? `Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.`
@@ -446,4 +446,4 @@ const ExpenseTable = ({
   );
 };
 
-export default ExpenseTable;
+export default TransactionTable;
