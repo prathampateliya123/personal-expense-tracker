@@ -4,6 +4,7 @@ export const queryKeys = {
   incomes: ["incomes"],
   categories: ["categories"],
   paymentMethods: ["paymentMethods"],
+  budgets: ["budgets"],
   auth: ["auth"],
 };
 
@@ -42,6 +43,18 @@ export const paymentMethodKeys = {
   lists: () => [...paymentMethodKeys.all, "list"],
   list: (filters = {}) => [...paymentMethodKeys.lists(), filters],
   options: () => [...paymentMethodKeys.all, "options"],
+};
+
+export const budgetKeys = {
+  all: queryKeys.budgets,
+  lists: () => [...budgetKeys.all, "list"],
+  list: (year) => [...budgetKeys.lists(), year ?? "all"],
+  current: (year, month) => [
+    ...budgetKeys.all,
+    "current",
+    Number(year),
+    Number(month),
+  ],
 };
 
 export const authKeys = {

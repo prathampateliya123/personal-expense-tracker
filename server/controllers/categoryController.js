@@ -9,6 +9,7 @@ import Category, {
 } from "../models/Category.js";
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
+import Budget from "../models/Budget.js";
 
 const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
 
@@ -319,6 +320,14 @@ export const updateCategory = async (req, res, next) => {
         { userId: req.user._id, category: previousName },
         { $set: { category: nextName } }
       );
+
+      if (nextType === "expense") {
+        await Budget.updateMany(
+          { userId: req.user._id, "allocations.category": previousName },
+          { $set: { "allocations.$[elem].category": nextName } },
+          { arrayFilters: [{ "elem.category": previousName }] }
+        );
+      }
     }
 
     const usageCount = await countUsage(req.user._id, category);
