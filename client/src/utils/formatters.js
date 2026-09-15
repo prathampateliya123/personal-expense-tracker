@@ -20,3 +20,10 @@ export const formatTime = (date) =>
 
 export const formatExpenseDate = formatDate;
 export const formatExpenseTime = formatTime;
+
+export const toDateInputValue = (date, { fallbackToday = false } = {}) => {
+  if (!date) {
+    return fallbackToday ? new Date().toISOString().split("T")[0] : "";
+  }
+  return new Date(date).toISOString().split("T")[0];
+};

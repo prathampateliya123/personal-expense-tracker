@@ -1,4 +1,4 @@
-import CircularProgress from "../dashboard/CircularProgress";
+import CircularProgress from "../common/CircularProgress";
 import StatCard from "../common/StatCard";
 import { formatCurrency } from "../../utils/formatters";
 import { getInvestmentTypeLabel } from "../../utils/wealthConstants";

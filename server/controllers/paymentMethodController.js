@@ -1,57 +1,23 @@
 import PaymentMethod from "../models/PaymentMethod.js";
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
+import {
+  normalizeName,
+  escapeRegex,
+  toNameKey,
+  findDuplicateByName,
+} from "../utils/namedEntity.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
-const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
+const findOwnedPaymentMethod = (id, userId) =>
+  findOwnedDocument(PaymentMethod, id, userId, {
+    key: "paymentMethod",
+    notFoundMessage: "Payment method not found",
+    forbiddenMessage: "Not authorized to access this payment method",
+  });
 
-const escapeRegex = (value = "") =>
-  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const toNameKey = (name = "") => normalizeName(name).toLowerCase();
-
-const findOwnedPaymentMethod = async (id, userId) => {
-  const paymentMethod = await PaymentMethod.findById(id);
-
-  if (!paymentMethod) {
-    return {
-      paymentMethod: null,
-      status: 404,
-      message: "Payment method not found",
-    };
-  }
-
-  if (paymentMethod.userId.toString() !== userId.toString()) {
-    return {
-      paymentMethod: null,
-      status: 403,
-      message: "Not authorized to access this payment method",
-    };
-  }
-
-  return { paymentMethod, status: null, message: null };
-};
-
-const findDuplicate = async (userId, name, excludeId = null) => {
-  const nameKey = toNameKey(name);
-  if (!nameKey) return null;
-
-  const filter = {
-    userId,
-    $or: [
-      { nameKey },
-      {
-        name: {
-          $regex: `^${escapeRegex(normalizeName(name))}$`,
-          $options: "i",
-        },
-      },
-    ],
-  };
-
-  if (excludeId) filter._id = { $ne: excludeId };
-
-  return PaymentMethod.findOne(filter);
-};
+const findDuplicate = (userId, name, excludeId = null) =>
+  findDuplicateByName(PaymentMethod, { userId, name, excludeId });
 
 const withUsageCounts = async (userId, items) => {
   const names = items.map((item) =>

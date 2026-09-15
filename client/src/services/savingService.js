@@ -1,20 +1,13 @@
 import apiService from "./apiService";
+import { INITIAL_LIST_FILTERS, buildListQueryParams } from "./buildListQuery";
 
 export const INITIAL_SAVING_FILTERS = {
-  search: "",
+  ...INITIAL_LIST_FILTERS,
   status: "",
-  page: 1,
-  limit: 10,
 };
 
-export const buildSavingQueryParams = (filters = {}) => {
-  const params = new URLSearchParams();
-  if (filters.search?.trim()) params.set("search", filters.search.trim());
-  if (filters.status) params.set("status", filters.status);
-  if (filters.page) params.set("page", String(filters.page));
-  if (filters.limit) params.set("limit", String(filters.limit));
-  return params.toString();
-};
+export const buildSavingQueryParams = (filters = {}) =>
+  buildListQueryParams(filters, ["status"]);
 
 export const savingService = {
   list: (filters = INITIAL_SAVING_FILTERS) => {

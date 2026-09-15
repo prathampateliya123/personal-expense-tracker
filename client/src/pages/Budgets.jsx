@@ -1,16 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Button from "../components/ui/Button";
 import ConfirmModal from "../components/modal/ConfirmModal";
-import CircularProgress from "../components/dashboard/CircularProgress";
-import NoDataFound from "../components/ui/NoDataFound";
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconPlus,
-  TrashIcon,
-} from "../components/ui/Icons";
+import BudgetPeriodHeader from "../components/budgets/BudgetPeriodHeader";
+import BudgetStats from "../components/budgets/BudgetStats";
+import BudgetForm from "../components/budgets/BudgetForm";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import budgetService, {
   formatPeriodLabel,
@@ -19,14 +12,7 @@ import budgetService, {
 } from "../services/budgetService";
 import categoryService from "../services/categoryService";
 import { budgetKeys, categoryKeys } from "../services/queryKeys";
-import { formatCurrency } from "../utils/formatters";
-import {
-  buildCategoryColorMap,
-  getCategoryAvatarClass,
-  getCategoryChipClass,
-} from "../utils/categoryColors";
-import StatCard from "../components/common/StatCard";
-import ProgressBar from "../components/common/ProgressBar";
+import { buildCategoryColorMap } from "../utils/categoryColors";
 
 const Budgets = () => {
   const queryClient = useQueryClient();
@@ -179,328 +165,40 @@ const Budgets = () => {
 
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
-      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-textPrimary sm:text-3xl">
-            Budget planning
-          </h1>
-          <p className="mt-1 text-sm text-textSecondary">
-            Set a monthly limit and allocate spend by category
-          </p>
-        </div>
+      <BudgetPeriodHeader
+        periodLabel={periodLabel}
+        onPrev={() => setPeriod((prev) => shiftPeriod(prev.year, prev.month, -1))}
+        onNext={() => setPeriod((prev) => shiftPeriod(prev.year, prev.month, 1))}
+      />
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button
-            type="button"
-            onClick={() => setPeriod((prev) => shiftPeriod(prev.year, prev.month, -1))}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:bg-surfaceGray"
-            aria-label="Previous month"
-          >
-            <IconChevronLeft />
-          </button>
-          <div className="min-w-[10rem] text-center text-sm font-semibold text-textPrimary">
-            {periodLabel}
-          </div>
-          <button
-            type="button"
-            onClick={() => setPeriod((prev) => shiftPeriod(prev.year, prev.month, 1))}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:bg-surfaceGray"
-            aria-label="Next month"
-          >
-            <IconChevronRight />
-          </button>
-        </div>
-      </div>
+      <BudgetStats
+        loading={loading}
+        progress={progress}
+        totalAmount={totalAmount}
+        allocatedTotal={allocatedTotal}
+        budget={budget}
+        periodLabel={periodLabel}
+      />
 
-      {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-2xl bg-surfaceGray" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <StatCard
-              label="Monthly budget"
-              value={formatCurrency(progress?.totalAmount || Number(totalAmount) || 0)}
-              hint={budget ? "Saved plan" : "Not saved yet"}
-            />
-            <StatCard
-              label="Spent"
-              value={formatCurrency(progress?.totalSpent || 0)}
-              hint={`${progress?.expenseCount || 0} expense${
-                (progress?.expenseCount || 0) === 1 ? "" : "s"
-              }`}
-              danger={Boolean(progress?.overBudget)}
-            />
-            <StatCard
-              label="Remaining"
-              value={formatCurrency(progress?.remaining || 0)}
-              hint={
-                progress?.overBudget ? "Over budget" : "Left for this month"
-              }
-              danger={Boolean(progress?.overBudget)}
-            />
-            <StatCard
-              label="Allocated"
-              value={formatCurrency(allocatedTotal)}
-              hint={
-                Number(totalAmount) > 0
-                  ? `${formatCurrency(
-                      Math.max(0, Number(totalAmount) - allocatedTotal)
-                    )} unallocated`
-                  : "Set total budget first"
-              }
-            />
-          </div>
-
-          <div className="card flex flex-col items-center justify-center gap-3 p-6">
-            <CircularProgress
-              percent={progress?.percentUsed || 0}
-              label={progress?.overBudget ? "Over budget" : "of budget"}
-            />
-            {!budget ? (
-              <p className="text-center text-sm text-textSecondary">
-                No budget saved for {periodLabel}
-              </p>
-            ) : null}
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSave} className="card flex flex-col gap-5 p-5 sm:p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-base font-semibold text-textPrimary">
-              Budget details
-            </h2>
-            <p className="mt-0.5 text-sm text-textSecondary">
-              Overall limit for {periodLabel}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {!budget ? (
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={saving}
-                onClick={() => copyMutation.mutate()}
-              >
-                Copy previous month
-              </Button>
-            ) : null}
-            {budget ? (
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={saving || deleteMutation.isPending}
-                onClick={() => setDeleteOpen(true)}
-              >
-                <TrashIcon />
-                Delete
-              </Button>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="budget-total"
-              className="mb-1.5 block text-sm font-medium text-textPrimary"
-            >
-              Total budget (₹)
-            </label>
-            <input
-              id="budget-total"
-              type="number"
-              min="0"
-              step="0.01"
-              value={totalAmount}
-              onChange={(e) => setTotalAmount(e.target.value)}
-              className="fintech-input"
-              placeholder="e.g. 25000"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="budget-notes"
-              className="mb-1.5 block text-sm font-medium text-textPrimary"
-            >
-              Notes (optional)
-            </label>
-            <input
-              id="budget-notes"
-              type="text"
-              maxLength={300}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="fintech-input"
-              placeholder="e.g. Tight month — cut shopping"
-            />
-          </div>
-        </div>
-
-        <div className="border-t border-border pt-5">
-          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-sm font-semibold text-textPrimary">
-                Category allocations
-              </h3>
-              <p className="text-xs text-textSecondary">
-                Optional limits per expense category
-              </p>
-            </div>
-            {categories.length === 0 ? (
-              <Link
-                to="/categories"
-                className="inline-flex items-center gap-1 text-sm font-medium text-accentGreen hover:text-primaryMid"
-              >
-                <IconPlus className="h-4 w-4" />
-                Add expense categories
-              </Link>
-            ) : null}
-          </div>
-
-          {categories.length === 0 ? (
-            <NoDataFound className="py-10" />
-          ) : (
-            <div className="overflow-hidden rounded-lg border border-border">
-              <div className="hidden md:block">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-surfaceLight/60 text-xs font-semibold uppercase tracking-wide text-textSecondary">
-                      <th className="px-4 py-3">Category</th>
-                      <th className="px-4 py-3">Budget</th>
-                      <th className="px-4 py-3">Spent</th>
-                      <th className="px-4 py-3">Progress</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {allocationRows.map((row) => (
-                      <tr
-                        key={row.category}
-                        className="border-b border-border last:border-0"
-                      >
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold ${getCategoryAvatarClass(
-                                colorMap[row.category] || row
-                              )}`}
-                            >
-                              {row.category?.[0] || "?"}
-                            </div>
-                            <span
-                              className={`category-chip ${getCategoryChipClass(
-                                colorMap[row.category] || row
-                              )}`}
-                            >
-                              {row.category}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={allocationDraft[row.category] ?? ""}
-                            onChange={(e) =>
-                              setAllocationDraft((prev) => ({
-                                ...prev,
-                                [row.category]: e.target.value,
-                              }))
-                            }
-                            className="fintech-input max-w-[140px]"
-                            placeholder="0"
-                          />
-                        </td>
-                        <td className="px-4 py-3 font-medium text-textPrimary">
-                          {formatCurrency(row.spent)}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="min-w-[120px] space-y-1">
-                            <ProgressBar
-                              percent={
-                                row.amount > 0
-                                  ? Math.round((row.spent / row.amount) * 100)
-                                  : 0
-                              }
-                              over={row.amount > 0 && row.spent > row.amount}
-                            />
-                            <p className="text-xs text-textSecondary">
-                              {row.amount > 0
-                                ? `${Math.min(
-                                    100,
-                                    Math.round((row.spent / row.amount) * 100)
-                                  )}%`
-                                : "No limit"}
-                            </p>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="divide-y divide-border md:hidden">
-                {allocationRows.map((row) => (
-                  <div key={row.category} className="space-y-3 p-4">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold ${getCategoryAvatarClass(
-                          colorMap[row.category] || row
-                        )}`}
-                      >
-                        {row.category?.[0] || "?"}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-textPrimary">
-                          {row.category}
-                        </p>
-                        <p className="text-xs text-textSecondary">
-                          Spent {formatCurrency(row.spent)}
-                        </p>
-                      </div>
-                    </div>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={allocationDraft[row.category] ?? ""}
-                      onChange={(e) =>
-                        setAllocationDraft((prev) => ({
-                          ...prev,
-                          [row.category]: e.target.value,
-                        }))
-                      }
-                      className="fintech-input"
-                      placeholder="Budget amount"
-                    />
-                    <ProgressBar
-                      percent={
-                        row.amount > 0
-                          ? Math.round((row.spent / row.amount) * 100)
-                          : 0
-                      }
-                      over={row.amount > 0 && row.spent > row.amount}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex justify-end border-t border-border pt-5">
-          <Button type="submit" loading={saveMutation.isPending}>
-            Save budget
-          </Button>
-        </div>
-      </form>
+      <BudgetForm
+        periodLabel={periodLabel}
+        budget={budget}
+        saving={saving}
+        deletePending={deleteMutation.isPending}
+        onCopyPrevious={() => copyMutation.mutate()}
+        onRequestDelete={() => setDeleteOpen(true)}
+        totalAmount={totalAmount}
+        setTotalAmount={setTotalAmount}
+        notes={notes}
+        setNotes={setNotes}
+        categories={categories}
+        allocationRows={allocationRows}
+        allocationDraft={allocationDraft}
+        setAllocationDraft={setAllocationDraft}
+        colorMap={colorMap}
+        onSubmit={handleSave}
+        savePending={saveMutation.isPending}
+      />
 
       <ConfirmModal
         open={deleteOpen}

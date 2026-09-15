@@ -23,7 +23,4 @@ export const getInvestmentTypeLabel = (type) =>
 export const getSavingStatusLabel = (status) =>
   SAVING_STATUS_OPTIONS.find((opt) => opt.value === status)?.label || status;
 
-export const toDateInputValue = (date) => {
-  if (!date) return "";
-  return new Date(date).toISOString().split("T")[0];
-};
+export { toDateInputValue } from "./formatters";

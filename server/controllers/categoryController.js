@@ -5,64 +5,37 @@ import Category, {
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
 import Budget from "../models/Budget.js";
-
-const normalizeName = (name = "") => String(name).trim().replace(/\s+/g, " ");
-
-const escapeRegex = (value = "") =>
-  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const toNameKey = (name = "") => normalizeName(name).toLowerCase();
+import {
+  normalizeName,
+  escapeRegex,
+  toNameKey,
+  findDuplicateByName,
+} from "../utils/namedEntity.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
 const normalizeType = (type) =>
   CATEGORY_TYPES.includes(type) ? type : "expense";
 
-const findOwnedCategory = async (categoryId, userId) => {
-  const category = await Category.findById(categoryId);
-
-  if (!category) {
-    return { category: null, status: 404, message: "Category not found" };
-  }
-
-  if (category.userId.toString() !== userId.toString()) {
-    return {
-      category: null,
-      status: 403,
-      message: "Not authorized to access this category",
-    };
-  }
-
-  return { category, status: null, message: null };
-};
+const findOwnedCategory = (categoryId, userId) =>
+  findOwnedDocument(Category, categoryId, userId, {
+    key: "category",
+    notFoundMessage: "Category not found",
+    forbiddenMessage: "Not authorized to access this category",
+  });
 
 const findDuplicateCategory = async (
   userId,
   name,
   type,
   excludeId = null
-) => {
-  const nameKey = toNameKey(name);
-  if (!nameKey) return null;
-
-  const filter = {
+) =>
+  findDuplicateByName(Category, {
     userId,
-    type: normalizeType(type),
-    $or: [
-      { nameKey },
-      {
-        name: {
-          $regex: `^${escapeRegex(normalizeName(name))}$`,
-          $options: "i",
-        },
-      },
-    ],
-  };
+    name,
+    excludeId,
+    extraFilter: { type: normalizeType(type) },
+  });
 
-  if (excludeId) {
-    filter._id = { $ne: excludeId };
-  }
-
-  return Category.findOne(filter);
-};
 
 const countUsage = async (userId, category) => {
   const Model = category.type === "income" ? Income : Expense;

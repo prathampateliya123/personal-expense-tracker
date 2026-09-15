@@ -1,44 +1,64 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 import categoryService from "../../services/categoryService";
 import paymentMethodService from "../../services/paymentMethodService";
 import { categoryKeys, paymentMethodKeys } from "../../services/queryKeys";
+import { toDateInputValue } from "../../utils/formatters";
 
 const inputClass = "fintech-input";
 const labelClass = "mb-1.5 block text-sm font-medium text-textPrimary";
 
-const toDateInputValue = (date) => {
-  if (!date) return new Date().toISOString().split("T")[0];
-  return new Date(date).toISOString().split("T")[0];
-};
-
-const emptyForm = {
+const emptyForm = () => ({
   title: "",
   amount: "",
   category: "",
   paymentMode: "",
-  date: toDateInputValue(),
+  date: toDateInputValue(null, { fallbackToday: true }),
   description: "",
+});
+
+const COPY = {
+  expense: {
+    titlePlaceholder: "e.g. Grocery shopping",
+    descriptionPlaceholder: "Add notes about this expense...",
+    paymentLabel: "Payment mode",
+    categoryEmpty: "Select category",
+    paymentEmpty: "Select payment method",
+    addLabel: "Add expense",
+    updateLabel: "Update expense",
+  },
+  income: {
+    titlePlaceholder: "e.g. Monthly salary",
+    descriptionPlaceholder: "Add notes about this income...",
+    paymentLabel: "Received via",
+    categoryEmpty: "Add income categories first",
+    paymentEmpty: "Add payment methods in Settings",
+    addLabel: "Add income",
+    updateLabel: "Update income",
+  },
 };
 
-const IncomeForm = ({
+const TransactionForm = ({
+  categoryType = "expense",
   initialData,
   onSubmit,
   onCancel,
   loading = false,
   variant = "page",
 }) => {
+  const copy = COPY[categoryType] || COPY.expense;
   const isEdit = Boolean(initialData?._id);
   const isPage = variant === "page";
+  const idPrefix = categoryType;
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
 
   const categoriesQuery = useQuery({
-    queryKey: categoryKeys.options("income"),
+    queryKey: categoryKeys.options(categoryType),
     queryFn: async () => {
-      const data = await categoryService.options("income");
+      const data = await categoryService.options(categoryType);
       return data.categories ?? [];
     },
   });
@@ -61,11 +81,11 @@ const IncomeForm = ({
         amount: String(initialData.amount ?? ""),
         category: initialData.category || "",
         paymentMode: initialData.paymentMode || "",
-        date: toDateInputValue(initialData.date),
+        date: toDateInputValue(initialData.date, { fallbackToday: true }),
         description: initialData.description || "",
       });
     } else {
-      setForm({ ...emptyForm, date: toDateInputValue() });
+      setForm(emptyForm());
     }
     setErrors({});
   }, [initialData]);
@@ -113,20 +133,28 @@ const IncomeForm = ({
     ? "grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
     : "grid gap-4 sm:grid-cols-2";
 
+  const categoryPlaceholder = categoryOptions.length
+    ? "Select category"
+    : copy.categoryEmpty;
+
+  const paymentPlaceholder = paymentOptions.length
+    ? "Select payment method"
+    : copy.paymentEmpty;
+
   return (
     <form onSubmit={handleSubmit} className={isPage ? "space-y-6" : "space-y-4"}>
       <div>
-        <label htmlFor="income-title" className={labelClass}>
+        <label htmlFor={`${idPrefix}-title`} className={labelClass}>
           Title
         </label>
         <input
-          id="income-title"
+          id={`${idPrefix}-title`}
           name="title"
           type="text"
           value={form.title}
           onChange={handleChange}
           className={inputClass}
-          placeholder="e.g. Monthly salary"
+          placeholder={copy.titlePlaceholder}
         />
         {errors.title ? (
           <p className="mt-1 text-xs text-red-500">{errors.title}</p>
@@ -135,11 +163,11 @@ const IncomeForm = ({
 
       <div className={gridClass}>
         <div>
-          <label htmlFor="income-amount" className={labelClass}>
+          <label htmlFor={`${idPrefix}-amount`} className={labelClass}>
             Amount (₹)
           </label>
           <input
-            id="income-amount"
+            id={`${idPrefix}-amount`}
             name="amount"
             type="number"
             min="0"
@@ -155,7 +183,7 @@ const IncomeForm = ({
         </div>
 
         <DateInput
-          id="income-date"
+          id={`${idPrefix}-date`}
           name="date"
           label="Date"
           labelClassName={labelClass}
@@ -165,48 +193,42 @@ const IncomeForm = ({
         />
 
         <Select
-          id="income-category"
+          id={`${idPrefix}-category`}
           name="category"
           label="Category"
           labelClassName={labelClass}
           value={form.category}
           onChange={handleChange}
-          placeholder={
-            categoryOptions.length ? "Select category" : "Add income categories first"
-          }
+          placeholder={categoryPlaceholder}
           options={categoryOptions}
           error={errors.category}
         />
 
         <Select
-          id="income-paymentMode"
+          id={`${idPrefix}-paymentMode`}
           name="paymentMode"
-          label="Received via"
+          label={copy.paymentLabel}
           labelClassName={labelClass}
           value={form.paymentMode}
           onChange={handleChange}
-          placeholder={
-            paymentOptions.length
-              ? "Select payment method"
-              : "Add payment methods in Settings"
-          }
+          placeholder={paymentPlaceholder}
           options={paymentOptions}
           error={errors.paymentMode}
         />
       </div>
 
       <div>
-        <label htmlFor="income-description" className={labelClass}>
+        <label htmlFor={`${idPrefix}-description`} className={labelClass}>
           Description (optional)
         </label>
         <textarea
-          id="income-description"
+          id={`${idPrefix}-description`}
           name="description"
           rows={isPage ? 4 : 3}
           value={form.description}
           onChange={handleChange}
           className={inputClass}
-          placeholder="Add notes about this income..."
+          placeholder={copy.descriptionPlaceholder}
         />
       </div>
 
@@ -232,11 +254,15 @@ const IncomeForm = ({
           disabled={loading}
           className={`btn-primary ${isPage ? "sm:min-w-[160px]" : "flex-1"}`}
         >
-          {loading ? "Saving..." : isEdit ? "Update income" : "Add income"}
+          {loading
+            ? "Saving..."
+            : isEdit
+              ? copy.updateLabel
+              : copy.addLabel}
         </button>
       </div>
     </form>
   );
 };
 
-export default IncomeForm;
+export default TransactionForm;

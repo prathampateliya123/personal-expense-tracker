@@ -1,26 +1,14 @@
 import Investment, { INVESTMENT_TYPES } from "../models/Investment.js";
+import { escapeRegex } from "../utils/namedEntity.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
-const escapeRegex = (value = "") =>
-  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const findOwnedInvestment = (id, userId) =>
+  findOwnedDocument(Investment, id, userId, {
+    key: "investment",
+    notFoundMessage: "Investment not found",
+    forbiddenMessage: "Not authorized to access this investment",
+  });
 
-const findOwnedInvestment = async (id, userId) => {
-  const investment = await Investment.findById(id);
-  if (!investment) {
-    return {
-      investment: null,
-      status: 404,
-      message: "Investment not found",
-    };
-  }
-  if (investment.userId.toString() !== userId.toString()) {
-    return {
-      investment: null,
-      status: 403,
-      message: "Not authorized to access this investment",
-    };
-  }
-  return { investment, status: null, message: null };
-};
 
 const withReturns = (doc) => {
   const plain = doc.toObject ? doc.toObject() : doc;

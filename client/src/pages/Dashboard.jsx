@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useUserProfile } from "../context/UserProfileContext";
-import CircularProgress from "../components/dashboard/CircularProgress";
+import CircularProgress from "../components/common/CircularProgress";
 import NoDataFound from "../components/ui/NoDataFound";
 import {
   formatCurrency,

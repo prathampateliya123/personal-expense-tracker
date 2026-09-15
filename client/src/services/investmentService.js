@@ -1,20 +1,13 @@
 import apiService from "./apiService";
+import { INITIAL_LIST_FILTERS, buildListQueryParams } from "./buildListQuery";
 
 export const INITIAL_INVESTMENT_FILTERS = {
-  search: "",
+  ...INITIAL_LIST_FILTERS,
   type: "",
-  page: 1,
-  limit: 10,
 };
 
-export const buildInvestmentQueryParams = (filters = {}) => {
-  const params = new URLSearchParams();
-  if (filters.search?.trim()) params.set("search", filters.search.trim());
-  if (filters.type) params.set("type", filters.type);
-  if (filters.page) params.set("page", String(filters.page));
-  if (filters.limit) params.set("limit", String(filters.limit));
-  return params.toString();
-};
+export const buildInvestmentQueryParams = (filters = {}) =>
+  buildListQueryParams(filters, ["type"]);
 
 export const investmentService = {
   list: (filters = INITIAL_INVESTMENT_FILTERS) => {

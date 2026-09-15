@@ -5,27 +5,20 @@ import {
   buildTransactionListFilter,
   parseTransactionSort,
 } from "../utils/transactionQuery.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
 const buildExpenseFilter = (userId, query) =>
   buildTransactionListFilter(userId, query);
 
 const parseSort = parseTransactionSort;
 
+const findOwnedExpense = (expenseId, userId) =>
+  findOwnedDocument(Expense, expenseId, userId, {
+    key: "expense",
+    notFoundMessage: "Expense not found",
+    forbiddenMessage: "Not authorized to access this expense",
+  });
 
-
-const findOwnedExpense = async (expenseId, userId) => {
-  const expense = await Expense.findById(expenseId);
-
-  if (!expense) {
-    return { expense: null, status: 404, message: "Expense not found" };
-  }
-
-  if (expense.userId.toString() !== userId.toString()) {
-    return { expense: null, status: 403, message: "Not authorized to access this expense" };
-  }
-
-  return { expense, status: null, message: null };
-};
 
 
 

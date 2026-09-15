@@ -1,27 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../components/ui/Button";
-import Select from "../components/ui/Select";
 import ConfirmModal from "../components/modal/ConfirmModal";
-import TableSearch from "../components/table/TableSearch";
-import TablePager, { TableLimit } from "../components/table/TablePager";
-import NoDataFound from "../components/ui/NoDataFound";
-import {
-  PencilSquareIcon,
-  TrashIcon,
-  IconPlus,
-} from "../components/ui/Icons";
+import CategoryFormCard from "../components/categories/CategoryFormCard";
+import CategoryList from "../components/categories/CategoryList";
+import { IconPlus } from "../components/ui/Icons";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import categoryService, {
   INITIAL_CATEGORY_FILTERS,
 } from "../services/categoryService";
 import { categoryKeys, expenseKeys, incomeKeys } from "../services/queryKeys";
-import {
-  CATEGORY_COLOR_OPTIONS,
-  getCategoryAvatarClass,
-  getCategoryChipClass,
-  getCategoryColorMeta,
-} from "../utils/categoryColors";
+import { CATEGORY_COLOR_OPTIONS } from "../utils/categoryColors";
 import { debounce } from "../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../utils/constants";
 
@@ -31,87 +20,6 @@ const TYPE_TABS = [
   { key: "expense", label: "Expense" },
   { key: "income", label: "Income" },
 ];
-
-const ColorPicker = ({ value, onChange }) => (
-  <div className="flex flex-wrap gap-2">
-    {CATEGORY_COLOR_OPTIONS.map((opt) => {
-      const selected = value === opt.key;
-      return (
-        <button
-          key={opt.key}
-          type="button"
-          title={opt.label}
-          onClick={() => onChange(opt.key)}
-          className={`h-8 w-8 rounded-lg border-2 transition ${opt.swatch} ${
-            selected
-              ? "border-primaryDark ring-2 ring-accentGreen/40"
-              : "border-transparent hover:scale-105"
-          }`}
-          aria-label={opt.label}
-          aria-pressed={selected}
-        />
-      );
-    })}
-  </div>
-);
-
-const CategoryFormCard = ({
-  title,
-  form,
-  setForm,
-  onSubmit,
-  onCancel,
-  loading,
-  submitLabel,
-  namePlaceholder = "e.g. Groceries",
-}) => (
-  <form
-    onSubmit={onSubmit}
-    className="card flex w-full flex-col gap-4 p-5 sm:p-6"
-  >
-    <h2 className="text-base font-semibold text-textPrimary">{title}</h2>
-    <div>
-      <label
-        htmlFor="category-name"
-        className="mb-1.5 block text-sm font-medium text-textPrimary"
-      >
-        Name
-      </label>
-      <input
-        id="category-name"
-        type="text"
-        maxLength={40}
-        value={form.name}
-        onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-        className="fintech-input"
-        placeholder={namePlaceholder}
-        autoFocus
-      />
-    </div>
-    <div>
-      <p className="mb-1.5 text-sm font-medium text-textPrimary">Color</p>
-      <ColorPicker
-        value={form.color}
-        onChange={(color) => setForm((prev) => ({ ...prev, color }))}
-      />
-    </div>
-    <div className="flex flex-wrap gap-2 sm:justify-end">
-      {onCancel ? (
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-          disabled={loading}
-        >
-          Cancel
-        </Button>
-      ) : null}
-      <Button type="submit" loading={loading}>
-        {submitLabel}
-      </Button>
-    </div>
-  </form>
-);
 
 const Categories = () => {
   const queryClient = useQueryClient();
@@ -357,188 +265,29 @@ const Categories = () => {
         />
       ) : null}
 
-      <div className="table-panel w-full overflow-hidden">
-        <div className="border-b border-border bg-surfaceLight/50 px-3 py-2.5 sm:px-4 sm:py-3">
-          <div className="table-toolbar">
-            <div className="table-toolbar__row">
-              <div className="table-toolbar__search">
-                <div className="table-toolbar__search-field">
-                  <TableSearch
-                    value={searchInput}
-                    onChange={setSearchInput}
-                    placeholder="Search categories..."
-                  />
-                </div>
-              </div>
-
-              <div className="table-toolbar__controls">
-                <div className="table-toolbar__control-row">
-                  <div className="table-toolbar__tools-wrap">
-                    <div className="table-toolbar__tools table-toolbar__controls-start">
-                      <Select
-                        id="filter-category-color"
-                        value={filters.color}
-                        onChange={(e) => applyFilter({ color: e.target.value })}
-                        placeholder="Color"
-                        options={colorFilterOptions}
-                        size="sm"
-                        className="table-toolbar__type"
-                      />
-
-                      <TableLimit
-                        value={filters.limit}
-                        onChange={(limit) => applyFilter({ limit })}
-                      />
-
-                      {hasActiveFilters ? (
-                        <button
-                          type="button"
-                          onClick={handleClear}
-                          className="shrink-0 text-sm font-medium text-accentGreen hover:text-primaryMid"
-                        >
-                          Clear
-                        </button>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {loading && categories.length === 0 ? (
-          <div className="space-y-3 p-5">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="h-14 animate-pulse rounded-lg bg-surfaceGray"
-              />
-            ))}
-          </div>
-        ) : categories.length === 0 ? (
-          <NoDataFound />
-        ) : (
-          <>
-            <div className="hidden overflow-x-auto md:block">
-              <table className="w-full min-w-[640px] text-left">
-                <thead>
-                  <tr className="border-b border-border bg-surfaceLight/60 text-xs font-semibold uppercase tracking-wide text-textSecondary">
-                    <th className="px-5 py-3">Category</th>
-                    <th className="px-5 py-3">Color</th>
-                    <th className="px-5 py-3">{usageLabel}</th>
-                    <th className="px-5 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categories.map((category) => (
-                    <tr
-                      key={category._id}
-                      className="border-b border-border last:border-0 hover:bg-surfaceLight/70"
-                    >
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold ${getCategoryAvatarClass(category)}`}
-                          >
-                            {category.name?.[0] || "?"}
-                          </div>
-                          <p className="font-semibold text-textPrimary">
-                            {category.name}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`category-chip ${getCategoryChipClass(category)}`}
-                        >
-                          {getCategoryColorMeta(category.color).label}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-textSecondary">
-                        {category.usageCount ?? category.expenseCount ?? 0}
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => startEdit(category)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-accentGreen/30 hover:bg-successBg hover:text-primaryDark"
-                            aria-label={`Edit ${category.name}`}
-                          >
-                            <PencilSquareIcon />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => requestDelete(category)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
-                            aria-label={`Delete ${category.name}`}
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="divide-y divide-border md:hidden">
-              {categories.map((category) => (
-                <div key={category._id} className="flex items-center gap-3 p-4">
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${getCategoryAvatarClass(category)}`}
-                  >
-                    {category.name?.[0] || "?"}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold text-textPrimary">
-                      {category.name}
-                    </p>
-                    <p className="text-xs text-textSecondary">
-                      {category.usageCount ?? category.expenseCount ?? 0}{" "}
-                      {usageWord}
-                      {(category.usageCount ?? category.expenseCount ?? 0) === 1
-                        ? ""
-                        : "s"}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => startEdit(category)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-textSecondary"
-                    aria-label={`Edit ${category.name}`}
-                  >
-                    <PencilSquareIcon />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => requestDelete(category)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-textSecondary"
-                    aria-label={`Delete ${category.name}`}
-                  >
-                    <TrashIcon />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        <TablePager
-          page={currentPage}
-          totalPages={totalPages}
-          totalRecords={totalCount}
-          pageSize={filters.limit}
-          entityName="categories"
-          disabled={loading || deleteMutation.isPending}
-          onPageChange={(page) => {
-            if (page < 1 || page > totalPages) return;
-            setFilters((prev) => ({ ...prev, page }));
-          }}
-        />
-      </div>
+      <CategoryList
+        categories={categories}
+        loading={loading}
+        searchInput={searchInput}
+        onSearchChange={setSearchInput}
+        filters={filters}
+        colorFilterOptions={colorFilterOptions}
+        hasActiveFilters={hasActiveFilters}
+        onApplyFilter={applyFilter}
+        onClear={handleClear}
+        usageLabel={usageLabel}
+        usageWord={usageWord}
+        onEdit={startEdit}
+        onDelete={requestDelete}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        pagerDisabled={loading || deleteMutation.isPending}
+        onPageChange={(page) => {
+          if (page < 1 || page > totalPages) return;
+          setFilters((prev) => ({ ...prev, page }));
+        }}
+      />
 
       <ConfirmModal
         open={Boolean(deleteTarget)}

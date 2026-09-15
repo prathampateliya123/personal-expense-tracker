@@ -5,29 +5,20 @@ import {
   buildTransactionListFilter,
   parseTransactionSort,
 } from "../utils/transactionQuery.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
 const buildIncomeFilter = (userId, query) =>
   buildTransactionListFilter(userId, query);
 
 const parseSort = parseTransactionSort;
 
-const findOwnedIncome = async (incomeId, userId) => {
-  const income = await Income.findById(incomeId);
+const findOwnedIncome = (incomeId, userId) =>
+  findOwnedDocument(Income, incomeId, userId, {
+    key: "income",
+    notFoundMessage: "Income not found",
+    forbiddenMessage: "Not authorized to access this income",
+  });
 
-  if (!income) {
-    return { income: null, status: 404, message: "Income not found" };
-  }
-
-  if (income.userId.toString() !== userId.toString()) {
-    return {
-      income: null,
-      status: 403,
-      message: "Not authorized to access this income",
-    };
-  }
-
-  return { income, status: null, message: null };
-};
 
 const validateIncomeBody = async (body, userId, { isUpdate = false } = {}) => {
   const { title, amount, category, paymentMode } = body;

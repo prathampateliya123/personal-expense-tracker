@@ -1,22 +1,14 @@
 import Saving, { SAVING_STATUSES } from "../models/Saving.js";
+import { escapeRegex } from "../utils/namedEntity.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
-const escapeRegex = (value = "") =>
-  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const findOwnedSaving = (id, userId) =>
+  findOwnedDocument(Saving, id, userId, {
+    key: "saving",
+    notFoundMessage: "Saving goal not found",
+    forbiddenMessage: "Not authorized to access this saving goal",
+  });
 
-const findOwnedSaving = async (id, userId) => {
-  const saving = await Saving.findById(id);
-  if (!saving) {
-    return { saving: null, status: 404, message: "Saving goal not found" };
-  }
-  if (saving.userId.toString() !== userId.toString()) {
-    return {
-      saving: null,
-      status: 403,
-      message: "Not authorized to access this saving goal",
-    };
-  }
-  return { saving, status: null, message: null };
-};
 
 const withProgress = (doc) => {
   const plain = doc.toObject ? doc.toObject() : doc;

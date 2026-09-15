@@ -1,20 +1,10 @@
 import apiService from "./apiService";
+import { INITIAL_LIST_FILTERS, buildListQueryParams } from "./buildListQuery";
 
-export const INITIAL_PAYMENT_METHOD_FILTERS = {
-  search: "",
-  page: 1,
-  limit: 10,
-};
+export const INITIAL_PAYMENT_METHOD_FILTERS = { ...INITIAL_LIST_FILTERS };
 
-export const buildPaymentMethodQueryParams = (filters = {}) => {
-  const params = new URLSearchParams();
-
-  if (filters.search?.trim()) params.set("search", filters.search.trim());
-  if (filters.page) params.set("page", String(filters.page));
-  if (filters.limit) params.set("limit", String(filters.limit));
-
-  return params.toString();
-};
+export const buildPaymentMethodQueryParams = (filters = {}) =>
+  buildListQueryParams(filters);
 
 export const paymentMethodService = {
   list: (filters = INITIAL_PAYMENT_METHOD_FILTERS) => {

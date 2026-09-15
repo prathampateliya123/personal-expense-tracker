@@ -1,6 +1,7 @@
 import Budget from "../models/Budget.js";
 import Category from "../models/Category.js";
 import Expense from "../models/Expense.js";
+import { findOwnedDocument } from "../utils/findOwned.js";
 
 const parsePeriod = (query = {}) => {
   const now = new Date();
@@ -111,20 +112,13 @@ const buildProgress = (budget, spend) => {
   };
 };
 
-const findOwnedBudget = async (id, userId) => {
-  const budget = await Budget.findById(id);
-  if (!budget) {
-    return { budget: null, status: 404, message: "Budget not found" };
-  }
-  if (budget.userId.toString() !== userId.toString()) {
-    return {
-      budget: null,
-      status: 403,
-      message: "Not authorized to access this budget",
-    };
-  }
-  return { budget, status: null, message: null };
-};
+const findOwnedBudget = (id, userId) =>
+  findOwnedDocument(Budget, id, userId, {
+    key: "budget",
+    notFoundMessage: "Budget not found",
+    forbiddenMessage: "Not authorized to access this budget",
+  });
+
 
 const validateAllocations = async (userId, allocations = []) => {
   if (!Array.isArray(allocations)) {
