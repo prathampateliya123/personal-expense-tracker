@@ -9,6 +9,7 @@ import expenseRoutes from "./expenseRoutes.js";
 import incomeRoutes from "./incomeRoutes.js";
 import categoryRoutes from "./categoryRoutes.js";
 import paymentMethodRoutes from "./paymentMethodRoutes.js";
+import budgetRoutes from "./budgetRoutes.js";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use("/expenses", expenseRoutes);
 router.use("/incomes", incomeRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/payment-methods", paymentMethodRoutes);
+router.use("/budgets", budgetRoutes);
 
 export default router;

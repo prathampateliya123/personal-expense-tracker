@@ -111,6 +111,8 @@ const connectDB = async () => {
       "../models/PaymentMethod.js"
     );
     await ensurePaymentMethodIndexes();
+    const { ensureBudgetIndexes } = await import("../models/Budget.js");
+    await ensureBudgetIndexes();
   } catch (error) {
     const isSrvError =
       error.message.includes("querySrv") ||
