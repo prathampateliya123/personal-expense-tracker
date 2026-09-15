@@ -5,6 +5,8 @@ export const queryKeys = {
   categories: ["categories"],
   paymentMethods: ["paymentMethods"],
   budgets: ["budgets"],
+  savings: ["savings"],
+  investments: ["investments"],
   auth: ["auth"],
 };
 
@@ -55,6 +57,24 @@ export const budgetKeys = {
     Number(year),
     Number(month),
   ],
+};
+
+export const savingKeys = {
+  all: queryKeys.savings,
+  lists: () => [...savingKeys.all, "list"],
+  list: (filters = {}) => [...savingKeys.lists(), filters],
+  details: () => [...savingKeys.all, "detail"],
+  detail: (id) => [...savingKeys.details(), String(id || "")],
+  stats: () => [...savingKeys.all, "stats"],
+};
+
+export const investmentKeys = {
+  all: queryKeys.investments,
+  lists: () => [...investmentKeys.all, "list"],
+  list: (filters = {}) => [...investmentKeys.lists(), filters],
+  details: () => [...investmentKeys.all, "detail"],
+  detail: (id) => [...investmentKeys.details(), String(id || "")],
+  stats: () => [...investmentKeys.all, "stats"],
 };
 
 export const authKeys = {
