@@ -11,6 +11,7 @@ export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
+  { key: "budgets", to: "/budgets", label: "Budgets" },
   { key: "categories", to: "/categories", label: "Categories" },
   { key: "settings", to: "/settings", label: "Settings" },
 ];
@@ -54,6 +55,11 @@ export const PAGE_META = {
     title: "Categories",
     subtitle: "Organize expenses and incomes with custom categories",
     breadcrumb: ["Home", "Categories"],
+  },
+  "/budgets": {
+    title: "Budget planning",
+    subtitle: "Set monthly limits and track category spending",
+    breadcrumb: ["Home", "Budgets"],
   },
   "/settings": {
     title: "Settings",

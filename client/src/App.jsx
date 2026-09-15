@@ -25,6 +25,7 @@ import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Incomes from "./pages/Incomes";
 import Categories from "./pages/Categories";
+import Budgets from "./pages/Budgets";
 import PaymentMethods from "./pages/PaymentMethods";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
@@ -86,6 +87,7 @@ const App = () => (
           <Route path="/incomes" element={<Incomes />} />
           <Route path="/incomes/add" element={<AddIncome />} />
           <Route path="/incomes/:id/edit" element={<EditIncome />} />
+          <Route path="/budgets" element={<Budgets />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/settings" element={<SettingsLayout />}>
             <Route index element={<Navigate to="payment-methods" replace />} />
