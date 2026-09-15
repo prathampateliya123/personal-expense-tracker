@@ -1,11 +1,6 @@
-/**
- * utils/otpHelper.js
- * Generate and verify 6-digit OTP codes.
- */
-
 import crypto from "crypto";
 
-const OTP_EXPIRE_MS = 10 * 60 * 1000; // 10 minutes
+const OTP_EXPIRE_MS = 10 * 60 * 1000; 
 
 export const generateOtp = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -38,7 +33,7 @@ export const clearUserOtp = (user) => {
   user.otpPurpose = null;
 };
 
-/** Include OTP in API response (for dev / testing without email SMS) */
+
 export const attachOtpToResponse = (otp) => ({
   otp,
   message: "OTP sent. Use the code below to verify.",

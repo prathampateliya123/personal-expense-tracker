@@ -1,8 +1,3 @@
-/**
- * controllers/investmentController.js
- * CRUD + portfolio stats for investments.
- */
-
 import Investment, { INVESTMENT_TYPES } from "../models/Investment.js";
 
 const escapeRegex = (value = "") =>
@@ -117,9 +112,8 @@ const validateInvestmentBody = (body, { isUpdate = false } = {}) => {
   return null;
 };
 
-/**
- * @route GET /api/investments/stats
- */
+
+
 export const getInvestmentStats = async (req, res, next) => {
   try {
     const [summary, byType] = await Promise.all([
@@ -177,9 +171,8 @@ export const getInvestmentStats = async (req, res, next) => {
   }
 };
 
-/**
- * @route GET /api/investments/types
- */
+
+
 export const getInvestmentTypes = async (req, res, next) => {
   try {
     res.status(200).json({
@@ -191,9 +184,8 @@ export const getInvestmentTypes = async (req, res, next) => {
   }
 };
 
-/**
- * @route GET /api/investments
- */
+
+
 export const getInvestments = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -237,9 +229,8 @@ export const getInvestments = async (req, res, next) => {
   }
 };
 
-/**
- * @route GET /api/investments/:id
- */
+
+
 export const getInvestmentById = async (req, res, next) => {
   try {
     const { investment, status, message } = await findOwnedInvestment(
@@ -259,9 +250,8 @@ export const getInvestmentById = async (req, res, next) => {
   }
 };
 
-/**
- * @route POST /api/investments
- */
+
+
 export const createInvestment = async (req, res, next) => {
   try {
     const validationError = validateInvestmentBody(req.body);
@@ -292,9 +282,8 @@ export const createInvestment = async (req, res, next) => {
   }
 };
 
-/**
- * @route PUT /api/investments/:id
- */
+
+
 export const updateInvestment = async (req, res, next) => {
   try {
     const validationError = validateInvestmentBody(req.body, { isUpdate: true });
@@ -342,9 +331,8 @@ export const updateInvestment = async (req, res, next) => {
   }
 };
 
-/**
- * @route DELETE /api/investments/:id
- */
+
+
 export const deleteInvestment = async (req, res, next) => {
   try {
     const { investment, status, message } = await findOwnedInvestment(

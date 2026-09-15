@@ -1,7 +1,3 @@
-/**
- * routes/investmentRoutes.js
- */
-
 import express from "express";
 import {
   getInvestments,

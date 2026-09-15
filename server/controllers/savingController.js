@@ -1,8 +1,3 @@
-/**
- * controllers/savingController.js
- * CRUD + contribute/withdraw for saving goals.
- */
-
 import Saving, { SAVING_STATUSES } from "../models/Saving.js";
 
 const escapeRegex = (value = "") =>
@@ -79,9 +74,8 @@ const validateSavingBody = (body, { isUpdate = false } = {}) => {
   return null;
 };
 
-/**
- * @route GET /api/savings/stats
- */
+
+
 export const getSavingStats = async (req, res, next) => {
   try {
     const [summary, byStatus] = await Promise.all([
@@ -130,9 +124,8 @@ export const getSavingStats = async (req, res, next) => {
   }
 };
 
-/**
- * @route GET /api/savings
- */
+
+
 export const getSavings = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -168,9 +161,8 @@ export const getSavings = async (req, res, next) => {
   }
 };
 
-/**
- * @route GET /api/savings/:id
- */
+
+
 export const getSavingById = async (req, res, next) => {
   try {
     const { saving, status, message } = await findOwnedSaving(
@@ -187,9 +179,8 @@ export const getSavingById = async (req, res, next) => {
   }
 };
 
-/**
- * @route POST /api/savings
- */
+
+
 export const createSaving = async (req, res, next) => {
   try {
     const validationError = validateSavingBody(req.body);
@@ -221,9 +212,8 @@ export const createSaving = async (req, res, next) => {
   }
 };
 
-/**
- * @route PUT /api/savings/:id
- */
+
+
 export const updateSaving = async (req, res, next) => {
   try {
     const validationError = validateSavingBody(req.body, { isUpdate: true });
@@ -267,9 +257,8 @@ export const updateSaving = async (req, res, next) => {
   }
 };
 
-/**
- * @route POST /api/savings/:id/contribute
- */
+
+
 export const contributeSaving = async (req, res, next) => {
   try {
     const amount = Number(req.body.amount);
@@ -301,9 +290,8 @@ export const contributeSaving = async (req, res, next) => {
   }
 };
 
-/**
- * @route POST /api/savings/:id/withdraw
- */
+
+
 export const withdrawSaving = async (req, res, next) => {
   try {
     const amount = Number(req.body.amount);
@@ -338,9 +326,8 @@ export const withdrawSaving = async (req, res, next) => {
   }
 };
 
-/**
- * @route DELETE /api/savings/:id
- */
+
+
 export const deleteSaving = async (req, res, next) => {
   try {
     const { saving, status, message } = await findOwnedSaving(

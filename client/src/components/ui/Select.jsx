@@ -1,8 +1,3 @@
-/**
- * components/ui/Select.jsx
- * Custom dropdown select — portal menu, keyboard-friendly, fintech theme.
- */
-
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { IconChevronDown } from "./Icons";
@@ -21,26 +16,6 @@ const fireChangeEvent = (onChange, name, value) => {
   });
 };
 
-/**
- * @param {object} props
- * @param {string} [props.id]
- * @param {string} [props.name]
- * @param {string} [props.label]
- * @param {string} [props.labelClassName]
- * @param {string} props.value
- * @param {function} props.onChange
- * @param {string[] | {value: string, label: string}[]} props.options
- * @param {string} [props.placeholder]
- * @param {string} [props.error]
- * @param {boolean} [props.disabled]
- * @param {"sm"|"md"} [props.size]
- * @param {string} [props.className]
- * @param {boolean} [props.autoWidth]
- * @param {"left"|"right"} [props.menuAlign]
- * @param {number} [props.menuMinWidth]
- * @param {boolean} [props.matchWidth]
- * @param {string} [props.ariaLabel]
- */
 const Select = ({
   id,
   name,

@@ -1,8 +1,3 @@
-/**
- * layouts/DashboardLayout.jsx
- * Authenticated app shell — reference-style viewport height + scroll containment.
- */
-
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

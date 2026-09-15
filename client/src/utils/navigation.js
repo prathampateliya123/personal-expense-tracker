@@ -1,12 +1,7 @@
-/**
- * utils/navigation.js
- * Sidebar links and page metadata (no UI imports).
- */
-
 export const SIDEBAR_WIDTH = 272;
 export const SETTINGS_SIDEBAR_WIDTH = 240;
 
-/** Main app navigation */
+
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
@@ -17,7 +12,7 @@ export const NAV_ITEMS = [
   { key: "settings", to: "/settings", label: "Settings" },
 ];
 
-/** Compact mobile bottom nav (full list stays in sidebar) */
+
 export const MOBILE_NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
@@ -26,7 +21,7 @@ export const MOBILE_NAV_ITEMS = [
   { key: "settings", to: "/settings", label: "Settings" },
 ];
 
-/** Nested settings sidebar */
+
 export const SETTINGS_NAV_ITEMS = [
   {
     key: "paymentMethods",

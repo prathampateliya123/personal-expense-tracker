@@ -1,8 +1,3 @@
-/**
- * config/cors.js
- * CORS settings for cookie-based JWT auth (credentials: true).
- */
-
 const DEFAULT_DEV_ORIGINS = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
@@ -25,7 +20,7 @@ const corsOptions = {
   origin(origin, callback) {
     const allowedOrigins = getAllowedOrigins();
 
-    // Postman / server-side requests
+    
     if (!origin) {
       callback(null, true);
       return;
@@ -36,7 +31,7 @@ const corsOptions = {
       return;
     }
 
-    // Dev fallback: allow any local frontend port
+    
     if (process.env.NODE_ENV !== "production" && isLocalDevOrigin(origin)) {
       callback(null, origin);
       return;

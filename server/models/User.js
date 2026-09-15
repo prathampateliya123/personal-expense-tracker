@@ -1,8 +1,3 @@
-/**
- * models/User.js
- * Mongoose schema for User documents.
- */
-
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(

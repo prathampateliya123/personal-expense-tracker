@@ -1,8 +1,3 @@
-/**
- * controllers/incomeController.js
- * CRUD and stats for logged-in user's incomes.
- */
-
 import Income from "../models/Income.js";
 import Category from "../models/Category.js";
 import PaymentMethod from "../models/PaymentMethod.js";
@@ -128,9 +123,8 @@ const validateIncomeBody = async (body, userId, { isUpdate = false } = {}) => {
   return null;
 };
 
-/**
- * @route   POST /api/incomes
- */
+
+
 export const addIncome = async (req, res, next) => {
   try {
     const validationError = await validateIncomeBody(req.body, req.user._id);
@@ -160,9 +154,8 @@ export const addIncome = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/incomes
- */
+
+
 export const getIncomes = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -196,9 +189,8 @@ export const getIncomes = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/incomes/stats
- */
+
+
 export const getIncomeStats = async (req, res, next) => {
   try {
     const now = new Date();
@@ -263,9 +255,8 @@ export const getIncomeStats = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/incomes/:id
- */
+
+
 export const getIncomeById = async (req, res, next) => {
   try {
     const { income, status, message } = await findOwnedIncome(
@@ -287,9 +278,8 @@ export const getIncomeById = async (req, res, next) => {
   }
 };
 
-/**
- * @route   PUT /api/incomes/:id
- */
+
+
 export const updateIncome = async (req, res, next) => {
   try {
     const validationError = await validateIncomeBody(req.body, req.user._id, {
@@ -332,9 +322,8 @@ export const updateIncome = async (req, res, next) => {
   }
 };
 
-/**
- * @route   DELETE /api/incomes/:id
- */
+
+
 export const deleteIncome = async (req, res, next) => {
   try {
     const { income, status, message } = await findOwnedIncome(

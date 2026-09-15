@@ -1,9 +1,3 @@
-/**
- * middleware/errorMiddleware.js
- * Centralized error handler for Express.
- * Returns consistent JSON error responses across the API.
- */
-
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
 

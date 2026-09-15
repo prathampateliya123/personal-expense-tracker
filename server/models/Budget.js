@@ -1,8 +1,3 @@
-/**
- * models/Budget.js
- * Per-user monthly budget plan with optional category allocations.
- */
-
 import mongoose from "mongoose";
 
 const allocationSchema = new mongoose.Schema(

@@ -1,8 +1,3 @@
-/**
- * components/table/TableSearch.jsx
- * Debounced search field for table toolbars.
- */
-
 import { IconSearch } from "../ui/Icons";
 
 const SEARCH_PLACEHOLDER = "Search by title...";

@@ -1,8 +1,3 @@
-/**
- * controllers/paymentMethodController.js
- * CRUD for logged-in user's payment methods — search + pagination.
- */
-
 import PaymentMethod from "../models/PaymentMethod.js";
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
@@ -93,9 +88,8 @@ const withUsageCounts = async (userId, items) => {
   });
 };
 
-/**
- * @route   GET /api/payment-methods
- */
+
+
 export const getPaymentMethods = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -134,9 +128,8 @@ export const getPaymentMethods = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/payment-methods/options
- */
+
+
 export const getPaymentMethodOptions = async (req, res, next) => {
   try {
     const paymentMethods = await PaymentMethod.find({ userId: req.user._id })
@@ -153,9 +146,8 @@ export const getPaymentMethodOptions = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/payment-methods
- */
+
+
 export const createPaymentMethod = async (req, res, next) => {
   try {
     const name = normalizeName(req.body.name);
@@ -195,9 +187,8 @@ export const createPaymentMethod = async (req, res, next) => {
   }
 };
 
-/**
- * @route   PUT /api/payment-methods/:id
- */
+
+
 export const updatePaymentMethod = async (req, res, next) => {
   try {
     const { paymentMethod, status, message } = await findOwnedPaymentMethod(
@@ -280,9 +271,8 @@ export const updatePaymentMethod = async (req, res, next) => {
   }
 };
 
-/**
- * @route   DELETE /api/payment-methods/:id
- */
+
+
 export const deletePaymentMethod = async (req, res, next) => {
   try {
     const { paymentMethod, status, message } = await findOwnedPaymentMethod(

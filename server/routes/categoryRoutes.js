@@ -1,8 +1,3 @@
-/**
- * routes/categoryRoutes.js
- * Category management API — all routes require authentication.
- */
-
 import express from "express";
 import {
   getCategories,

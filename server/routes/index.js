@@ -1,8 +1,3 @@
-/**
- * routes/index.js
- * Mount all API route modules.
- */
-
 import { Router } from "express";
 import authRoutes from "./authRoutes.js";
 import expenseRoutes from "./expenseRoutes.js";

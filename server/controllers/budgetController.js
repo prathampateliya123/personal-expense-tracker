@@ -1,8 +1,3 @@
-/**
- * controllers/budgetController.js
- * Monthly budget CRUD with spend progress vs plan.
- */
-
 import Budget from "../models/Budget.js";
 import Category from "../models/Category.js";
 import Expense from "../models/Expense.js";
@@ -174,10 +169,8 @@ const validateAllocations = async (userId, allocations = []) => {
   return { allocations: cleaned };
 };
 
-/**
- * @route   GET /api/budgets
- * @desc    List budgets (newest first), optional year filter
- */
+
+
 export const getBudgets = async (req, res, next) => {
   try {
     const filter = { userId: req.user._id };
@@ -198,10 +191,8 @@ export const getBudgets = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/budgets/current
- * @desc    Budget + spend progress for a month (defaults to current)
- */
+
+
 export const getBudgetCurrent = async (req, res, next) => {
   try {
     const period = parsePeriod(req.query);
@@ -230,10 +221,8 @@ export const getBudgetCurrent = async (req, res, next) => {
   }
 };
 
-/**
- * @route   PUT /api/budgets
- * @desc    Create or update budget for a month
- */
+
+
 export const upsertBudget = async (req, res, next) => {
   try {
     const period = parsePeriod(req.body);
@@ -308,9 +297,8 @@ export const upsertBudget = async (req, res, next) => {
   }
 };
 
-/**
- * @route   DELETE /api/budgets/:id
- */
+
+
 export const deleteBudget = async (req, res, next) => {
   try {
     const { budget, status, message } = await findOwnedBudget(
@@ -334,10 +322,8 @@ export const deleteBudget = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/budgets/copy
- * @desc    Copy previous month's budget into target month
- */
+
+
 export const copyBudget = async (req, res, next) => {
   try {
     const target = parsePeriod(req.body);

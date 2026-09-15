@@ -1,8 +1,3 @@
-/**
- * models/Investment.js
- * Per-user investment holdings / records.
- */
-
 import mongoose from "mongoose";
 
 export const INVESTMENT_TYPES = [

@@ -1,8 +1,3 @@
-/**
- * pages/Categories.jsx
- * Category management — backend search, filters, and pagination.
- */
-
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../components/ui/Button";
@@ -141,7 +136,7 @@ const Categories = () => {
   useEffect(() => {
     if (debouncedSearch === filters.search) return;
     setFilters((prev) => ({ ...prev, search: debouncedSearch, page: 1 }));
-  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]); 
 
   const listQuery = useQuery({
     queryKey: categoryKeys.list(filters),

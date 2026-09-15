@@ -1,8 +1,3 @@
-/**
- * services/incomeService.js
- * Income API calls and query helpers.
- */
-
 import apiService from "./apiService";
 
 export const INITIAL_INCOME_FILTERS = {

@@ -1,9 +1,3 @@
-/**
- * components/ui/DateInput.jsx
- * Custom single-date picker for forms — Select-style trigger + calendar popup.
- * (Table date filters use DateRangePicker separately.)
- */
-
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {

@@ -1,8 +1,3 @@
-/**
- * middleware/authMiddleware.js
- * Reads JWT from httpOnly cookie, verifies it, attaches user to req.
- */
-
 import User from "../models/User.js";
 import { clearTokenCookie, verifyToken } from "../utils/jwtToken.js";
 

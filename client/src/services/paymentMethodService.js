@@ -1,8 +1,3 @@
-/**
- * services/paymentMethodService.js
- * Payment method API calls — list supports search + pagination.
- */
-
 import apiService from "./apiService";
 
 export const INITIAL_PAYMENT_METHOD_FILTERS = {

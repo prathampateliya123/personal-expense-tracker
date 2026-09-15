@@ -1,8 +1,3 @@
-/**
- * routes/expenseRoutes.js
- * Expense management API — all routes require authentication.
- */
-
 import express from "express";
 import {
   addExpense,

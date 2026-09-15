@@ -1,8 +1,3 @@
-/**
- * pages/Wealth.jsx
- * Savings goals + Investments management in one module.
- */
-
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../components/ui/Button";
@@ -92,7 +87,7 @@ const Wealth = () => {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("savings");
 
-  // Savings state
+  
   const [savingFilters, setSavingFilters] = useState({
     ...INITIAL_SAVING_FILTERS,
   });
@@ -106,7 +101,7 @@ const Wealth = () => {
   const [moneyAmount, setMoneyAmount] = useState("");
   const [moneyMode, setMoneyMode] = useState("contribute");
 
-  // Investments state
+  
   const [investmentFilters, setInvestmentFilters] = useState({
     ...INITIAL_INVESTMENT_FILTERS,
   });
@@ -139,7 +134,7 @@ const Wealth = () => {
       search: debouncedSavingSearch,
       page: 1,
     }));
-  }, [debouncedSavingSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSavingSearch]); 
 
   useEffect(() => {
     debounceInvestment(investmentSearch);
@@ -153,7 +148,7 @@ const Wealth = () => {
       search: debouncedInvestmentSearch,
       page: 1,
     }));
-  }, [debouncedInvestmentSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedInvestmentSearch]); 
 
   const savingListQuery = useQuery({
     queryKey: savingKeys.list(savingFilters),

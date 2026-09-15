@@ -1,8 +1,3 @@
-/**
- * layouts/AuthLayout.jsx
- * Light split-panel layout for auth pages.
- */
-
 import { Link, Outlet } from "react-router-dom";
 
 const features = [

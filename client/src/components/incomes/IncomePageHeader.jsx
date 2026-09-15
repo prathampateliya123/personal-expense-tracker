@@ -1,8 +1,3 @@
-/**
- * components/incomes/IncomePageHeader.jsx
- * Back link and title for add/edit income pages.
- */
-
 import { Link } from "react-router-dom";
 import { IconChevronLeft } from "../ui/Icons";
 

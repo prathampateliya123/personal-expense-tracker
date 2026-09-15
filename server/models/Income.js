@@ -1,8 +1,3 @@
-/**
- * models/Income.js
- * Mongoose schema for user income documents.
- */
-
 import mongoose from "mongoose";
 
 const incomeSchema = new mongoose.Schema(

@@ -1,8 +1,3 @@
-/**
- * server.js
- * Express application entry point.
- */
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";

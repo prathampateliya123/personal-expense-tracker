@@ -1,8 +1,3 @@
-/**
- * utils/toastConfig.js
- * Global react-hot-toast options — forest mint theme.
- */
-
 export const toastOptions = {
   position: "top-right",
   toastOptions: {

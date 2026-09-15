@@ -1,8 +1,3 @@
-/**
- * models/PaymentMethod.js
- * Per-user payment methods (Cash, UPI, Card, etc.) — fully dynamic.
- */
-
 import mongoose from "mongoose";
 
 const paymentMethodSchema = new mongoose.Schema(

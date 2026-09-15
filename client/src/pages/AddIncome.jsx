@@ -1,8 +1,3 @@
-/**
- * pages/AddIncome.jsx
- * Full page to create a new income.
- */
-
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import IncomeForm from "../components/incomes/IncomeForm";

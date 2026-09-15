@@ -1,8 +1,3 @@
-/**
- * components/incomes/IncomeForm.jsx
- * Controlled form for adding or editing an income.
- */
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Select from "../ui/Select";

@@ -1,8 +1,3 @@
-/**
- * services/authService.js
- * Auth API calls — slices delegate here instead of calling axios directly.
- */
-
 import apiService from "./apiService";
 
 export const authService = {

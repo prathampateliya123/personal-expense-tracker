@@ -1,8 +1,3 @@
-/**
- * pages/auth/ResetPassword.jsx
- * Set new password after forgot-password OTP is verified.
- */
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

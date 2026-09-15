@@ -1,9 +1,3 @@
-/**
- * models/Category.js
- * Per-user categories for expenses or incomes (fully dynamic).
- * nameKey + type used for case-insensitive uniqueness per user.
- */
-
 import mongoose from "mongoose";
 
 export const CATEGORY_COLOR_KEYS = [
@@ -37,7 +31,7 @@ const categorySchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, "Category name cannot exceed 40 characters"],
     },
-    /** Lowercase key for case-insensitive unique check (Food === food) */
+    
     nameKey: {
       type: String,
       trim: true,
@@ -74,7 +68,7 @@ categorySchema.pre("validate", function setNameKey() {
   }
 });
 
-// Unique per user + type (Salary can exist for income and expense separately)
+
 categorySchema.index(
   { userId: 1, nameKey: 1, type: 1 },
   {
@@ -86,7 +80,7 @@ categorySchema.index(
 
 const Category = mongoose.model("Category", categorySchema);
 
-/** Drop legacy conflicting indexes once (safe to call repeatedly). */
+
 export const ensureCategoryIndexes = async () => {
   try {
     const collection = Category.collection;
@@ -105,7 +99,7 @@ export const ensureCategoryIndexes = async () => {
       await collection.dropIndex(name).catch(() => {});
     }
 
-    // Backfill missing type on legacy docs
+    
     await Category.updateMany(
       { type: { $exists: false } },
       { $set: { type: "expense" } }

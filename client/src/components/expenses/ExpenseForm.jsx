@@ -1,8 +1,3 @@
-/**
- * components/expenses/ExpenseForm.jsx
- * Controlled form for adding or editing an expense (modal or full page).
- */
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Select from "../ui/Select";
@@ -29,14 +24,8 @@ const emptyForm = {
   description: "",
 };
 
-/**
- * @param {object} props
- * @param {object} [props.initialData] - Existing expense for edit mode
- * @param {function} props.onSubmit - Called with validated form data
- * @param {function} [props.onCancel] - Cancel / back handler
- * @param {boolean} [props.loading] - Submit loading state
- * @param {"page"|"modal"} [props.variant] - Layout variant
- */
+
+
 const ExpenseForm = ({
   initialData,
   onSubmit,

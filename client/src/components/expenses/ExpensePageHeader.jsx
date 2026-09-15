@@ -1,8 +1,3 @@
-/**
- * components/expenses/ExpensePageHeader.jsx
- * Back link and title for add/edit expense pages.
- */
-
 import { Link } from "react-router-dom";
 import { IconChevronLeft } from "../ui/Icons";
 

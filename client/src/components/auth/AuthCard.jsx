@@ -1,8 +1,3 @@
-/**
- * components/auth/AuthCard.jsx
- * Shared card wrapper for auth form pages.
- */
-
 const AuthCard = ({ title, subtitle, children, footer }) => {
   return (
     <div className="card p-8">

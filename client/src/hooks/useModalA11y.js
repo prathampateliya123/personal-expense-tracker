@@ -1,8 +1,3 @@
-/**
- * hooks/useModalA11y.js
- * Focus trap, escape key, and scroll lock for modals.
- */
-
 import { useEffect, useRef } from "react";
 
 const FOCUSABLE =

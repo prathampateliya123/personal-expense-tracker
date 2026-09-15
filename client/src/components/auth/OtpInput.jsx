@@ -1,8 +1,3 @@
-/**
- * components/OtpInput.jsx
- * 6-digit OTP input fields.
- */
-
 import { useRef } from "react";
 import { authInputClass } from "./AuthCard";
 

@@ -1,8 +1,3 @@
-/**
- * layouts/MobileBottomNav.jsx
- * Dark pill bottom navigation for mobile.
- */
-
 import { NavLink, useLocation } from "react-router-dom";
 import { MOBILE_NAV_ITEMS } from "../utils/navigation";
 import {

@@ -1,8 +1,3 @@
-/**
- * utils/helper.js
- * Shared pure helpers — formatters, debounce, API error parsing.
- */
-
 export const getInitials = (name) => {
   if (!name) return "?";
   return name

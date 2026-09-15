@@ -1,8 +1,3 @@
-/**
- * routes/authRoutes.js
- * Authentication API endpoints.
- */
-
 import express from "express";
 import {
   register,

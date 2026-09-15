@@ -1,8 +1,3 @@
-/**
- * controllers/authController.js
- * Auth with OTP verification for login, register, and forgot password.
- */
-
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
@@ -29,10 +24,8 @@ const formatUser = (user) => ({
 
 const OTP_PURPOSES = ["login", "register", "forgot-password"];
 
-/**
- * @route   POST /api/auth/register
- * @desc    Create account and send OTP (JWT after verify-otp)
- */
+
+
 export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -87,10 +80,8 @@ export const register = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/auth/login
- * @desc    Validate credentials and send OTP (JWT after verify-otp)
- */
+
+
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -113,13 +104,13 @@ export const login = async (req, res, next) => {
       throw new Error("Invalid email or password");
     }
 
-    // Legacy users (before OTP) — treat as verified
+    
     if (user.isVerified == null) {
       user.isVerified = true;
       await user.save();
     }
 
-    // Unverified account — send register OTP instead of blocking with 403
+    
     const purpose = user.isVerified === false ? "register" : "login";
     const otp = generateOtp();
     await saveOtpToUser(user, otp, purpose);
@@ -136,10 +127,8 @@ export const login = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/auth/verify-otp
- * @desc    Verify OTP for login, register, or forgot-password
- */
+
+
 export const verifyOtp = async (req, res, next) => {
   try {
     const { email, otp, purpose } = req.body;
@@ -215,9 +204,8 @@ export const verifyOtp = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/auth/resend-otp
- */
+
+
 export const resendOtp = async (req, res, next) => {
   try {
     const { email, purpose } = req.body;
@@ -255,9 +243,8 @@ export const resendOtp = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/auth/logout
- */
+
+
 export const logout = async (req, res, next) => {
   try {
     clearTokenCookie(res);
@@ -271,9 +258,8 @@ export const logout = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/auth/profile
- */
+
+
 export const getProfile = async (req, res, next) => {
   try {
     res.status(200).json({
@@ -286,10 +272,8 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/auth/forgot-password
- * @desc    Send OTP for password reset
- */
+
+
 export const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -329,10 +313,8 @@ export const forgotPassword = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/auth/reset-password
- * @desc    Reset password after forgot-password OTP was verified
- */
+
+
 export const resetPassword = async (req, res, next) => {
   try {
     const { email, password } = req.body;

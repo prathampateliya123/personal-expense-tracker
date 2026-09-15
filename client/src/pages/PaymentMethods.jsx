@@ -1,8 +1,3 @@
-/**
- * pages/PaymentMethods.jsx
- * Payment method management — backend search + pagination.
- */
-
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../components/ui/Button";
@@ -98,7 +93,7 @@ const PaymentMethods = () => {
   useEffect(() => {
     if (debouncedSearch === filters.search) return;
     setFilters((prev) => ({ ...prev, search: debouncedSearch, page: 1 }));
-  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]); 
 
   const listQuery = useQuery({
     queryKey: paymentMethodKeys.list(filters),

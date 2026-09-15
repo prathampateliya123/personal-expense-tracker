@@ -1,8 +1,3 @@
-/**
- * components/modal/ConfirmModal.jsx
- * Reusable confirmation dialog — delete and destructive actions.
- */
-
 import { useId } from "react";
 import { createPortal } from "react-dom";
 import { useModalA11y } from "../../hooks/useModalA11y";

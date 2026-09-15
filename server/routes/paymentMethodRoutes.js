@@ -1,8 +1,3 @@
-/**
- * routes/paymentMethodRoutes.js
- * Payment method management API — all routes require authentication.
- */
-
 import express from "express";
 import {
   getPaymentMethods,

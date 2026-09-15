@@ -1,8 +1,3 @@
-/**
- * hooks/useHandleError.js
- * Centralized API / user-facing error toasts.
- */
-
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../utils/helper";

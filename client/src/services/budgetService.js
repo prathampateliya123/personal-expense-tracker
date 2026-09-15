@@ -1,8 +1,3 @@
-/**
- * services/budgetService.js
- * Budget planning API calls.
- */
-
 import apiService from "./apiService";
 
 export const getCurrentPeriod = () => {

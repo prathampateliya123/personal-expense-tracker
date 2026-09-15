@@ -1,8 +1,3 @@
-/**
- * utils/expenseConstants.js
- * Shared formatting helpers for expenses.
- */
-
 export const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",

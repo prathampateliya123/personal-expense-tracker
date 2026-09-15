@@ -1,8 +1,3 @@
-/**
- * pages/Budgets.jsx
- * Monthly budget planning — overall limit + per-category allocations + progress.
- */
-
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

@@ -1,8 +1,3 @@
-/**
- * utils/constants.js
- * App-wide constants — auth paths, validation patterns.
- */
-
 export const PUBLIC_AUTH_URLS = [
   "/auth/login",
   "/auth/register",

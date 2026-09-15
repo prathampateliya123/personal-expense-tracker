@@ -1,8 +1,3 @@
-/**
- * utils/dateRange.js
- * Date range picker helpers — ported from reference report utils.
- */
-
 export const ISO_DATE_PARTS_REGEX = /^(\d{4})-(\d{2})-(\d{2})/;
 
 const UNDERSCORE_REGEX = /_/g;

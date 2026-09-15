@@ -1,8 +1,3 @@
-/**
- * services/categoryService.js
- * Category management API calls — list supports search + pagination.
- */
-
 import apiService from "./apiService";
 
 export const INITIAL_CATEGORY_FILTERS = {

@@ -1,8 +1,3 @@
-/**
- * components/ui/Button.jsx
- * Reusable button — primary green fintech theme.
- */
-
 export default function Button({
   children,
   type = "button",

@@ -1,8 +1,3 @@
-/**
- * layouts/Sidebar.jsx
- * Sidebar navigation — flex column on desktop, slide-over on mobile.
- */
-
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS, SIDEBAR_WIDTH } from "../utils/navigation";
 import { IconClose, IconDashboard, IconExpenses, IconIncomes, IconBudgets, IconWealth, IconCategories, IconSettings } from "../components/ui/Icons";

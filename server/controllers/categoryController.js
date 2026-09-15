@@ -1,8 +1,3 @@
-/**
- * controllers/categoryController.js
- * CRUD for logged-in user's expense / income categories — search + pagination.
- */
-
 import Category, {
   CATEGORY_COLOR_KEYS,
   CATEGORY_TYPES,
@@ -146,9 +141,8 @@ const buildCategoryFilter = (userId, query = {}) => {
   return filter;
 };
 
-/**
- * @route   GET /api/categories
- */
+
+
 export const getCategories = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -180,10 +174,8 @@ export const getCategories = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/categories/options
- * @query   type=expense|income (optional)
- */
+
+
 export const getCategoryOptions = async (req, res, next) => {
   try {
     const filter = { userId: req.user._id };
@@ -205,9 +197,8 @@ export const getCategoryOptions = async (req, res, next) => {
   }
 };
 
-/**
- * @route   POST /api/categories
- */
+
+
 export const createCategory = async (req, res, next) => {
   try {
     const name = normalizeName(req.body.name);
@@ -260,9 +251,8 @@ export const createCategory = async (req, res, next) => {
   }
 };
 
-/**
- * @route   PUT /api/categories/:id
- */
+
+
 export const updateCategory = async (req, res, next) => {
   try {
     const { category, status, message } = await findOwnedCategory(
@@ -349,9 +339,8 @@ export const updateCategory = async (req, res, next) => {
   }
 };
 
-/**
- * @route   DELETE /api/categories/:id
- */
+
+
 export const deleteCategory = async (req, res, next) => {
   try {
     const { category, status, message } = await findOwnedCategory(

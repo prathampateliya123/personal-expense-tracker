@@ -1,7 +1,3 @@
-/**
- * services/investmentService.js
- */
-
 import apiService from "./apiService";
 
 export const INITIAL_INVESTMENT_FILTERS = {

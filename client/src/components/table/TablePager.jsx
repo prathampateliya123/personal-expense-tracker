@@ -1,8 +1,3 @@
-/**
- * components/table/TablePager.jsx
- * Pagination footer for table panels — page numbers + prev/next.
- */
-
 import { IconChevronLeft, IconChevronRight } from "../ui/Icons";
 import Select from "../ui/Select";
 

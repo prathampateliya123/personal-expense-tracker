@@ -1,8 +1,3 @@
-/**
- * scripts/test-db.js
- * Run: npm run test:db
- */
-
 import dns from "dns";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -43,7 +38,7 @@ const tryConnect = async (uri, label) => {
     try {
       await mongoose.disconnect();
     } catch {
-      /* ignore */
+      
     }
     return false;
   }

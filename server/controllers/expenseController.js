@@ -1,15 +1,9 @@
-/**
- * controllers/expenseController.js
- * CRUD and stats for logged-in user's expenses.
- */
-
 import Expense from "../models/Expense.js";
 import Category from "../models/Category.js";
 import PaymentMethod from "../models/PaymentMethod.js";
 
-/**
- * Build a MongoDB filter from query params for the current user.
- */
+
+
 const buildExpenseFilter = (userId, query) => {
   const filter = { userId };
 
@@ -58,9 +52,8 @@ const buildExpenseFilter = (userId, query) => {
   return filter;
 };
 
-/**
- * Parse sort option — default: date descending.
- */
+
+
 const parseSort = (sortBy) => {
   const sortMap = {
     date: { date: -1 },
@@ -73,9 +66,8 @@ const parseSort = (sortBy) => {
   return sortMap[sortBy] || sortMap.date;
 };
 
-/**
- * Ensure expense belongs to the authenticated user.
- */
+
+
 const findOwnedExpense = async (expenseId, userId) => {
   const expense = await Expense.findById(expenseId);
 
@@ -90,10 +82,8 @@ const findOwnedExpense = async (expenseId, userId) => {
   return { expense, status: null, message: null };
 };
 
-/**
- * Validate required expense fields for create/update.
- * Category must belong to the authenticated user.
- */
+
+
 const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
   const { title, amount, category, paymentMode } = body;
 
@@ -137,10 +127,8 @@ const validateExpenseBody = async (body, userId, { isUpdate = false } = {}) => {
   return null;
 };
 
-/**
- * @route   POST /api/expenses
- * @desc    Create a new expense for the logged-in user
- */
+
+
 export const addExpense = async (req, res, next) => {
   try {
     const validationError = await validateExpenseBody(req.body, req.user._id);
@@ -172,10 +160,8 @@ export const addExpense = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/expenses
- * @desc    List expenses with filters, search, pagination, and sort
- */
+
+
 export const getExpenses = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -209,10 +195,8 @@ export const getExpenses = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/expenses/stats
- * @desc    Monthly stats — total, count, category-wise breakdown
- */
+
+
 export const getExpenseStats = async (req, res, next) => {
   try {
     const now = new Date();
@@ -277,10 +261,8 @@ export const getExpenseStats = async (req, res, next) => {
   }
 };
 
-/**
- * @route   GET /api/expenses/:id
- * @desc    Fetch a single expense owned by the user
- */
+
+
 export const getExpenseById = async (req, res, next) => {
   try {
     const { expense, status, message } = await findOwnedExpense(
@@ -302,10 +284,8 @@ export const getExpenseById = async (req, res, next) => {
   }
 };
 
-/**
- * @route   PUT /api/expenses/:id
- * @desc    Update an expense owned by the user
- */
+
+
 export const updateExpense = async (req, res, next) => {
   try {
     const validationError = await validateExpenseBody(req.body, req.user._id, {
@@ -348,10 +328,8 @@ export const updateExpense = async (req, res, next) => {
   }
 };
 
-/**
- * @route   DELETE /api/expenses/:id
- * @desc    Delete an expense owned by the user
- */
+
+
 export const deleteExpense = async (req, res, next) => {
   try {
     const { expense, status, message } = await findOwnedExpense(

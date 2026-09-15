@@ -1,11 +1,6 @@
-/**
- * models/Expense.js
- * Mongoose schema for user expense documents.
- */
-
 import mongoose from "mongoose";
 
-/** @deprecated Prefer Category model — kept for seed / migration fallbacks */
+
 export const EXPENSE_CATEGORIES = [
   "Food",
   "Travel",

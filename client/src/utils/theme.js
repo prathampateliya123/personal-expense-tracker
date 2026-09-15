@@ -1,8 +1,3 @@
-/**
- * utils/theme.js
- * Central color tokens — forest mint palette.
- */
-
 export const colors = {
   background: "#FFFFFF",
   appBg: "#FFFFFF",

@@ -1,8 +1,3 @@
-/**
- * utils/wealthConstants.js
- * Labels and helpers for savings & investments.
- */
-
 export const INVESTMENT_TYPE_OPTIONS = [
   { value: "mutual_fund", label: "Mutual fund" },
   { value: "stocks", label: "Stocks" },

@@ -13,7 +13,7 @@ export function UserProfileProvider({ children }) {
         const data = await authService.getProfile();
         return data.user ?? null;
       } catch (error) {
-        // Unauthenticated — settle as null once (do not throw / retry)
+        
         if (error?.response?.status === 401) return null;
         throw error;
       }

@@ -1,8 +1,3 @@
-/**
- * pages/AddExpense.jsx
- * Full page to create a new expense.
- */
-
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ExpenseForm from "../components/expenses/ExpenseForm";

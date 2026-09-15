@@ -1,7 +1,3 @@
-/**
- * routes/savingRoutes.js
- */
-
 import express from "express";
 import {
   getSavings,

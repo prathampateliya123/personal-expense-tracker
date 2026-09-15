@@ -1,8 +1,3 @@
-/**
- * App.jsx
- * Root component — route guards and route definitions.
- */
-
 import {
   Navigate,
   Outlet,

@@ -1,8 +1,3 @@
-/**
- * utils/categoryColors.js
- * Color tokens for category chips / avatars.
- */
-
 export const CATEGORY_COLOR_OPTIONS = [
   { key: "amber", label: "Amber", chip: "bg-amber-50 text-amber-700", avatar: "bg-amber-100 text-amber-700", swatch: "bg-amber-400" },
   { key: "sky", label: "Sky", chip: "bg-sky-50 text-sky-700", avatar: "bg-sky-100 text-sky-700", swatch: "bg-sky-400" },
@@ -22,7 +17,7 @@ const byKey = Object.fromEntries(
   CATEGORY_COLOR_OPTIONS.map((opt) => [opt.key, opt])
 );
 
-/** Fallback map for legacy hardcoded category names */
+
 const LEGACY_NAME_COLORS = {
   Food: "amber",
   Travel: "sky",
@@ -62,8 +57,7 @@ export const getCategoryAvatarClass = (category) => {
   return getCategoryColorMeta(color).avatar;
 };
 
-/**
- * Build a name → color lookup from API categories for table chips.
- */
+
+
 export const buildCategoryColorMap = (categories = []) =>
   Object.fromEntries(categories.map((c) => [c.name, c.color]));

@@ -1,8 +1,3 @@
-/**
- * routes/incomeRoutes.js
- * Income management API — all routes require authentication.
- */
-
 import express from "express";
 import {
   addIncome,

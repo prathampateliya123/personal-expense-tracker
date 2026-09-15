@@ -1,8 +1,3 @@
-/**
- * middleware/dbMiddleware.js
- * Blocks API routes when MongoDB is not connected.
- */
-
 import { isDbConnected } from "../config/db.js";
 
 const requireDb = (req, res, next) => {

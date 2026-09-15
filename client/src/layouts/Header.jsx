@@ -1,8 +1,3 @@
-/**
- * layouts/Header.jsx
- * Top bar — mobile menu toggle and user profile dropdown.
- */
-
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {

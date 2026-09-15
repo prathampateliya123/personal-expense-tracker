@@ -1,8 +1,3 @@
-/**
- * index.css
- * Forest mint design system.
- */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -191,7 +186,7 @@
     @apply overflow-x-auto;
   }
 
-  /* Unified table panel — toolbar + table + pager (reference pattern) */
+  
   .table-panel {
     min-width: 0;
     max-width: 100%;

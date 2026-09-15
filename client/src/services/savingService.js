@@ -1,7 +1,3 @@
-/**
- * services/savingService.js
- */
-
 import apiService from "./apiService";
 
 export const INITIAL_SAVING_FILTERS = {

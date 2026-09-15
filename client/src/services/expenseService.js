@@ -1,8 +1,3 @@
-/**
- * services/expenseService.js
- * Expense API calls and query helpers.
- */
-
 import apiService from "./apiService";
 
 export const INITIAL_EXPENSE_FILTERS = {

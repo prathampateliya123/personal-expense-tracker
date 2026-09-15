@@ -1,8 +1,3 @@
-/**
- * components/incomes/IncomeTable.jsx
- * Unified table panel — toolbar (filters), table body, and pagination in one card.
- */
-
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -218,7 +213,7 @@ const IncomeTable = ({
   useEffect(() => {
     if (debouncedSearch === filters.search) return;
     onFiltersChange({ search: debouncedSearch, page: 1 });
-  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]); 
 
   useEffect(() => {
     setSearchInput(filters.search);
@@ -251,7 +246,7 @@ const IncomeTable = ({
       await onDelete(deleteTarget._id);
       setDeleteTarget(null);
     } catch {
-      /* keep dialog open */
+      
     }
   };
 

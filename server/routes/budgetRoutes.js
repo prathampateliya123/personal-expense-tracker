@@ -1,8 +1,3 @@
-/**
- * routes/budgetRoutes.js
- * Budget planning API — all routes require authentication.
- */
-
 import express from "express";
 import {
   getBudgets,

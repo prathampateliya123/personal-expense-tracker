@@ -1,8 +1,3 @@
-/**
- * components/dashboard/CircularProgress.jsx
- * Spend vs remaining ring with dotted unfilled track.
- */
-
 const CircularProgress = ({ percent = 0, label = "Spent", size = 140 }) => {
   const clamped = Math.min(100, Math.max(0, percent));
   const stroke = 10;

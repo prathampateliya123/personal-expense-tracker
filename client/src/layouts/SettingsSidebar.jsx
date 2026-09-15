@@ -1,8 +1,3 @@
-/**
- * layouts/SettingsSidebar.jsx
- * Nested sidebar for Settings section.
- */
-
 import { NavLink } from "react-router-dom";
 import { SETTINGS_NAV_ITEMS, SETTINGS_SIDEBAR_WIDTH } from "../utils/navigation";
 import { IconPayments } from "../components/ui/Icons";

@@ -1,8 +1,3 @@
-/**
- * pages/Expenses.jsx
- * Full-width expenses list — TanStack Query for data fetching.
- */
-
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

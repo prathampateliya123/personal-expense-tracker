@@ -1,13 +1,7 @@
-/**
- * config/db.js
- * MongoDB connection with retry.
- * Uses Google DNS to fix querySrv ECONNREFUSED on Windows, with standard URI fallback.
- */
-
 import dns from "dns";
 import mongoose from "mongoose";
 
-// Windows default DNS often fails SRV lookups for mongodb+srv — use public DNS
+
 dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
 
 let retryTimer = null;

@@ -1,7 +1,3 @@
-/**
- * pages/auth/ForgotPassword.jsx
- */
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";

@@ -1,8 +1,3 @@
-/**
- * models/Saving.js
- * Per-user saving goals with target and progress.
- */
-
 import mongoose from "mongoose";
 
 export const SAVING_STATUSES = ["active", "completed", "paused"];

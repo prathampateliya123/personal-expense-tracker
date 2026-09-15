@@ -1,8 +1,3 @@
-/**
- * layouts/SettingsLayout.jsx
- * Settings module shell — nested sidebar + content outlet.
- */
-
 import { NavLink, Outlet } from "react-router-dom";
 import SettingsSidebar from "./SettingsSidebar";
 import { SETTINGS_NAV_ITEMS } from "../utils/navigation";
@@ -14,7 +9,7 @@ const SETTINGS_ICONS = {
 
 const SettingsLayout = () => (
   <div className="flex w-full min-w-0 flex-col gap-4 md:flex-row md:gap-0">
-    {/* Mobile settings sub-nav */}
+    {}
     <div className="flex gap-2 overflow-x-auto md:hidden">
       {SETTINGS_NAV_ITEMS.map((item) => {
         const Icon = SETTINGS_ICONS[item.key];

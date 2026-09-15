@@ -1,8 +1,3 @@
-/**
- * pages/auth/VerifyOtp.jsx
- * Shared OTP confirmation for login, register, and forgot password.
- */
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

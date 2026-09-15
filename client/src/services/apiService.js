@@ -1,8 +1,3 @@
-/**
- * services/apiService.js
- * Central HTTP client — wraps axiosInstance and returns response.data.
- */
-
 import axiosInstance from "../utils/axiosInstance";
 
 const apiService = {
