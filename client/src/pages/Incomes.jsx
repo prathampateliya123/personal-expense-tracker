@@ -2,38 +2,11 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import IncomeTable from "../components/incomes/IncomeTable";
-import { formatCurrency } from "../utils/expenseConstants";
+import StatCard from "../components/common/StatCard";
+import { formatCurrency } from "../utils/formatters";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import incomeService, { INITIAL_INCOME_FILTERS } from "../services/incomeService";
 import { incomeKeys } from "../services/queryKeys";
-
-const StatCard = ({ label, value, hint, hero = false }) => (
-  <div
-    className={`card flex min-h-[100px] w-full flex-col justify-center p-5 sm:p-6 ${
-      hero ? "gradient-green-card text-white" : ""
-    }`}
-  >
-    <p
-      className={`text-xs font-medium uppercase tracking-wide ${
-        hero ? "text-white/80" : "text-textSecondary"
-      }`}
-    >
-      {label}
-    </p>
-    <p
-      className={`mt-1 text-3xl font-bold sm:text-4xl ${
-        hero ? "text-white" : "text-primaryDark"
-      }`}
-    >
-      {value}
-    </p>
-    {hint ? (
-      <p className={`mt-1 text-xs ${hero ? "text-white/70" : "text-textSecondary"}`}>
-        {hint}
-      </p>
-    ) : null}
-  </div>
-);
 
 const Incomes = () => {
   const queryClient = useQueryClient();

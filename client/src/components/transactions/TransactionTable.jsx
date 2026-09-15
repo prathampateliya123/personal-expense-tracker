@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import {
-  formatCurrency,
-  formatDate,
-} from "../../utils/expenseConstants";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 import {
   getCategoryAvatarClass,
   getCategoryChipClass,
   buildCategoryColorMap,
 } from "../../utils/categoryColors";
-import { INITIAL_TRANSACTION_FILTERS } from "../../services/expenseService";
+import { INITIAL_TRANSACTION_FILTERS } from "../../services/buildTransactionQuery";
 import categoryService from "../../services/categoryService";
 import paymentMethodService from "../../services/paymentMethodService";
 import { categoryKeys, paymentMethodKeys } from "../../services/queryKeys";
@@ -23,8 +20,6 @@ import ConfirmModal from "../modal/ConfirmModal";
 import TableSearch from "../table/TableSearch";
 import TablePager, { TableLimit } from "../table/TablePager";
 import NoDataFound from "../ui/NoDataFound";
-
-const COLUMNS = ["Expense", "Category", "Payment", "Date", "Amount", ""];
 
 const TransactionAvatar = ({ category, colorMap }) => (
   <div
@@ -42,10 +37,10 @@ const PaymentBadge = ({ mode }) => (
   </span>
 );
 
-const ActionButtons = ({ expense, onDelete }) => (
+const ActionButtons = ({ item, onDelete, editBasePath }) => (
   <div className="flex items-center justify-end gap-1.5">
     <Link
-      to={`/expenses/${item._id}/edit`}
+      to={`${editBasePath}/${item._id}/edit`}
       className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-accentGreen/30 hover:bg-successBg hover:text-primaryDark"
       aria-label={`Edit ${item.title}`}
       title="Edit"
@@ -54,7 +49,7 @@ const ActionButtons = ({ expense, onDelete }) => (
     </Link>
     <button
       type="button"
-      onClick={() => onDelete(expense)}
+      onClick={() => onDelete(item)}
       className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-textSecondary transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
       aria-label={`Delete ${item.title}`}
       title="Delete"
@@ -96,7 +91,10 @@ const TransactionRow = ({ item, onDelete, colorMap, editBasePath }) => (
             {item.title}
           </p>
           {item.description ? (
-            <p className="mt-0.5 truncate text-xs text-textSecondary" title={item.description}>
+            <p
+              className="mt-0.5 truncate text-xs text-textSecondary"
+              title={item.description}
+            >
               {item.description}
             </p>
           ) : (
@@ -155,7 +153,11 @@ const TransactionMobileCard = ({ item, onDelete, colorMap, editBasePath }) => (
           >
             {item.category}
           </span>
-          <ActionButtons item={item} onDelete={onDelete} editBasePath={editBasePath} />
+          <ActionButtons
+            item={item}
+            onDelete={onDelete}
+            editBasePath={editBasePath}
+          />
         </div>
       </div>
     </div>
@@ -165,7 +167,7 @@ const TransactionMobileCard = ({ item, onDelete, colorMap, editBasePath }) => (
 const TransactionTable = ({
   filters,
   onFiltersChange,
-  expenses,
+  items,
   loading,
   totalCount,
   totalPages,
@@ -173,7 +175,13 @@ const TransactionTable = ({
   onPageChange,
   onDelete,
   deleting = false,
+  categoryType = "expense",
+  editBasePath = "/expenses",
+  columnLabel = "Expense",
+  entityName = "expenses",
+  deleteTitle = "Delete expense?",
 }) => {
+  const columns = [columnLabel, "Category", "Payment", "Date", "Amount", ""];
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [searchInput, setSearchInput] = useState(filters.search);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
@@ -183,9 +191,9 @@ const TransactionTable = ({
   );
 
   const categoriesQuery = useQuery({
-    queryKey: categoryKeys.options("expense"),
+    queryKey: categoryKeys.options(categoryType),
     queryFn: async () => {
-      const data = await categoryService.options("expense");
+      const data = await categoryService.options(categoryType);
       return data.categories ?? [];
     },
   });
@@ -213,7 +221,7 @@ const TransactionTable = ({
   useEffect(() => {
     if (debouncedSearch === filters.search) return;
     onFiltersChange({ search: debouncedSearch, page: 1 });
-  }, [debouncedSearch]); 
+  }, [debouncedSearch]);
 
   useEffect(() => {
     setSearchInput(filters.search);
@@ -261,10 +269,7 @@ const TransactionTable = ({
             <div className="table-toolbar__row">
               <div className="table-toolbar__search">
                 <div className="table-toolbar__search-field">
-                  <TableSearch
-                    value={searchInput}
-                    onChange={setSearchInput}
-                  />
+                  <TableSearch value={searchInput} onChange={setSearchInput} />
                 </div>
               </div>
 
@@ -275,7 +280,9 @@ const TransactionTable = ({
                       <Select
                         id="filter-category"
                         value={filters.category}
-                        onChange={(e) => applyFilter({ category: e.target.value })}
+                        onChange={(e) =>
+                          applyFilter({ category: e.target.value })
+                        }
                         placeholder="Category"
                         options={categoryOptions}
                         size="sm"
@@ -285,7 +292,9 @@ const TransactionTable = ({
                       <Select
                         id="filter-payment"
                         value={filters.paymentMode}
-                        onChange={(e) => applyFilter({ paymentMode: e.target.value })}
+                        onChange={(e) =>
+                          applyFilter({ paymentMode: e.target.value })
+                        }
                         placeholder="Payment"
                         options={paymentOptions}
                         size="sm"
@@ -347,7 +356,7 @@ const TransactionTable = ({
               <table className="w-full min-w-[920px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-border bg-surfaceLight/80">
-                    {[columnLabel, "Category", "Payment", "Date", "Amount", ""].map((label) => (
+                    {columns.map((label) => (
                       <th
                         key={label || "actions"}
                         className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-textSecondary"
@@ -366,7 +375,10 @@ const TransactionTable = ({
             </div>
             <div className="space-y-3 p-4 md:hidden">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-24 animate-pulse rounded-lg bg-surfaceGray" />
+                <div
+                  key={i}
+                  className="h-24 animate-pulse rounded-lg bg-surfaceGray"
+                />
               ))}
             </div>
           </>
@@ -378,7 +390,7 @@ const TransactionTable = ({
               <table className="w-full min-w-[920px] border-collapse text-left text-sm">
                 <thead className="sticky top-0 z-10 bg-surfaceLight/95 backdrop-blur-sm">
                   <tr className="border-b border-border">
-                    {[columnLabel, "Category", "Payment", "Date", "Amount", ""].map((label) => (
+                    {columns.map((label) => (
                       <th
                         key={label || "actions"}
                         className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-textSecondary ${
@@ -391,12 +403,13 @@ const TransactionTable = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border bg-white">
-                  {items.map((expense) => (
+                  {items.map((item) => (
                     <TransactionRow
                       key={item._id}
                       item={item}
                       onDelete={handleDeleteClick}
                       colorMap={colorMap}
+                      editBasePath={editBasePath}
                     />
                   ))}
                 </tbody>
@@ -404,12 +417,13 @@ const TransactionTable = ({
             </div>
 
             <div className="md:hidden">
-              {items.map((expense) => (
+              {items.map((item) => (
                 <TransactionMobileCard
                   key={item._id}
                   item={item}
                   onDelete={handleDeleteClick}
                   colorMap={colorMap}
+                  editBasePath={editBasePath}
                 />
               ))}
             </div>

@@ -1,24 +1,12 @@
-import { Link } from "react-router-dom";
-import { IconChevronLeft } from "../ui/Icons";
+import PageBackHeader from "../common/PageBackHeader";
 
 const ExpensePageHeader = ({ title, subtitle }) => (
-  <div className="flex w-full flex-col gap-4 border-b border-border/60 pb-6">
-    <Link
-      to="/expenses"
-      className="inline-flex w-fit items-center gap-2 text-sm font-medium text-textSecondary transition hover:text-accentGreen"
-    >
-      <IconChevronLeft />
-      Back to expenses
-    </Link>
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight text-textPrimary sm:text-3xl">
-        {title}
-      </h1>
-      {subtitle && (
-        <p className="mt-1 text-sm text-textSecondary">{subtitle}</p>
-      )}
-    </div>
-  </div>
+  <PageBackHeader
+    backTo="/expenses"
+    backLabel="Back to expenses"
+    title={title}
+    subtitle={subtitle}
+  />
 );
 
 export default ExpensePageHeader;
