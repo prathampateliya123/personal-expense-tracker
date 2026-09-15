@@ -4,14 +4,12 @@
  */
 
 import { NavLink, useLocation } from "react-router-dom";
-import { NAV_ITEMS } from "../utils/navigation";
+import { MOBILE_NAV_ITEMS } from "../utils/navigation";
 import {
   IconDashboard,
   IconExpenses,
   IconIncomes,
-  IconBudgets,
   IconWealth,
-  IconCategories,
   IconSettings,
 } from "../components/ui/Icons";
 
@@ -19,9 +17,7 @@ const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
   incomes: IconIncomes,
-  budgets: IconBudgets,
   wealth: IconWealth,
-  categories: IconCategories,
   settings: IconSettings,
 };
 
@@ -31,7 +27,7 @@ const MobileBottomNav = () => {
   return (
     <nav className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 lg:hidden">
       <div className="flex items-center justify-around rounded-full bg-primaryDark px-2 py-2">
-        {NAV_ITEMS.map((item) => {
+        {MOBILE_NAV_ITEMS.map((item) => {
           const Icon = NAV_ICONS[item.key];
           return (
             <NavLink

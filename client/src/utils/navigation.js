@@ -17,6 +17,15 @@ export const NAV_ITEMS = [
   { key: "settings", to: "/settings", label: "Settings" },
 ];
 
+/** Compact mobile bottom nav (full list stays in sidebar) */
+export const MOBILE_NAV_ITEMS = [
+  { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
+  { key: "expenses", to: "/expenses", label: "Expenses" },
+  { key: "incomes", to: "/incomes", label: "Incomes" },
+  { key: "wealth", to: "/wealth", label: "Wealth" },
+  { key: "settings", to: "/settings", label: "Settings" },
+];
+
 /** Nested settings sidebar */
 export const SETTINGS_NAV_ITEMS = [
   {

@@ -18,12 +18,16 @@ import { getCategoryAvatarClass, buildCategoryColorMap } from "../utils/category
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
 import incomeService, { INITIAL_INCOME_FILTERS } from "../services/incomeService";
 import budgetService, { getCurrentPeriod } from "../services/budgetService";
+import savingService from "../services/savingService";
+import investmentService from "../services/investmentService";
 import categoryService from "../services/categoryService";
 import {
   expenseKeys,
   incomeKeys,
   categoryKeys,
   budgetKeys,
+  savingKeys,
+  investmentKeys,
 } from "../services/queryKeys";
 
 const QuickAction = ({ to, icon, label }) => (
@@ -87,6 +91,22 @@ const Dashboard = () => {
     queryFn: () => budgetService.current(period),
   });
 
+  const savingStatsQuery = useQuery({
+    queryKey: savingKeys.stats(),
+    queryFn: async () => {
+      const data = await savingService.getStats();
+      return data.stats;
+    },
+  });
+
+  const investmentStatsQuery = useQuery({
+    queryKey: investmentKeys.stats(),
+    queryFn: async () => {
+      const data = await investmentService.getStats();
+      return data.stats;
+    },
+  });
+
   const todayExpenseQuery = useQuery({
     queryKey: expenseKeys.list(todayExpenseFilters),
     queryFn: () => expenseService.list(todayExpenseFilters),
@@ -132,6 +152,10 @@ const Dashboard = () => {
   const spendPercent = progress?.percentUsed || 0;
   const remaining = progress?.remaining || 0;
   const hasBudget = Boolean(budget);
+  const savingStats = savingStatsQuery.data;
+  const investmentStats = investmentStatsQuery.data;
+  const wealthTotal =
+    (savingStats?.totalSaved || 0) + (investmentStats?.totalCurrent || 0);
 
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
@@ -217,7 +241,42 @@ const Dashboard = () => {
           <QuickAction to="/expenses/add" icon="+" label="Add expense" />
           <QuickAction to="/incomes/add" icon="↑" label="Add income" />
           <QuickAction to="/budgets" icon="◎" label="Budgets" />
-          <QuickAction to="/categories" icon="≡" label="Categories" />
+          <QuickAction to="/wealth" icon="◆" label="Wealth" />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="card p-5 sm:p-6">
+          <div className="mb-1 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-textPrimary">Wealth snapshot</h2>
+            <Link
+              to="/wealth"
+              className="text-sm font-medium text-accentGreen hover:text-primaryMid"
+            >
+              Manage
+            </Link>
+          </div>
+          <p className="mt-2 text-3xl font-bold text-primaryDark">
+            {formatCurrency(wealthTotal)}
+          </p>
+          <p className="mt-1 text-sm text-textSecondary">
+            Saved {formatCurrency(savingStats?.totalSaved)} · Invested value{" "}
+            {formatCurrency(investmentStats?.totalCurrent)}
+          </p>
+          <p className="mt-1 text-xs text-textSecondary">
+            Portfolio return {investmentStats?.returnPercent || 0}% ·{" "}
+            {savingStats?.totalGoals || 0} saving goal
+            {(savingStats?.totalGoals || 0) === 1 ? "" : "s"}
+          </p>
+        </div>
+        <div className="card p-5 sm:p-6">
+          <h2 className="text-sm font-semibold text-textPrimary">This month</h2>
+          <p className="mt-2 text-3xl font-bold text-primaryDark">
+            {formatCurrency(monthlyNet)}
+          </p>
+          <p className="mt-1 text-sm text-textSecondary">
+            Net = income − expenses
+          </p>
         </div>
       </div>
 
