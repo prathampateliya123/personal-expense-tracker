@@ -13,36 +13,54 @@
     overflow-x: hidden;
   }
 
+  h1,
+  h2,
+  .font-pixel,
+  .font-display {
+    font-family: "Press Start 2P", cursive;
+    letter-spacing: 0.02em;
+    line-height: 1.45;
+  }
+
+  h1 {
+    font-size: clamp(0.95rem, 2.2vw, 1.35rem);
+  }
+
+  h2 {
+    font-size: clamp(0.8rem, 1.8vw, 1.05rem);
+  }
+
   ::selection {
-    background-color: #daf1de;
-    color: #051f20;
+    background-color: #d4ff37;
+    color: #121212;
   }
 }
 
 @layer components {
   .gradient-green-card,
   .gradient-brand-card {
-    background: linear-gradient(135deg, #051f20 0%, #0b2b26 40%, #235347 100%);
-    border-radius: 8px;
+    background: linear-gradient(135deg, #121212 0%, #1a1a1a 55%, #2a2a2a 100%);
+    border: 2px solid #121212;
+    border-radius: 16px;
   }
 
   .btn-primary {
-    @apply rounded-lg bg-accentGreen px-4 py-2.5 text-sm font-semibold text-white transition;
-    @apply hover:bg-primaryLight focus:outline-none focus:ring-2 focus:ring-accentGreen/40;
+    @apply rounded-2xl border-2 border-primaryDark bg-primaryDark px-4 py-2.5 text-sm font-bold text-accentGreen transition;
+    @apply hover:bg-primaryMid focus:outline-none focus:ring-2 focus:ring-accentGreen/50;
     @apply active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .card {
-    @apply rounded-lg border border-border bg-white shadow-none;
+    @apply rounded-2xl border-2 border-border bg-white shadow-none;
   }
 
   .card-flat {
-    @apply rounded-lg border border-border bg-white shadow-none;
+    @apply rounded-2xl border-2 border-border bg-white shadow-none;
   }
 
   .fintech-input {
-    @apply w-full rounded-lg border border-border bg-white px-4 py-2.5 text-sm text-textPrimary outline-none transition;
-    @apply placeholder:text-textSecondary/60 focus:border-accentGreen focus:ring-2 focus:ring-accentGreen/15;
+    @apply w-full rounded-2xl border-2 border-border bg-white px-4 py-2.5 text-sm text-textPrimary outline-none transition;
+    @apply placeholder:text-textSecondary/60 focus:border-primaryDark focus:ring-2 focus:ring-accentGreen/40;
   }
 
   .sidebar-scroll::-webkit-scrollbar {
@@ -61,7 +79,7 @@
 
   .dashboard-main-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #bfd9c8 transparent;
+    scrollbar-color: #c9c2b0 transparent;
   }
 
   .dashboard-main-scroll::-webkit-scrollbar {
@@ -82,9 +100,9 @@
   }
 
   .select-field {
-    @apply w-full cursor-pointer appearance-none rounded-lg border border-border bg-white text-textPrimary shadow-none outline-none transition;
-    @apply hover:border-primaryLight/40 hover:bg-surfaceLight;
-    @apply focus:border-accentGreen focus:ring-2 focus:ring-accentGreen/15;
+    @apply w-full cursor-pointer appearance-none rounded-2xl border-2 border-border bg-white text-textPrimary shadow-none outline-none transition;
+    @apply hover:border-primaryDark hover:bg-surfaceLight;
+    @apply focus:border-primaryDark focus:ring-2 focus:ring-accentGreen/40;
     @apply disabled:cursor-not-allowed disabled:bg-surfaceGray disabled:text-textSecondary disabled:opacity-70;
   }
 
@@ -97,9 +115,9 @@
   }
 
   .date-field {
-    @apply w-full cursor-pointer rounded-lg border border-border bg-white text-textPrimary shadow-none outline-none transition;
-    @apply hover:border-primaryLight/40 hover:bg-surfaceLight;
-    @apply focus:border-accentGreen focus:ring-2 focus:ring-accentGreen/15;
+    @apply w-full cursor-pointer rounded-2xl border-2 border-border bg-white text-textPrimary shadow-none outline-none transition;
+    @apply hover:border-primaryDark hover:bg-surfaceLight;
+    @apply focus:border-primaryDark focus:ring-2 focus:ring-accentGreen/40;
     @apply disabled:cursor-not-allowed disabled:bg-surfaceGray disabled:text-textSecondary disabled:opacity-70;
     color-scheme: light;
   }
@@ -129,21 +147,21 @@
   }
 
   .quick-action-btn {
-    @apply flex flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surfaceGray px-4 py-4 shadow-none transition;
-    @apply hover:bg-surfaceLight active:scale-95;
+    @apply flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-border bg-surfaceGray px-4 py-4 shadow-none transition;
+    @apply hover:bg-accentYellow active:scale-95;
   }
 
   .category-chip {
-    @apply inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold;
+    @apply inline-flex items-center rounded-xl px-2.5 py-1 text-xs font-bold;
   }
 
   .dropdown-menu__option {
     @apply flex w-full cursor-pointer items-center justify-between gap-2 whitespace-nowrap px-3.5 py-2.5 text-left text-sm font-medium text-textPrimary transition-colors duration-150;
-    @apply hover:bg-successBg hover:text-primaryDark;
+    @apply hover:bg-accentGreen hover:text-primaryDark;
   }
 
   .dropdown-menu__option--active {
-    @apply bg-accentGreen font-semibold text-white hover:bg-accentGreen hover:text-white;
+    @apply bg-accentGreen font-bold text-primaryDark hover:bg-accentGreen hover:text-primaryDark;
   }
 
   .dropdown-menu__option--danger {
@@ -152,27 +170,28 @@
 
   .date-range-picker,
   .date-range-picker-panel {
-    --drp-accent: #235347;
-    --drp-accent-soft: #daf1de;
-    --drp-accent-strong: #163832;
-    --drp-ink: #051f20;
-    --drp-ink-muted: #4a6b5e;
-    --drp-ink-subtle: #8eb69b;
-    --drp-border: #bfd9c8;
-    --drp-border-strong: #8eb69b;
+    --drp-accent: #d4ff37;
+    --drp-accent-soft: #eaf8c4;
+    --drp-accent-strong: #121212;
+    --drp-ink: #121212;
+    --drp-ink-muted: #5c584e;
+    --drp-ink-subtle: #8a8476;
+    --drp-border: #121212;
+    --drp-border-strong: #121212;
     --drp-surface: #ffffff;
-    --drp-canvas: #daf1de;
-    --drp-sidebar-bg: #0b2b26;
+    --drp-canvas: #f5f2e8;
+    --drp-sidebar-bg: #121212;
   }
 
   .date-range-picker-panel {
     background-color: var(--drp-surface);
     color: var(--drp-ink);
+    border: 2px solid var(--drp-border);
   }
 
   .date-range-picker-panel .drp-btn-apply:not(:disabled) {
-    background-color: var(--drp-accent);
-    color: #ffffff;
+    background-color: #121212;
+    color: #d4ff37;
   }
 
   .date-range-picker-panel .drp-btn-apply:disabled {
@@ -186,12 +205,11 @@
     @apply overflow-x-auto;
   }
 
-  
   .table-panel {
     min-width: 0;
     max-width: 100%;
-    border: 1px solid theme("colors.border");
-    border-radius: 8px;
+    border: 2px solid theme("colors.border");
+    border-radius: 16px;
     background-color: #ffffff;
     box-shadow: none;
     overflow: hidden;
