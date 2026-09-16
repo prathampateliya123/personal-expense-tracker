@@ -14,24 +14,34 @@ const FullPageLoader = ({ message = "Loading your money hub..." }) => (
     <div className="fullpage-loader__spark fullpage-loader__spark--2" aria-hidden="true" />
     <div className="fullpage-loader__spark fullpage-loader__spark--3" aria-hidden="true" />
 
-    <div className="relative z-10 flex flex-col items-center">
+    <div className="relative z-10 flex w-full max-w-md flex-col items-center">
       <div className="fullpage-loader__orbit">
         <div className="fullpage-loader__ring" aria-hidden="true" />
-        <div className="fullpage-loader__logo-wrap">
-          <BrandLogo variant="full" size="full" className="fullpage-loader__logo" />
+        <div className="fullpage-loader__ring fullpage-loader__ring--inner" aria-hidden="true" />
+        <div className="fullpage-loader__icon-wrap">
+          <BrandLogo
+            variant="icon"
+            size="loader"
+            className="fullpage-loader__icon"
+          />
         </div>
       </div>
 
-      <p className="mt-8 font-pixel text-[10px] uppercase tracking-[0.18em] text-accentGreen sm:text-[11px]">
-        Expense Tracker
-      </p>
+      <h1 className="fullpage-loader__title mt-8 text-center" aria-label="Expense Tracker">
+        <span className="fullpage-loader__word fullpage-loader__word--expense">
+          Expense
+        </span>
+        <span className="fullpage-loader__word fullpage-loader__word--tracker">
+          Tracker
+        </span>
+      </h1>
 
-      <div className="fullpage-loader__steps mt-4 flex items-center gap-2 font-mono text-xs text-white/70 sm:text-sm">
+      <div className="fullpage-loader__steps mt-5 flex items-center gap-2 font-mono text-xs text-white/70 sm:text-sm">
         {STEPS.map((step, index) => (
           <span key={step} className="inline-flex items-center gap-2">
             <span
               className="fullpage-loader__step"
-              style={{ animationDelay: `${index * 0.35}s` }}
+              style={{ animationDelay: `${0.8 + index * 0.35}s` }}
             >
               {step}
             </span>

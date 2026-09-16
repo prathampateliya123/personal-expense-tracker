@@ -69,12 +69,12 @@ const Sidebar = ({ isOpen, onClose }) => (
     >
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4 sm:h-16 sm:px-5">
         <div className="flex min-w-0 items-center gap-2.5">
-          <BrandLogo variant="mark" size="sm" />
+          <BrandLogo variant="icon" size="sm" />
           <div className="min-w-0">
             <p className="font-pixel truncate text-[9px] leading-tight text-primaryDark">
               Expense
             </p>
-            <p className="font-pixel truncate text-[9px] leading-tight text-accentSage">
+            <p className="font-pixel truncate text-[9px] leading-tight text-accentGreen">
               Tracker
             </p>
           </div>

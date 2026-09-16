@@ -50,7 +50,7 @@ const AuthLayout = () => {
 
       <main className="flex flex-1 flex-col items-center justify-center bg-surfaceLight px-4 py-10 sm:px-6">
         <div className="mb-8 flex items-center gap-3 lg:hidden">
-          <BrandLogo variant="mark" size="md" />
+          <BrandLogo variant="icon" size="md" />
           <div>
             <p className="font-pixel text-[10px] leading-tight text-primaryDark">
               Expense Tracker
