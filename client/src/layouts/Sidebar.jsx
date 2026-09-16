@@ -1,6 +1,16 @@
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS, SIDEBAR_WIDTH } from "../utils/navigation";
-import { IconClose, IconDashboard, IconExpenses, IconIncomes, IconBudgets, IconWealth, IconCategories, IconSettings } from "../components/ui/Icons";
+import BrandLogo from "../components/common/BrandLogo";
+import {
+  IconClose,
+  IconDashboard,
+  IconExpenses,
+  IconIncomes,
+  IconBudgets,
+  IconWealth,
+  IconCategories,
+  IconSettings,
+} from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
@@ -59,12 +69,15 @@ const Sidebar = ({ isOpen, onClose }) => (
     >
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4 sm:h-16 sm:px-5">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-primaryDark bg-accentGreen text-sm font-bold text-primaryDark">
-            ₹
-          </span>
-          <span className="font-pixel truncate text-[10px] leading-tight text-primaryDark">
-            EXPENSE
-          </span>
+          <BrandLogo variant="mark" size="sm" />
+          <div className="min-w-0">
+            <p className="font-pixel truncate text-[9px] leading-tight text-primaryDark">
+              Expense
+            </p>
+            <p className="font-pixel truncate text-[9px] leading-tight text-accentSage">
+              Tracker
+            </p>
+          </div>
         </div>
         <button
           type="button"

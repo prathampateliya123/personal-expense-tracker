@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <meta name="theme-color" content="#121212" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,8 +13,50 @@
       rel="stylesheet"
     />
     <title>Expense Tracker</title>
+    <style>
+      html,
+      body,
+      #root {
+        margin: 0;
+        min-height: 100%;
+        background: #121212;
+      }
+      .boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: grid;
+        place-items: center;
+        background: #121212;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+      .boot-loader.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .boot-loader img {
+        width: min(72vw, 280px);
+        height: auto;
+        animation: boot-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes boot-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.88;
+        }
+        50% {
+          transform: scale(1.03);
+          opacity: 1;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="boot-loader" class="boot-loader" aria-busy="true" aria-live="polite">
+      <img src="/logo.png" alt="Expense Tracker" width="280" height="280" />
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

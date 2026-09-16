@@ -11,6 +11,13 @@ import "./index.css";
 
 setupAxiosInterceptors();
 
+const hideBootLoader = () => {
+  const boot = document.getElementById("boot-loader");
+  if (!boot) return;
+  boot.classList.add("is-hidden");
+  window.setTimeout(() => boot.remove(), 400);
+};
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
@@ -21,3 +28,5 @@ createRoot(document.getElementById("root")).render(
     </QueryClientProvider>
   </StrictMode>
 );
+
+hideBootLoader();

@@ -45,6 +45,7 @@ export default {
         accentPink: "#FFC1CC",
         accentYellow: "#FFF1A8",
         accentCyan: "#B0E0E6",
+        accentGold: "#F5C542",
         successBg: "#EAF8C4",
         successText: "#1A1A1A",
         textPrimary: "#121212",
