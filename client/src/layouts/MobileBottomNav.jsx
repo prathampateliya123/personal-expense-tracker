@@ -35,7 +35,7 @@ const MobileBottomNav = () => {
                     ? pathname.startsWith("/settings")
                     : isActive;
                 return `relative flex h-12 w-12 items-center justify-center rounded-full transition ${
-                  active ? "bg-white/15 text-white" : "text-white/70"
+                  active ? "bg-accentGreen text-primaryDark" : "text-white/70"
                 }`;
               }}
             >
@@ -48,7 +48,7 @@ const MobileBottomNav = () => {
                   <>
                     <Icon className="h-5 w-5" />
                     {active ? (
-                      <span className="absolute bottom-1 h-1 w-1 rounded-full bg-accentGreen" />
+                      <span className="absolute bottom-1 h-1 w-1 rounded-full bg-primaryDark" />
                     ) : null}
                   </>
                 );

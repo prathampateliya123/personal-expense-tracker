@@ -90,8 +90,8 @@ export default function TablePager({
                 onClick={() => onPageChange?.(item)}
                 className={`h-10 min-w-10 cursor-pointer rounded-lg px-2 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:h-[38px] sm:min-w-[38px] sm:px-2.5 ${
                   item === safePage
-                    ? "bg-accentGreen text-white"
-                    : "border border-border bg-white text-textPrimary hover:border-accentGreen/40 hover:bg-successBg hover:text-primaryDark"
+                    ? "border-2 border-primaryDark bg-primaryDark text-accentGreen"
+                    : "border-2 border-border bg-white text-textPrimary hover:bg-accentYellow hover:text-primaryDark"
                 }`}
               >
                 {item}
