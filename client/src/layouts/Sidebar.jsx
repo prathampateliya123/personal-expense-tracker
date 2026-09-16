@@ -1,16 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS, SIDEBAR_WIDTH } from "../utils/navigation";
-import BrandLogo from "../components/common/BrandLogo";
-import {
-  IconClose,
-  IconDashboard,
-  IconExpenses,
-  IconIncomes,
-  IconBudgets,
-  IconWealth,
-  IconCategories,
-  IconSettings,
-} from "../components/ui/Icons";
+import { IconClose, IconDashboard, IconExpenses, IconIncomes, IconBudgets, IconWealth, IconCategories, IconSettings } from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
@@ -30,7 +20,7 @@ const NavItem = ({ to, label, icon: Icon, end, onNavigate }) => (
     className={({ isActive }) =>
       `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
         isActive
-          ? "bg-accentGreen text-primaryDark"
+          ? "bg-successBg text-primaryDark"
           : "text-textSecondary hover:bg-surfaceGray hover:text-textPrimary"
       }`
     }
@@ -39,7 +29,7 @@ const NavItem = ({ to, label, icon: Icon, end, onNavigate }) => (
       <>
         <Icon
           className={`h-5 w-5 shrink-0 ${
-            isActive ? "text-primaryDark" : "text-textSecondary"
+            isActive ? "text-accentGreen" : "text-textSecondary"
           }`}
         />
         <span>{label}</span>
@@ -69,15 +59,12 @@ const Sidebar = ({ isOpen, onClose }) => (
     >
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4 sm:h-16 sm:px-5">
         <div className="flex min-w-0 items-center gap-2.5">
-          <BrandLogo variant="icon" size="sm" />
-          <div className="min-w-0">
-            <p className="font-pixel truncate text-[9px] leading-tight text-primaryDark">
-              Expense
-            </p>
-            <p className="font-pixel truncate text-[9px] leading-tight text-accentGreen">
-              Tracker
-            </p>
-          </div>
+          <span className="gradient-green-card flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white">
+            ₹
+          </span>
+          <span className="truncate text-sm font-semibold text-primaryDark">
+            ExpenseTracker
+          </span>
         </div>
         <button
           type="button"

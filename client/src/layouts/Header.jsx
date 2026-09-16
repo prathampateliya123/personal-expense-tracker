@@ -85,7 +85,7 @@ const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
           >
             <div className="border-b border-border bg-surfaceLight/80 px-4 py-3.5">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-primaryDark bg-accentGreen text-sm font-bold text-primaryDark">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg gradient-green-card text-sm font-bold text-white">
                   {getInitials(user?.name)}
                 </div>
                 <div className="min-w-0">
@@ -131,18 +131,18 @@ const Header = ({ user, onMenuClick, onLogout, logoutLoading }) => {
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-haspopup="menu"
           aria-expanded={menuOpen}
-          className={`inline-flex max-w-[min(100vw-5rem,320px)] items-center gap-2 rounded-xl border-2 bg-white px-1.5 py-1.5 text-left transition-[border-color,box-shadow] duration-200 sm:gap-2.5 sm:px-2 ${
+          className={`inline-flex max-w-[min(100vw-5rem,320px)] items-center gap-2 rounded-lg border bg-white px-1.5 py-1.5 text-left transition-[border-color,box-shadow] duration-200 sm:gap-2.5 sm:px-2 ${
             menuOpen
-              ? "border-primaryDark ring-2 ring-accentGreen/50"
-              : "border-border hover:bg-surfaceLight/60"
+              ? "border-accentGreen ring-2 ring-accentGreen/20"
+              : "border-border hover:border-primaryLight/50 hover:bg-surfaceLight/60"
           }`}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-primaryDark bg-accentGreen text-xs font-bold text-primaryDark">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg gradient-green-card text-xs font-bold text-white">
             {user?.avatar ? (
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="h-9 w-9 rounded-[10px] object-cover"
+                className="h-9 w-9 rounded-lg object-cover"
               />
             ) : (
               getInitials(user?.name)

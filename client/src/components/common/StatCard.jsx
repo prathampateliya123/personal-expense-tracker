@@ -12,13 +12,13 @@ export const StatCard = ({
   >
     <p
       className={`text-xs font-medium uppercase tracking-wide ${
-        hero ? "text-accentGreen" : "text-textSecondary"
+        hero ? "text-white/80" : "text-textSecondary"
       }`}
     >
       {label}
     </p>
     <p
-      className={`mt-1 font-pixel text-lg font-normal sm:text-xl ${
+      className={`mt-1 text-2xl font-bold sm:text-3xl ${
         hero
           ? "text-white"
           : danger

@@ -16,7 +16,7 @@ const CircularProgress = ({ percent = 0, label = "Spent", size = 140 }) => {
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#E8E2D4"
+          stroke="#E8F5EB"
           strokeWidth={stroke}
           strokeDasharray="4 6"
         />
@@ -34,8 +34,8 @@ const CircularProgress = ({ percent = 0, label = "Spent", size = 140 }) => {
         />
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#121212" />
-            <stop offset="100%" stopColor="#D4FF37" />
+            <stop offset="0%" stopColor="#051F20" />
+            <stop offset="100%" stopColor="#8EB69B" />
           </linearGradient>
         </defs>
       </svg>

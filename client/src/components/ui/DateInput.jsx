@@ -264,7 +264,7 @@ const DateInput = ({
                         disabledDay
                           ? "cursor-not-allowed text-[var(--drp-ink-subtle)]/40"
                           : selectedDay
-                            ? "cursor-pointer text-[var(--drp-ink)]"
+                            ? "cursor-pointer text-white"
                             : inMonth
                               ? "cursor-pointer text-[var(--drp-ink)] hover:bg-[var(--drp-accent-soft)]"
                               : "cursor-pointer text-[var(--drp-ink-subtle)] hover:bg-[var(--drp-accent-soft)]"

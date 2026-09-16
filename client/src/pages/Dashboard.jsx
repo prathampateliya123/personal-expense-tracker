@@ -166,11 +166,11 @@ const Dashboard = () => {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm font-medium text-white/80">Today&apos;s Spend</p>
-              <p className="mt-2 font-pixel text-2xl tracking-tight text-white sm:text-3xl">
+              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
                 {formatCurrency(todaySpend)}
               </p>
             </div>
-            <span className="rounded-xl border border-accentGreen/40 bg-accentGreen px-3 py-1 text-xs font-bold text-primaryDark">
+            <span className="rounded-xl bg-successBg px-3 py-1 text-xs font-semibold text-successText">
               {expenseStats?.count
                 ? `${expenseStats.count} expenses this month`
                 : "On track"}
@@ -184,7 +184,7 @@ const Dashboard = () => {
         <div className="card flex flex-col justify-between p-6 sm:p-8">
           <div>
             <p className="text-sm font-medium text-textSecondary">Monthly Overview</p>
-            <p className="mt-2 font-pixel text-2xl text-primaryDark sm:text-3xl">
+            <p className="mt-2 text-4xl font-bold text-primaryDark">
               {formatCurrency(monthlyExpense)}
             </p>
             <p className="mt-1 text-sm text-textSecondary">

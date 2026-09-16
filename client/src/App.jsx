@@ -9,8 +9,6 @@ import {
   UserProfileProvider,
   useUserProfile,
 } from "./context/UserProfileContext";
-import FullPageLoader from "./components/common/FullPageLoader";
-import { useSplashGate } from "./hooks/useSplashGate";
 import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Login from "./pages/auth/Login";
@@ -31,16 +29,17 @@ import AddIncome from "./pages/AddIncome";
 import EditIncome from "./pages/EditIncome";
 import SettingsLayout from "./layouts/SettingsLayout";
 
-const SPLASH_MS = 2600;
-
-const AuthLoading = () => <FullPageLoader />;
+const AuthLoading = () => (
+  <div className="flex min-h-screen items-center justify-center bg-appBg">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-accentGreen border-t-transparent" />
+  </div>
+);
 
 const ProtectedRoute = () => {
   const { isAuthenticated, initializing } = useUserProfile();
   const location = useLocation();
-  const showSplash = useSplashGate(initializing, SPLASH_MS);
 
-  if (showSplash) return <AuthLoading />;
+  if (initializing) return <AuthLoading />;
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
@@ -49,18 +48,16 @@ const ProtectedRoute = () => {
 
 const PublicAuthRoute = () => {
   const { isAuthenticated, initializing } = useUserProfile();
-  const showSplash = useSplashGate(initializing, SPLASH_MS);
 
-  if (showSplash) return <AuthLoading />;
+  if (initializing) return <AuthLoading />;
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
   return <Outlet />;
 };
 
 const HomeRedirect = () => {
   const { isAuthenticated, initializing } = useUserProfile();
-  const showSplash = useSplashGate(initializing, SPLASH_MS);
 
-  if (showSplash) return <AuthLoading />;
+  if (initializing) return <AuthLoading />;
   return <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />;
 };
 

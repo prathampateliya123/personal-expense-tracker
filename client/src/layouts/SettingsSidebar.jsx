@@ -12,7 +12,7 @@ const SettingsNavItem = ({ to, label, icon: Icon }) => (
     className={({ isActive }) =>
       `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
         isActive
-          ? "bg-accentGreen text-primaryDark"
+          ? "bg-successBg text-primaryDark"
           : "text-textSecondary hover:bg-surfaceGray hover:text-textPrimary"
       }`
     }
@@ -21,7 +21,7 @@ const SettingsNavItem = ({ to, label, icon: Icon }) => (
       <>
         <Icon
           className={`h-5 w-5 shrink-0 ${
-            isActive ? "text-primaryDark" : "text-textSecondary"
+            isActive ? "text-accentGreen" : "text-textSecondary"
           }`}
         />
         <span>{label}</span>

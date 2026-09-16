@@ -4,15 +4,14 @@ export const toastOptions = {
     duration: 3000,
     style: {
       background: "#FFFFFF",
-      color: "#121212",
-      fontFamily: '"Space Mono", monospace',
-      fontSize: "13px",
-      border: "2px solid #121212",
-      borderRadius: "14px",
+      color: "#051F20",
+      fontSize: "14px",
+      border: "1px solid #BFD9C8",
+      borderRadius: "8px",
       boxShadow: "none",
     },
     success: {
-      iconTheme: { primary: "#121212", secondary: "#D4FF37" },
+      iconTheme: { primary: "#235347", secondary: "#DAF1DE" },
     },
     error: {
       iconTheme: { primary: "#EF4444", secondary: "#FEE2E2" },
