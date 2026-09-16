@@ -15,15 +15,15 @@ const AuthLayout = () => {
 
         <div className="relative z-10 flex flex-1 flex-col justify-center px-12 xl:px-16">
           <Link to="/" className="mb-10 inline-flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 text-lg font-bold text-white backdrop-blur-sm">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-accentGreen bg-accentGreen text-lg font-bold text-primaryDark">
               ₹
             </span>
-            <span className="text-xl font-semibold tracking-tight text-white">
-              ExpenseTracker
+            <span className="font-pixel text-[11px] leading-tight text-accentGreen">
+              EXPENSE
             </span>
           </Link>
 
-          <h1 className="max-w-md text-4xl font-bold leading-tight tracking-tight text-white">
+          <h1 className="max-w-md font-pixel text-[1.35rem] leading-relaxed text-white sm:text-[1.5rem]">
             Your money, organized beautifully
           </h1>
           <p className="mt-4 max-w-md text-base leading-relaxed text-white/80">
@@ -34,7 +34,7 @@ const AuthLayout = () => {
           <ul className="mt-10 space-y-4">
             {features.map((item) => (
               <li key={item} className="flex items-center gap-3 text-white/90">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-successBg text-xs font-semibold text-successText">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-accentGreen text-xs font-bold text-primaryDark">
                   ✓
                 </span>
                 <span className="text-sm font-medium">{item}</span>
@@ -50,11 +50,11 @@ const AuthLayout = () => {
 
       <main className="flex flex-1 flex-col items-center justify-center bg-surfaceLight px-4 py-10 sm:px-6">
         <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-          <span className="gradient-green-card flex h-10 w-10 items-center justify-center rounded-2xl text-sm font-bold text-white">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-primaryDark bg-accentGreen text-sm font-bold text-primaryDark">
             ₹
           </span>
-          <span className="text-lg font-semibold tracking-tight text-primaryDark">
-            ExpenseTracker
+          <span className="font-pixel text-[11px] leading-tight text-primaryDark">
+            EXPENSE
           </span>
         </div>
 

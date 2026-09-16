@@ -156,7 +156,7 @@ function AsideFieldSelect({
                 }}
                 className={`flex w-full cursor-pointer items-center px-3 py-2 text-left text-[13px] transition-colors ${
                   active
-                    ? "bg-[var(--drp-accent)] font-semibold text-white"
+                    ? "bg-[var(--drp-accent)] font-semibold text-[var(--drp-ink)]"
                     : "font-medium text-[var(--drp-ink)] hover:bg-[var(--drp-accent-soft)] hover:text-[var(--drp-accent-strong)]"
                 }`}
               >
@@ -379,7 +379,7 @@ function MonthCalendar({
       disabled
         ? "cursor-not-allowed text-[var(--drp-ink-subtle)]/40"
         : active
-          ? "cursor-pointer bg-[var(--drp-accent)] text-white"
+          ? "cursor-pointer bg-[var(--drp-accent)] text-[var(--drp-ink)]"
           : "cursor-pointer text-[var(--drp-ink)] hover:bg-[var(--drp-accent-soft)] hover:text-[var(--drp-accent-strong)]"
     }`;
 
