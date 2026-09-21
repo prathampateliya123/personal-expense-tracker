@@ -82,6 +82,16 @@ export const PAGE_META = {
     subtitle: "Manage saving goals and investment portfolio",
     breadcrumb: ["Home", "Wealth"],
   },
+  "/wealth/savings/add": {
+    title: "Add saving goal",
+    subtitle: "Set a target and track progress",
+    breadcrumb: ["Home", "Wealth", "Add saving"],
+  },
+  "/wealth/investments/add": {
+    title: "Add investment",
+    subtitle: "Record a holding and track its value",
+    breadcrumb: ["Home", "Wealth", "Add investment"],
+  },
   "/settings": {
     title: "Settings",
     subtitle: "Manage app preferences",

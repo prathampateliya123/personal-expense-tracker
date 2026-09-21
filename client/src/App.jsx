@@ -22,6 +22,10 @@ import Incomes from "./pages/Incomes";
 import Categories from "./pages/Categories";
 import Budgets from "./pages/Budgets";
 import Wealth from "./pages/Wealth";
+import AddSaving from "./pages/AddSaving";
+import EditSaving from "./pages/EditSaving";
+import AddInvestment from "./pages/AddInvestment";
+import EditInvestment from "./pages/EditInvestment";
 import Subscriptions from "./pages/Subscriptions";
 import AddSubscription from "./pages/AddSubscription";
 import EditSubscription from "./pages/EditSubscription";
@@ -94,6 +98,13 @@ const App = () => (
             element={<EditSubscription />}
           />
           <Route path="/wealth" element={<Wealth />} />
+          <Route path="/wealth/savings/add" element={<AddSaving />} />
+          <Route path="/wealth/savings/:id/edit" element={<EditSaving />} />
+          <Route path="/wealth/investments/add" element={<AddInvestment />} />
+          <Route
+            path="/wealth/investments/:id/edit"
+            element={<EditInvestment />}
+          />
           <Route path="/categories" element={<Categories />} />
           <Route path="/settings" element={<SettingsLayout />}>
             <Route index element={<Navigate to="payment-methods" replace />} />

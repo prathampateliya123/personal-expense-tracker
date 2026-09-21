@@ -1,21 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Button from "../components/ui/Button";
 import ConfirmModal from "../components/modal/ConfirmModal";
 import { IconPlus } from "../components/ui/Icons";
 import WealthStats from "../components/wealth/WealthStats";
 import SavingsSection from "../components/wealth/SavingsSection";
 import InvestmentsSection from "../components/wealth/InvestmentsSection";
-import SavingFormModal from "../components/wealth/SavingFormModal";
-import InvestmentFormModal from "../components/wealth/InvestmentFormModal";
 import MoneyFormModal from "../components/wealth/MoneyFormModal";
-import {
-  TABS,
-  emptySavingForm,
-  emptyInvestmentForm,
-  savingToForm,
-  investmentToForm,
-} from "../components/wealth/wealthHelpers";
+import { TABS } from "../components/wealth/wealthHelpers";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import savingService, {
   INITIAL_SAVING_FILTERS,
@@ -26,20 +18,21 @@ import investmentService, {
 import { savingKeys, investmentKeys } from "../services/queryKeys";
 import { debounce } from "../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../utils/constants";
-import { toDateInputValue } from "../utils/wealthConstants";
 
 const Wealth = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState("savings");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [tab, setTab] = useState(
+    tabParam === "investments" ? "investments" : "savings"
+  );
 
   const [savingFilters, setSavingFilters] = useState({
     ...INITIAL_SAVING_FILTERS,
   });
   const [savingSearch, setSavingSearch] = useState("");
   const [debouncedSavingSearch, setDebouncedSavingSearch] = useState("");
-  const [savingForm, setSavingForm] = useState(emptySavingForm);
-  const [editingSaving, setEditingSaving] = useState(null);
-  const [showSavingForm, setShowSavingForm] = useState(false);
   const [deleteSavingTarget, setDeleteSavingTarget] = useState(null);
   const [moneyTarget, setMoneyTarget] = useState(null);
   const [moneyAmount, setMoneyAmount] = useState("");
@@ -51,10 +44,18 @@ const Wealth = () => {
   const [investmentSearch, setInvestmentSearch] = useState("");
   const [debouncedInvestmentSearch, setDebouncedInvestmentSearch] =
     useState("");
-  const [investmentForm, setInvestmentForm] = useState(emptyInvestmentForm);
-  const [editingInvestment, setEditingInvestment] = useState(null);
-  const [showInvestmentForm, setShowInvestmentForm] = useState(false);
   const [deleteInvestmentTarget, setDeleteInvestmentTarget] = useState(null);
+
+  useEffect(() => {
+    if (tabParam === "investments" || tabParam === "savings") {
+      setTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const changeTab = (next) => {
+    setTab(next);
+    setSearchParams(next === "savings" ? {} : { tab: next }, { replace: true });
+  };
 
   const debounceSaving = useMemo(
     () => debounce(setDebouncedSavingSearch, DEFAULT_DEBOUNCE_MS),
@@ -131,29 +132,6 @@ const Wealth = () => {
     await queryClient.invalidateQueries({ queryKey: investmentKeys.all });
   };
 
-  const createSavingMutation = useMutation({
-    mutationFn: (payload) => savingService.create(payload),
-    onSuccess: async () => {
-      showSuccessToast("Saving goal created");
-      setShowSavingForm(false);
-      setSavingForm(emptySavingForm);
-      await invalidateSavings();
-    },
-    onError: handleApiError,
-  });
-
-  const updateSavingMutation = useMutation({
-    mutationFn: ({ id, payload }) => savingService.update(id, payload),
-    onSuccess: async () => {
-      showSuccessToast("Saving goal updated");
-      setEditingSaving(null);
-      setShowSavingForm(false);
-      setSavingForm(emptySavingForm);
-      await invalidateSavings();
-    },
-    onError: handleApiError,
-  });
-
   const deleteSavingMutation = useMutation({
     mutationFn: (id) => savingService.remove(id),
     onSuccess: async () => {
@@ -180,29 +158,6 @@ const Wealth = () => {
     onError: handleApiError,
   });
 
-  const createInvestmentMutation = useMutation({
-    mutationFn: (payload) => investmentService.create(payload),
-    onSuccess: async () => {
-      showSuccessToast("Investment added");
-      setShowInvestmentForm(false);
-      setInvestmentForm(emptyInvestmentForm);
-      await invalidateInvestments();
-    },
-    onError: handleApiError,
-  });
-
-  const updateInvestmentMutation = useMutation({
-    mutationFn: ({ id, payload }) => investmentService.update(id, payload),
-    onSuccess: async () => {
-      showSuccessToast("Investment updated");
-      setEditingInvestment(null);
-      setShowInvestmentForm(false);
-      setInvestmentForm(emptyInvestmentForm);
-      await invalidateInvestments();
-    },
-    onError: handleApiError,
-  });
-
   const deleteInvestmentMutation = useMutation({
     mutationFn: (id) => investmentService.remove(id),
     onSuccess: async () => {
@@ -218,97 +173,6 @@ const Wealth = () => {
   const investments = investmentListQuery.data?.investments ?? [];
   const investmentStats = investmentStatsQuery.data;
 
-  const startEditSaving = (item) => {
-    setEditingSaving(item);
-    setShowSavingForm(true);
-    setSavingForm(savingToForm(item));
-  };
-
-  const startEditInvestment = (item) => {
-    setEditingInvestment(item);
-    setShowInvestmentForm(true);
-    setInvestmentForm(investmentToForm(item));
-  };
-
-  const handleSavingSubmit = (e) => {
-    e.preventDefault();
-    const name = savingForm.name.trim();
-    const targetAmount = Number(savingForm.targetAmount);
-    const currentAmount = Number(savingForm.currentAmount || 0);
-
-    if (!name) {
-      handleApiError({ message: "Goal name is required" });
-      return;
-    }
-    if (!savingForm.targetAmount || Number.isNaN(targetAmount) || targetAmount <= 0) {
-      handleApiError({ message: "Enter a valid target amount" });
-      return;
-    }
-    if (Number.isNaN(currentAmount) || currentAmount < 0) {
-      handleApiError({ message: "Saved amount cannot be negative" });
-      return;
-    }
-
-    const payload = {
-      name,
-      targetAmount,
-      currentAmount,
-      deadline: savingForm.deadline || null,
-      notes: savingForm.notes.trim(),
-      status: savingForm.status,
-    };
-
-    if (editingSaving) {
-      updateSavingMutation.mutate({ id: editingSaving._id, payload });
-    } else {
-      createSavingMutation.mutate(payload);
-    }
-  };
-
-  const handleInvestmentSubmit = (e) => {
-    e.preventDefault();
-    const name = investmentForm.name.trim();
-    const amountInvested = Number(investmentForm.amountInvested);
-    const currentValue = Number(investmentForm.currentValue);
-
-    if (!name) {
-      handleApiError({ message: "Investment name is required" });
-      return;
-    }
-    if (
-      !investmentForm.amountInvested ||
-      Number.isNaN(amountInvested) ||
-      amountInvested <= 0
-    ) {
-      handleApiError({ message: "Enter a valid invested amount" });
-      return;
-    }
-    if (
-      investmentForm.currentValue === "" ||
-      Number.isNaN(currentValue) ||
-      currentValue < 0
-    ) {
-      handleApiError({ message: "Enter a valid current value" });
-      return;
-    }
-
-    const payload = {
-      name,
-      type: investmentForm.type,
-      amountInvested,
-      currentValue,
-      purchaseDate: investmentForm.purchaseDate,
-      institution: investmentForm.institution.trim(),
-      notes: investmentForm.notes.trim(),
-    };
-
-    if (editingInvestment) {
-      updateInvestmentMutation.mutate({ id: editingInvestment._id, payload });
-    } else {
-      createInvestmentMutation.mutate(payload);
-    }
-  };
-
   const handleMoneySubmit = (e) => {
     e.preventDefault();
     const amount = Number(moneyAmount);
@@ -323,10 +187,6 @@ const Wealth = () => {
     });
   };
 
-  const patchSavingForm = (patch) =>
-    setSavingForm((prev) => ({ ...prev, ...patch }));
-  const patchInvestmentForm = (patch) =>
-    setInvestmentForm((prev) => ({ ...prev, ...patch }));
   const patchSavingFilters = (patch) =>
     setSavingFilters((prev) => ({ ...prev, ...patch }));
   const patchInvestmentFilters = (patch) =>
@@ -349,34 +209,21 @@ const Wealth = () => {
           </p>
         </div>
         {tab === "savings" ? (
-          <Button
-            type="button"
-            className="self-start sm:self-auto"
-            onClick={() => {
-              setEditingSaving(null);
-              setSavingForm(emptySavingForm);
-              setShowSavingForm(true);
-            }}
+          <Link
+            to="/wealth/savings/add"
+            className="btn-primary inline-flex shrink-0 items-center gap-1.5 self-start sm:self-auto"
           >
             <IconPlus className="h-4 w-4" />
             Add saving goal
-          </Button>
+          </Link>
         ) : (
-          <Button
-            type="button"
-            className="self-start sm:self-auto"
-            onClick={() => {
-              setEditingInvestment(null);
-              setInvestmentForm({
-                ...emptyInvestmentForm,
-                purchaseDate: toDateInputValue(new Date()),
-              });
-              setShowInvestmentForm(true);
-            }}
+          <Link
+            to="/wealth/investments/add"
+            className="btn-primary inline-flex shrink-0 items-center gap-1.5 self-start sm:self-auto"
           >
             <IconPlus className="h-4 w-4" />
             Add investment
-          </Button>
+          </Link>
         )}
       </div>
 
@@ -385,7 +232,7 @@ const Wealth = () => {
           <button
             key={item.key}
             type="button"
-            onClick={() => setTab(item.key)}
+            onClick={() => changeTab(item.key)}
             className={`rounded-md px-4 py-2 text-sm font-medium transition ${
               tab === item.key
                 ? "bg-white text-primaryDark shadow-sm"
@@ -400,22 +247,6 @@ const Wealth = () => {
       {tab === "savings" ? (
         <>
           <WealthStats variant="savings" stats={savingStats} />
-          {showSavingForm ? (
-            <SavingFormModal
-              form={savingForm}
-              onChange={patchSavingForm}
-              editing={editingSaving}
-              onSubmit={handleSavingSubmit}
-              onCancel={() => {
-                setShowSavingForm(false);
-                setEditingSaving(null);
-                setSavingForm(emptySavingForm);
-              }}
-              loading={
-                createSavingMutation.isPending || updateSavingMutation.isPending
-              }
-            />
-          ) : null}
           <SavingsSection
             savings={savings}
             loading={savingLoading}
@@ -434,30 +265,13 @@ const Wealth = () => {
               setMoneyTarget(item);
               setMoneyAmount("");
             }}
-            onEdit={startEditSaving}
+            onEdit={(item) => navigate(`/wealth/savings/${item._id}/edit`)}
             onDelete={setDeleteSavingTarget}
           />
         </>
       ) : (
         <>
           <WealthStats variant="investments" stats={investmentStats} />
-          {showInvestmentForm ? (
-            <InvestmentFormModal
-              form={investmentForm}
-              onChange={patchInvestmentForm}
-              editing={editingInvestment}
-              onSubmit={handleInvestmentSubmit}
-              onCancel={() => {
-                setShowInvestmentForm(false);
-                setEditingInvestment(null);
-                setInvestmentForm(emptyInvestmentForm);
-              }}
-              loading={
-                createInvestmentMutation.isPending ||
-                updateInvestmentMutation.isPending
-              }
-            />
-          ) : null}
           <InvestmentsSection
             investments={investments}
             loading={investmentLoading}
@@ -466,7 +280,9 @@ const Wealth = () => {
             filters={investmentFilters}
             onFiltersChange={patchInvestmentFilters}
             listMeta={investmentListQuery.data}
-            onEdit={startEditInvestment}
+            onEdit={(item) =>
+              navigate(`/wealth/investments/${item._id}/edit`)
+            }
             onDelete={setDeleteInvestmentTarget}
           />
         </>
