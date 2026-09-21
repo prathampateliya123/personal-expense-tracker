@@ -143,22 +143,20 @@ const TripDetail = () => {
 
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
-      <div className="flex flex-col gap-4 border-b border-border/60 pb-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <PageBackHeader
-            backTo="/trips"
-            backLabel="Back to trips"
-            title={trip.title}
-            subtitle={
-              trip.destination
-                ? `${trip.destination}${
-                    trip.startDate ? ` · ${formatDate(trip.startDate)}` : ""
-                  }`
-                : "Shared trip expenses and settlements"
-            }
-          />
-        </div>
-        <div className="flex flex-wrap items-center gap-2 lg:pb-1">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <PageBackHeader
+          backTo="/trips"
+          backLabel="Back to trips"
+          title={trip.title}
+          subtitle={
+            trip.destination
+              ? `${trip.destination}${
+                  trip.startDate ? ` · ${formatDate(trip.startDate)}` : ""
+                }`
+              : "Shared trip expenses and settlements"
+          }
+        />
+        <div className="flex flex-wrap items-center gap-2 sm:pt-8">
           <span
             className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${tripStatusBadgeClass(
               trip.status

@@ -168,28 +168,56 @@ export const getTrips = async (req, res, next) => {
     ]);
 
     const tripIds = items.map((t) => t._id);
-    const expenseAgg = await TripExpense.aggregate([
-      { $match: { tripId: { $in: tripIds } } },
-      {
-        $group: {
-          _id: "$tripId",
-          total: { $sum: "$amount" },
-          count: { $sum: 1 },
+    const [expenseAgg, categoryAgg] = await Promise.all([
+      TripExpense.aggregate([
+        { $match: { tripId: { $in: tripIds } } },
+        {
+          $group: {
+            _id: "$tripId",
+            total: { $sum: "$amount" },
+            count: { $sum: 1 },
+          },
         },
-      },
+      ]),
+      TripExpense.aggregate([
+        { $match: { tripId: { $in: tripIds } } },
+        {
+          $group: {
+            _id: { tripId: "$tripId", category: "$category" },
+            total: { $sum: "$amount" },
+          },
+        },
+      ]),
     ]);
+
     const byTrip = Object.fromEntries(
       expenseAgg.map((row) => [String(row._id), row])
     );
 
+    const breakdownByTrip = {};
+    for (const row of categoryAgg) {
+      const tripKey = String(row._id.tripId);
+      if (!breakdownByTrip[tripKey]) breakdownByTrip[tripKey] = [];
+      breakdownByTrip[tripKey].push({
+        category: row._id.category || "Other",
+        total: round2(row.total),
+      });
+    }
+    for (const key of Object.keys(breakdownByTrip)) {
+      breakdownByTrip[key].sort((a, b) => b.total - a.total);
+    }
+
     const trips = items.map((trip) => {
       const plain = trip.toObject();
-      const agg = byTrip[String(trip._id)];
+      const id = String(trip._id);
+      const agg = byTrip[id];
       return {
         ...plain,
         totalSpend: round2(agg?.total || 0),
         expenseCount: agg?.count || 0,
         memberCount: plain.members?.length || 0,
+        breakdown: breakdownByTrip[id] || [],
+        settlementCount: plain.settlements?.length || 0,
       };
     });
 
