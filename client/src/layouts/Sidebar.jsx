@@ -12,12 +12,14 @@ import {
   IconCategories,
   IconSettings,
   IconCalendarDays,
+  IconTrip,
 } from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
   timeline: IconCalendarDays,
+  trips: IconTrip,
   incomes: IconIncomes,
   budgets: IconBudgets,
   subscriptions: IconSubscriptions,

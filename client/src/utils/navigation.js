@@ -6,6 +6,7 @@ export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "timeline", to: "/timeline", label: "Timeline" },
+  { key: "trips", to: "/trips", label: "Trips" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "budgets", to: "/budgets", label: "Budgets" },
   { key: "subscriptions", to: "/subscriptions", label: "Subscriptions" },
@@ -48,6 +49,16 @@ export const PAGE_META = {
     title: "Expense Timeline",
     subtitle: "Chronological spend with calendar view",
     breadcrumb: ["Home", "Timeline"],
+  },
+  "/trips": {
+    title: "Trip expenses",
+    subtitle: "Shared trip spend, splits, and settlements",
+    breadcrumb: ["Home", "Trips"],
+  },
+  "/trips/add": {
+    title: "New trip",
+    subtitle: "Add members and start tracking shared expenses",
+    breadcrumb: ["Home", "Trips", "New"],
   },
   "/expenses/add": {
     title: "Add expense",
