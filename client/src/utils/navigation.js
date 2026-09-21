@@ -72,6 +72,11 @@ export const PAGE_META = {
     subtitle: "Track recurring bills and auto-add expenses on billing day",
     breadcrumb: ["Home", "Subscriptions"],
   },
+  "/subscriptions/add": {
+    title: "Add subscription",
+    subtitle: "Set up a recurring bill with optional auto-expense",
+    breadcrumb: ["Home", "Subscriptions", "Add"],
+  },
   "/wealth": {
     title: "Savings & Investments",
     subtitle: "Manage saving goals and investment portfolio",

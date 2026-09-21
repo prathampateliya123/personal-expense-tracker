@@ -1,38 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Button from "../components/ui/Button";
 import ConfirmModal from "../components/modal/ConfirmModal";
 import { IconPlus } from "../components/ui/Icons";
 import SubscriptionStats from "../components/subscriptions/SubscriptionStats";
-import SubscriptionForm from "../components/subscriptions/SubscriptionForm";
 import SubscriptionList from "../components/subscriptions/SubscriptionList";
-import {
-  emptySubscriptionForm,
-  subscriptionToForm,
-} from "../components/subscriptions/subscriptionHelpers";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import subscriptionService, {
   INITIAL_SUBSCRIPTION_FILTERS,
 } from "../services/subscriptionService";
-import categoryService from "../services/categoryService";
-import paymentMethodService from "../services/paymentMethodService";
 import {
   subscriptionKeys,
-  categoryKeys,
-  paymentMethodKeys,
   expenseKeys,
 } from "../services/queryKeys";
 import { debounce } from "../utils/helper";
 import { DEFAULT_DEBOUNCE_MS } from "../utils/constants";
 
 const Subscriptions = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState({ ...INITIAL_SUBSCRIPTION_FILTERS });
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [form, setForm] = useState(emptySubscriptionForm);
-  const [editing, setEditing] = useState(null);
-  const [showForm, setShowForm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const debounceSearch = useMemo(
@@ -64,45 +53,12 @@ const Subscriptions = () => {
     },
   });
 
-  const categoriesQuery = useQuery({
-    queryKey: categoryKeys.options("expense"),
-    queryFn: async () => {
-      const data = await categoryService.options("expense");
-      return data.categories ?? [];
-    },
-  });
-
-  const paymentMethodsQuery = useQuery({
-    queryKey: paymentMethodKeys.options(),
-    queryFn: async () => {
-      const data = await paymentMethodService.options();
-      return data.paymentMethods ?? [];
-    },
-  });
-
   const invalidateAll = async () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
       queryClient.invalidateQueries({ queryKey: expenseKeys.all }),
     ]);
   };
-
-  const saveMutation = useMutation({
-    mutationFn: (payload) =>
-      editing
-        ? subscriptionService.update(editing._id, payload)
-        : subscriptionService.create(payload),
-    onSuccess: async () => {
-      showSuccessToast(
-        editing ? "Subscription updated" : "Subscription added"
-      );
-      setShowForm(false);
-      setEditing(null);
-      setForm(emptySubscriptionForm());
-      await invalidateAll();
-    },
-    onError: handleApiError,
-  });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => subscriptionService.remove(id),
@@ -135,37 +91,6 @@ const Subscriptions = () => {
   const currentPage = listData?.currentPage ?? filters.page;
   const loading = listQuery.isLoading || listQuery.isFetching;
 
-  const categoryOptions = (categoriesQuery.data ?? []).map((c) => c.name);
-  const paymentOptions = (paymentMethodsQuery.data ?? []).map((p) => p.name);
-
-  const openCreate = () => {
-    setEditing(null);
-    setForm(emptySubscriptionForm());
-    setShowForm(true);
-  };
-
-  const openEdit = (item) => {
-    setEditing(item);
-    setForm(subscriptionToForm(item));
-    setShowForm(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    saveMutation.mutate({
-      serviceName: form.serviceName.trim(),
-      amount: Number(form.amount),
-      billingCycle: form.billingCycle,
-      nextBillingDate: form.nextBillingDate,
-      category: form.category,
-      paymentMode: form.paymentMode,
-      reminderDaysBefore: Number(form.reminderDaysBefore),
-      status: form.status,
-      autoAddExpense: Boolean(form.autoAddExpense),
-      notes: form.notes.trim(),
-    });
-  };
-
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -177,34 +102,16 @@ const Subscriptions = () => {
             Track recurring bills and auto-add expenses on billing day
           </p>
         </div>
-        <Button
-          type="button"
-          className="shrink-0 self-start sm:self-auto"
-          onClick={openCreate}
+        <Link
+          to="/subscriptions/add"
+          className="btn-primary inline-flex shrink-0 items-center gap-1.5 self-start sm:self-auto"
         >
           <IconPlus className="h-4 w-4" />
           Add subscription
-        </Button>
+        </Link>
       </div>
 
       <SubscriptionStats stats={statsQuery.data} />
-
-      {showForm ? (
-        <SubscriptionForm
-          form={form}
-          onChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
-          editing={editing}
-          onSubmit={handleSubmit}
-          onCancel={() => {
-            setShowForm(false);
-            setEditing(null);
-            setForm(emptySubscriptionForm());
-          }}
-          loading={saveMutation.isPending}
-          categoryOptions={categoryOptions}
-          paymentOptions={paymentOptions}
-        />
-      ) : null}
 
       <SubscriptionList
         items={items}
@@ -222,7 +129,7 @@ const Subscriptions = () => {
           if (page < 1 || page > totalPages) return;
           setFilters((prev) => ({ ...prev, page }));
         }}
-        onEdit={openEdit}
+        onEdit={(item) => navigate(`/subscriptions/${item._id}/edit`)}
         onDelete={setDeleteTarget}
         onPause={(item) =>
           statusMutation.mutate({ id: item._id, action: "pause" })

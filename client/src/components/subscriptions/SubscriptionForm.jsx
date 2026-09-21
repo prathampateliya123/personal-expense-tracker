@@ -16,17 +16,25 @@ const SubscriptionForm = ({
   loading = false,
   categoryOptions = [],
   paymentOptions = [],
-}) => (
+  variant = "page",
+}) => {
+  const isPage = variant === "page";
+
+  return (
   <form
     onSubmit={onSubmit}
-    className="card flex w-full flex-col gap-4 p-5 sm:p-6"
+    className={`card flex w-full flex-col ${
+      isPage ? "gap-6 p-6 sm:p-8" : "gap-4 p-5 sm:p-6"
+    }`}
   >
-    <h2 className="text-base font-semibold text-textPrimary">
-      {editing ? `Edit “${editing.serviceName}”` : "New subscription"}
-    </h2>
+    {!isPage ? (
+      <h2 className="text-base font-semibold text-textPrimary">
+        {editing ? `Edit “${editing.serviceName}”` : "New subscription"}
+      </h2>
+    ) : null}
 
-    <div className="grid gap-4 sm:grid-cols-2">
-      <div className="sm:col-span-2">
+    <div className={`grid gap-4 ${isPage ? "sm:grid-cols-2 xl:grid-cols-3" : "sm:grid-cols-2"}`}>
+      <div className={isPage ? "sm:col-span-2 xl:col-span-3" : "sm:col-span-2"}>
         <label htmlFor="sub-name" className={labelClass}>
           Service name
         </label>
@@ -132,7 +140,7 @@ const SubscriptionForm = ({
         options={SUBSCRIPTION_STATUS_OPTIONS}
       />
 
-      <div className="sm:col-span-2">
+      <div className={isPage ? "sm:col-span-2 xl:col-span-3" : "sm:col-span-2"}>
         <label htmlFor="sub-notes" className={labelClass}>
           Notes (optional)
         </label>
@@ -146,7 +154,7 @@ const SubscriptionForm = ({
         />
       </div>
 
-      <label className="sm:col-span-2 flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-surfaceLight/50 px-4 py-3">
+      <label className={`${isPage ? "sm:col-span-2 xl:col-span-3" : "sm:col-span-2"} flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-surfaceLight/50 px-4 py-3`}>
         <input
           type="checkbox"
           className="mt-1 h-4 w-4 accent-accentGreen"
@@ -165,15 +173,29 @@ const SubscriptionForm = ({
       </label>
     </div>
 
-    <div className="flex flex-wrap gap-2 sm:justify-end">
-      <Button type="button" variant="secondary" onClick={onCancel}>
+    <div
+      className={`flex flex-wrap gap-2 ${
+        isPage ? "border-t border-border pt-6 sm:justify-end" : "sm:justify-end"
+      }`}
+    >
+      <Button
+        type="button"
+        variant="secondary"
+        onClick={onCancel}
+        className={isPage ? "sm:min-w-[140px]" : ""}
+      >
         Cancel
       </Button>
-      <Button type="submit" loading={loading}>
+      <Button
+        type="submit"
+        loading={loading}
+        className={isPage ? "sm:min-w-[160px]" : ""}
+      >
         {editing ? "Save changes" : "Add subscription"}
       </Button>
     </div>
   </form>
-);
+  );
+};
 
 export default SubscriptionForm;
