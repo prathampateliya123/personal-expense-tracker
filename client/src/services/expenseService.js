@@ -23,6 +23,16 @@ export const expenseService = {
   remove: (id) => apiService.delete(`/expenses/${id}`),
 
   getStats: () => apiService.get("/expenses/stats"),
+
+  getTimeline: ({ year, month } = {}) => {
+    const params = new URLSearchParams();
+    if (year != null) params.set("year", String(year));
+    if (month != null) params.set("month", String(month));
+    const query = params.toString();
+    return apiService.get(
+      `/expenses/timeline${query ? `?${query}` : ""}`
+    );
+  },
 };
 
 export default expenseService;

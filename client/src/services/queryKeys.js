@@ -24,6 +24,7 @@ export const expenseKeys = {
   details: () => [...expenseKeys.all, "detail"],
   detail: (id) => [...expenseKeys.details(), String(id || "")],
   stats: () => [...expenseKeys.all, "stats"],
+  timeline: (params = {}) => [...expenseKeys.all, "timeline", params],
 };
 
 export const incomeKeys = {

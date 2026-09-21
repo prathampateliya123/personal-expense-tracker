@@ -6,6 +6,7 @@ import {
   updateExpense,
   deleteExpense,
   getExpenseStats,
+  getExpenseTimeline,
 } from "../controllers/expenseController.js";
 import protect from "../middleware/authMiddleware.js";
 import requireDb from "../middleware/dbMiddleware.js";
@@ -16,6 +17,7 @@ router.use(protect, requireDb);
 
 router.post("/", addExpense);
 router.get("/stats", getExpenseStats);
+router.get("/timeline", getExpenseTimeline);
 router.get("/", getExpenses);
 router.get("/:id", getExpenseById);
 router.put("/:id", updateExpense);

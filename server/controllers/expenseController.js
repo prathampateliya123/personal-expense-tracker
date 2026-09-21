@@ -199,7 +199,75 @@ export const getExpenseStats = async (req, res, next) => {
   }
 };
 
+const toLocalDateKey = (value) => {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
 
+export const getExpenseTimeline = async (req, res, next) => {
+  try {
+    const now = new Date();
+    const year = parseInt(req.query.year, 10) || now.getFullYear();
+    const month = parseInt(req.query.month, 10) || now.getMonth() + 1;
+
+    if (year < 2000 || year > 2100 || month < 1 || month > 12) {
+      res.status(400);
+      throw new Error("Invalid year or month");
+    }
+
+    const rangeStart = new Date(year, month - 1, 1, 0, 0, 0, 0);
+    const rangeEnd = new Date(year, month, 0, 23, 59, 59, 999);
+
+    const expenses = await Expense.find({
+      userId: req.user._id,
+      date: { $gte: rangeStart, $lte: rangeEnd },
+    }).sort({ date: -1, createdAt: -1 });
+
+    const byDate = new Map();
+    let monthTotal = 0;
+
+    for (const expense of expenses) {
+      const key = toLocalDateKey(expense.date);
+      if (!key) continue;
+      monthTotal += Number(expense.amount) || 0;
+      if (!byDate.has(key)) {
+        byDate.set(key, { date: key, total: 0, count: 0, expenses: [] });
+      }
+      const bucket = byDate.get(key);
+      bucket.total += Number(expense.amount) || 0;
+      bucket.count += 1;
+      bucket.expenses.push(expense);
+    }
+
+    const days = Array.from(byDate.values())
+      .map((day) => ({
+        ...day,
+        total: Math.round(day.total * 100) / 100,
+      }))
+      .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+    const dayTotals = {};
+    for (const day of days) {
+      dayTotals[day.date] = day.total;
+    }
+
+    res.status(200).json({
+      success: true,
+      year,
+      month,
+      monthTotal: Math.round(monthTotal * 100) / 100,
+      monthCount: expenses.length,
+      days,
+      dayTotals,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getExpenseById = async (req, res, next) => {
   try {

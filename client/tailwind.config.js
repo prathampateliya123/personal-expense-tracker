@@ -51,6 +51,15 @@ export default {
         "gradient-brand-card":
           "linear-gradient(135deg, #051F20 0%, #0B2B26 40%, #235347 100%)",
       },
+      keyframes: {
+        timelineIn: {
+          "0%": { opacity: "0", transform: "translateY(12px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        timelineIn: "timelineIn 0.45s ease-out both",
+      },
     },
   },
   plugins: [],
