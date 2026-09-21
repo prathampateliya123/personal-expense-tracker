@@ -1,20 +1,26 @@
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useUserProfile } from "../context/UserProfileContext";
-import CircularProgress from "../components/common/CircularProgress";
-import NoDataFound from "../components/ui/NoDataFound";
 import {
-  formatCurrency,
-  formatExpenseDate,
-  formatExpenseTime,
-} from "../utils/formatters";
-import { getCategoryAvatarClass, buildCategoryColorMap } from "../utils/categoryColors";
+  DashboardHero,
+  DashboardKpis,
+  DashboardQuickActions,
+  DashboardBudgetCard,
+  DashboardCategoryCard,
+  DashboardModuleGrid,
+  DashboardRecentExpenses,
+  DashboardAccountSnapshot,
+  DashboardCashFlowChart,
+} from "../components/dashboard/DashboardSections";
+import { buildCategoryColorMap } from "../utils/categoryColors";
 import expenseService, { INITIAL_EXPENSE_FILTERS } from "../services/expenseService";
 import incomeService, { INITIAL_INCOME_FILTERS } from "../services/incomeService";
 import budgetService, { getCurrentPeriod } from "../services/budgetService";
 import savingService from "../services/savingService";
 import investmentService from "../services/investmentService";
+import subscriptionService from "../services/subscriptionService";
+import tripService from "../services/tripService";
+import reportService from "../services/reportService";
 import categoryService from "../services/categoryService";
 import {
   expenseKeys,
@@ -23,19 +29,31 @@ import {
   budgetKeys,
   savingKeys,
   investmentKeys,
+  subscriptionKeys,
+  tripKeys,
+  reportKeys,
 } from "../services/queryKeys";
 
-const QuickAction = ({ to, icon, label }) => (
-  <Link to={to} className="quick-action-btn">
-    <span className="text-xl">{icon}</span>
-    <span className="text-xs font-medium text-textPrimary">{label}</span>
-  </Link>
-);
+const MONTH_LABELS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const Dashboard = () => {
   const { user } = useUserProfile();
   const today = new Date().toISOString().split("T")[0];
   const period = useMemo(() => getCurrentPeriod(), []);
+  const periodLabel = `${MONTH_LABELS[period.month - 1]} ${period.year}`;
 
   const todayExpenseFilters = useMemo(
     () => ({
@@ -58,27 +76,27 @@ const Dashboard = () => {
   );
 
   const recentExpenseFilters = useMemo(
-    () => ({
-      ...INITIAL_EXPENSE_FILTERS,
-      limit: 5,
-    }),
+    () => ({ ...INITIAL_EXPENSE_FILTERS, limit: 6 }),
     []
+  );
+
+  const reportParams = useMemo(
+    () => ({
+      period: "monthly",
+      year: period.year,
+      month: period.month,
+    }),
+    [period.year, period.month]
   );
 
   const expenseStatsQuery = useQuery({
     queryKey: expenseKeys.stats(),
-    queryFn: async () => {
-      const data = await expenseService.getStats();
-      return data.stats;
-    },
+    queryFn: async () => (await expenseService.getStats()).stats,
   });
 
   const incomeStatsQuery = useQuery({
     queryKey: incomeKeys.stats(),
-    queryFn: async () => {
-      const data = await incomeService.getStats();
-      return data.stats;
-    },
+    queryFn: async () => (await incomeService.getStats()).stats,
   });
 
   const budgetQuery = useQuery({
@@ -88,18 +106,27 @@ const Dashboard = () => {
 
   const savingStatsQuery = useQuery({
     queryKey: savingKeys.stats(),
-    queryFn: async () => {
-      const data = await savingService.getStats();
-      return data.stats;
-    },
+    queryFn: async () => (await savingService.getStats()).stats,
   });
 
   const investmentStatsQuery = useQuery({
     queryKey: investmentKeys.stats(),
-    queryFn: async () => {
-      const data = await investmentService.getStats();
-      return data.stats;
-    },
+    queryFn: async () => (await investmentService.getStats()).stats,
+  });
+
+  const subscriptionStatsQuery = useQuery({
+    queryKey: subscriptionKeys.stats(),
+    queryFn: async () => (await subscriptionService.getStats()).stats,
+  });
+
+  const tripStatsQuery = useQuery({
+    queryKey: tripKeys.stats(),
+    queryFn: async () => (await tripService.getStats()).stats,
+  });
+
+  const reportQuery = useQuery({
+    queryKey: reportKeys.summary(reportParams),
+    queryFn: async () => (await reportService.getSummary(reportParams)).report,
   });
 
   const todayExpenseQuery = useQuery({
@@ -135,201 +162,95 @@ const Dashboard = () => {
   const incomeStats = incomeStatsQuery.data;
   const budget = budgetQuery.data?.budget;
   const progress = budgetQuery.data?.progress;
+  const report = reportQuery.data;
+
   const todaySpend = todayExpenseQuery.data?.totalAmount || 0;
   const todayIncome = todayIncomeQuery.data?.totalAmount || 0;
   const expenses = recentQuery.data?.expenses ?? [];
-  const loading = recentQuery.isLoading;
 
-  const monthlyExpense = expenseStats?.totalAmount || 0;
-  const monthlyIncome = incomeStats?.totalAmount || 0;
-  const monthlyNet = monthlyIncome - monthlyExpense;
+  const monthlyExpense =
+    report?.summary?.totalExpense ?? expenseStats?.totalAmount ?? 0;
+  const monthlyIncome =
+    report?.summary?.totalIncome ?? incomeStats?.totalAmount ?? 0;
+  const monthlyNet = report?.summary?.net ?? monthlyIncome - monthlyExpense;
+  const savingsRate =
+    report?.summary?.savingsRate ??
+    (monthlyIncome > 0
+      ? Math.round(((monthlyIncome - monthlyExpense) / monthlyIncome) * 1000) / 10
+      : 0);
+
   const monthlyBudget = progress?.totalAmount || 0;
-  const spendPercent = progress?.percentUsed || 0;
-  const remaining = progress?.remaining || 0;
   const hasBudget = Boolean(budget);
   const savingStats = savingStatsQuery.data;
   const investmentStats = investmentStatsQuery.data;
   const wealthTotal =
     (savingStats?.totalSaved || 0) + (investmentStats?.totalCurrent || 0);
 
+  const categoryItems =
+    report?.byCategory?.expense?.length
+      ? report.byCategory.expense
+      : (expenseStats?.byCategory || []).map((row) => ({
+          category: row.category,
+          total: row.total,
+          count: row.count,
+          percent:
+            monthlyExpense > 0
+              ? Math.round((row.total / monthlyExpense) * 1000) / 10
+              : 0,
+        }));
+
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
-      <div>
-        <p className="text-sm text-textSecondary">Welcome back</p>
-        <h1 className="text-2xl font-bold text-textPrimary sm:text-3xl">
-          Hello, {firstName}!
-        </h1>
+      <DashboardHero
+        firstName={firstName}
+        periodLabel={periodLabel}
+        todaySpend={todaySpend}
+        todayIncome={todayIncome}
+        monthlyNet={monthlyNet}
+        savingsRate={savingsRate}
+        expenseCount={
+          report?.summary?.expenseCount ?? expenseStats?.count ?? 0
+        }
+      />
+
+      <DashboardKpis
+        monthlyIncome={monthlyIncome}
+        monthlyExpense={monthlyExpense}
+        monthlyNet={monthlyNet}
+        wealthTotal={wealthTotal}
+        budgetUsed={progress?.percentUsed || 0}
+        hasBudget={hasBudget}
+      />
+
+      <DashboardQuickActions />
+
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <DashboardCashFlowChart series={report?.incomeVsExpense || []} />
+        <DashboardBudgetCard
+          hasBudget={hasBudget}
+          progress={progress}
+          monthlyBudget={monthlyBudget}
+        />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="gradient-green-card rounded-3xl p-6 text-white sm:p-8">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-white/80">Today&apos;s Spend</p>
-              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
-                {formatCurrency(todaySpend)}
-              </p>
-            </div>
-            <span className="rounded-xl bg-successBg px-3 py-1 text-xs font-semibold text-successText">
-              {expenseStats?.count
-                ? `${expenseStats.count} expenses this month`
-                : "On track"}
-            </span>
-          </div>
-          <p className="mt-4 text-sm text-white/70">
-            Today&apos;s income: {formatCurrency(todayIncome)}
-          </p>
-        </div>
-
-        <div className="card flex flex-col justify-between p-6 sm:p-8">
-          <div>
-            <p className="text-sm font-medium text-textSecondary">Monthly Overview</p>
-            <p className="mt-2 text-4xl font-bold text-primaryDark">
-              {formatCurrency(monthlyExpense)}
-            </p>
-            <p className="mt-1 text-sm text-textSecondary">
-              Income {formatCurrency(monthlyIncome)} · Net{" "}
-              <span
-                className={
-                  monthlyNet >= 0
-                    ? "font-semibold text-accentGreen"
-                    : "font-semibold text-red-500"
-                }
-              >
-                {formatCurrency(monthlyNet)}
-              </span>
-            </p>
-            {hasBudget ? (
-              <p className="mt-1 text-sm text-textSecondary">
-                {progress?.overBudget
-                  ? `Over budget by ${formatCurrency(
-                      Math.max(0, (progress?.totalSpent || 0) - monthlyBudget)
-                    )}`
-                  : `${formatCurrency(remaining)} remaining of ${formatCurrency(
-                      monthlyBudget
-                    )} budget`}
-              </p>
-            ) : (
-              <p className="mt-1 text-sm text-textSecondary">
-                No budget set —{" "}
-                <Link
-                  to="/budgets"
-                  className="font-medium text-accentGreen hover:text-primaryMid"
-                >
-                  plan this month
-                </Link>
-              </p>
-            )}
-          </div>
-          <div className="mt-6 flex items-center justify-center">
-            <CircularProgress
-              percent={hasBudget ? spendPercent : 0}
-              label={hasBudget ? (progress?.overBudget ? "Over" : "of budget") : "No budget"}
-            />
-          </div>
-        </div>
+      <div className="grid gap-4 xl:grid-cols-2">
+        <DashboardCategoryCard items={categoryItems} colorMap={colorMap} />
+        <DashboardAccountSnapshot items={report?.byAccount || []} />
       </div>
 
-      <div>
-        <h2 className="mb-3 text-sm font-semibold text-textPrimary">Quick Actions</h2>
-        <div className="grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <QuickAction to="/expenses/add" icon="+" label="Add expense" />
-          <QuickAction to="/incomes/add" icon="↑" label="Add income" />
-          <QuickAction to="/budgets" icon="◎" label="Budgets" />
-          <QuickAction to="/wealth" icon="◆" label="Wealth" />
-        </div>
-      </div>
+      <DashboardModuleGrid
+        wealthTotal={wealthTotal}
+        savingStats={savingStats}
+        investmentStats={investmentStats}
+        subscriptionStats={subscriptionStatsQuery.data}
+        tripStats={tripStatsQuery.data}
+      />
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="card p-5 sm:p-6">
-          <div className="mb-1 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-textPrimary">Wealth snapshot</h2>
-            <Link
-              to="/wealth"
-              className="text-sm font-medium text-accentGreen hover:text-primaryMid"
-            >
-              Manage
-            </Link>
-          </div>
-          <p className="mt-2 text-3xl font-bold text-primaryDark">
-            {formatCurrency(wealthTotal)}
-          </p>
-          <p className="mt-1 text-sm text-textSecondary">
-            Saved {formatCurrency(savingStats?.totalSaved)} · Invested value{" "}
-            {formatCurrency(investmentStats?.totalCurrent)}
-          </p>
-          <p className="mt-1 text-xs text-textSecondary">
-            Portfolio return {investmentStats?.returnPercent || 0}% ·{" "}
-            {savingStats?.totalGoals || 0} saving goal
-            {(savingStats?.totalGoals || 0) === 1 ? "" : "s"}
-          </p>
-        </div>
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-sm font-semibold text-textPrimary">This month</h2>
-          <p className="mt-2 text-3xl font-bold text-primaryDark">
-            {formatCurrency(monthlyNet)}
-          </p>
-          <p className="mt-1 text-sm text-textSecondary">
-            Net = income − expenses
-          </p>
-        </div>
-      </div>
-
-      <div className="card p-5 sm:p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-textPrimary">Recent Expenses</h2>
-          <Link
-            to="/expenses"
-            className="text-sm font-medium text-accentGreen hover:text-primaryMid"
-          >
-            View all
-          </Link>
-        </div>
-
-        {loading && !expenses.length ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 animate-pulse rounded-2xl bg-surfaceGray" />
-            ))}
-          </div>
-        ) : expenses.length === 0 ? (
-          <NoDataFound className="py-10" />
-        ) : (
-          <ul className="divide-y divide-border/60">
-            {expenses.map((expense) => (
-              <li
-                key={expense._id}
-                className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
-              >
-                <div
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-bold ${getCategoryAvatarClass(
-                    colorMap[expense.category] || expense.category
-                  )}`}
-                >
-                  {expense.category?.[0] || "₹"}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-textPrimary">
-                    {expense.title}
-                  </p>
-                  <p className="text-xs text-textSecondary">
-                    {expense.category} • {expense.paymentMode}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-textPrimary">
-                    {formatCurrency(expense.amount)}
-                  </p>
-                  <p className="text-xs text-textSecondary">
-                    {formatExpenseDate(expense.date)} ·{" "}
-                    {formatExpenseTime(expense.createdAt || expense.date)}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <DashboardRecentExpenses
+        expenses={expenses}
+        loading={recentQuery.isLoading}
+        colorMap={colorMap}
+      />
     </div>
   );
 };
