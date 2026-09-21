@@ -8,6 +8,7 @@ export const NAV_ITEMS = [
   { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "budgets", to: "/budgets", label: "Budgets" },
   { key: "subscriptions", to: "/subscriptions", label: "Subscriptions" },
+  { key: "simulator", to: "/simulator", label: "Bill & EMI" },
   { key: "wealth", to: "/wealth", label: "Wealth" },
   { key: "categories", to: "/categories", label: "Categories" },
   { key: "settings", to: "/settings", label: "Settings" },
@@ -76,6 +77,11 @@ export const PAGE_META = {
     title: "Add subscription",
     subtitle: "Set up a recurring bill with optional auto-expense",
     breadcrumb: ["Home", "Subscriptions", "Add"],
+  },
+  "/simulator": {
+    title: "Bill & EMI Simulator",
+    subtitle: "Estimate bills and calculate loan or credit-card EMI",
+    breadcrumb: ["Home", "Bill & EMI"],
   },
   "/wealth": {
     title: "Savings & Investments",
