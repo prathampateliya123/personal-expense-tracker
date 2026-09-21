@@ -22,6 +22,7 @@ import Incomes from "./pages/Incomes";
 import Categories from "./pages/Categories";
 import Budgets from "./pages/Budgets";
 import Wealth from "./pages/Wealth";
+import Subscriptions from "./pages/Subscriptions";
 import PaymentMethods from "./pages/PaymentMethods";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
@@ -84,6 +85,7 @@ const App = () => (
           <Route path="/incomes/add" element={<AddIncome />} />
           <Route path="/incomes/:id/edit" element={<EditIncome />} />
           <Route path="/budgets" element={<Budgets />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/wealth" element={<Wealth />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/settings" element={<SettingsLayout />}>
