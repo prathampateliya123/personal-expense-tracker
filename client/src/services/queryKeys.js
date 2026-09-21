@@ -108,6 +108,11 @@ export const tripKeys = {
   detail: (id) => [...tripKeys.details(), String(id || "")],
 };
 
+export const reportKeys = {
+  all: queryKeys.reports,
+  summary: (params = {}) => [...reportKeys.all, "summary", params],
+};
+
 export const authKeys = {
   all: queryKeys.auth,
   login: () => [...authKeys.all, "login"],

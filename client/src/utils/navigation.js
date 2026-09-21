@@ -7,6 +7,7 @@ export const NAV_ITEMS = [
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "timeline", to: "/timeline", label: "Timeline" },
   { key: "trips", to: "/trips", label: "Trips" },
+  { key: "reports", to: "/reports", label: "Reports" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "budgets", to: "/budgets", label: "Budgets" },
   { key: "subscriptions", to: "/subscriptions", label: "Subscriptions" },
@@ -59,6 +60,11 @@ export const PAGE_META = {
     title: "New trip",
     subtitle: "Add members and start tracking shared expenses",
     breadcrumb: ["Home", "Trips", "New"],
+  },
+  "/reports": {
+    title: "Reports",
+    subtitle: "Monthly and yearly financial reports with export",
+    breadcrumb: ["Home", "Reports"],
   },
   "/expenses/add": {
     title: "Add expense",
