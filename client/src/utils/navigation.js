@@ -5,6 +5,7 @@ export const SETTINGS_SIDEBAR_WIDTH = 240;
 export const NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
+  { key: "timeline", to: "/timeline", label: "Timeline" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "budgets", to: "/budgets", label: "Budgets" },
   { key: "subscriptions", to: "/subscriptions", label: "Subscriptions" },
@@ -42,6 +43,11 @@ export const PAGE_META = {
     title: "Expenses",
     subtitle: "Track and manage your spending",
     breadcrumb: ["Home", "Expenses"],
+  },
+  "/timeline": {
+    title: "Expense Timeline",
+    subtitle: "Chronological spend with calendar view",
+    breadcrumb: ["Home", "Timeline"],
   },
   "/expenses/add": {
     title: "Add expense",

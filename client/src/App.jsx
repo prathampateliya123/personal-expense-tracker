@@ -32,6 +32,7 @@ import EditSubscription from "./pages/EditSubscription";
 import BillEmiSimulator from "./pages/BillEmiSimulator";
 import AddSimulation from "./pages/AddSimulation";
 import EditSimulation from "./pages/EditSimulation";
+import ExpenseTimeline from "./pages/ExpenseTimeline";
 import PaymentMethods from "./pages/PaymentMethods";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
@@ -90,6 +91,7 @@ const App = () => (
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/expenses/add" element={<AddExpense />} />
           <Route path="/expenses/:id/edit" element={<EditExpense />} />
+          <Route path="/timeline" element={<ExpenseTimeline />} />
           <Route path="/incomes" element={<Incomes />} />
           <Route path="/incomes/add" element={<AddIncome />} />
           <Route path="/incomes/:id/edit" element={<EditIncome />} />

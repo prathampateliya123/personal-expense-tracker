@@ -1,10 +1,23 @@
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS, SIDEBAR_WIDTH } from "../utils/navigation";
-import { IconClose, IconDashboard, IconExpenses, IconIncomes, IconBudgets, IconSubscriptions, IconSimulator, IconWealth, IconCategories, IconSettings } from "../components/ui/Icons";
+import {
+  IconClose,
+  IconDashboard,
+  IconExpenses,
+  IconIncomes,
+  IconBudgets,
+  IconSubscriptions,
+  IconSimulator,
+  IconWealth,
+  IconCategories,
+  IconSettings,
+  IconCalendarDays,
+} from "../components/ui/Icons";
 
 const NAV_ICONS = {
   dashboard: IconDashboard,
   expenses: IconExpenses,
+  timeline: IconCalendarDays,
   incomes: IconIncomes,
   budgets: IconBudgets,
   subscriptions: IconSubscriptions,
