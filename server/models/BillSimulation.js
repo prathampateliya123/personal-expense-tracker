@@ -52,6 +52,16 @@ const billSimulationSchema = new mongoose.Schema(
       enum: BILL_FREQUENCIES,
       default: "monthly",
     },
+    // Reminder
+    reminderEnabled: { type: Boolean, default: false },
+    nextDueDate: { type: Date, default: null },
+    reminderDaysBefore: {
+      type: Number,
+      default: 3,
+      min: [0, "Reminder days cannot be negative"],
+      max: [30, "Reminder days cannot exceed 30"],
+    },
+    lastReminderAt: { type: Date, default: null },
     // Computed snapshot
     monthlyEmi: { type: Number, default: null },
     totalInterest: { type: Number, default: null },

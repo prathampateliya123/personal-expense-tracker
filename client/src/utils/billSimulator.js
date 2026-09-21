@@ -1,3 +1,5 @@
+import { toDateInputValue } from "./formatters";
+
 export const BILL_TYPE_OPTIONS = [
   { value: "electricity", label: "Electricity bill", kind: "bill" },
   { value: "rent", label: "Rent", kind: "bill" },
@@ -165,3 +167,38 @@ export const emptyBillForm = () => ({
   billAmount: "",
   frequency: "monthly",
 });
+
+export const emptyReminderForm = () => ({
+  reminderEnabled: false,
+  nextDueDate: "",
+  reminderDaysBefore: "3",
+});
+
+export const simulationToForms = (item) => {
+  const isEmi = isEmiBillType(item.billType);
+
+  return {
+    billType: item.billType,
+    title: item.title || "",
+    notes: item.notes || "",
+    emiForm: isEmi
+      ? {
+          loanAmount: String(item.loanAmount ?? ""),
+          interestRate: String(item.interestRate ?? ""),
+          tenureMonths: String(item.tenureMonths ?? ""),
+          paidEmis: String(item.paidEmis ?? 0),
+        }
+      : emptyEmiForm(),
+    billForm: isEmi
+      ? emptyBillForm()
+      : {
+          billAmount: String(item.billAmount ?? ""),
+          frequency: item.frequency || "monthly",
+        },
+    reminderForm: {
+      reminderEnabled: Boolean(item.reminderEnabled),
+      nextDueDate: toDateInputValue(item.nextDueDate),
+      reminderDaysBefore: String(item.reminderDaysBefore ?? 3),
+    },
+  };
+};

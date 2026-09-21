@@ -13,7 +13,9 @@ export const billSimulationService = {
     return apiService.get(`/bill-simulations?${query}`);
   },
   getStats: () => apiService.get("/bill-simulations/stats"),
+  getById: (id) => apiService.get(`/bill-simulations/${id}`),
   create: (payload) => apiService.post("/bill-simulations", payload),
+  update: (id, payload) => apiService.put(`/bill-simulations/${id}`, payload),
   remove: (id) => apiService.delete(`/bill-simulations/${id}`),
 };
 

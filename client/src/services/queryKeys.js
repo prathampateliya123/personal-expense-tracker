@@ -93,6 +93,7 @@ export const billSimulationKeys = {
   lists: () => [...billSimulationKeys.all, "list"],
   list: (filters = {}) => [...billSimulationKeys.lists(), filters],
   stats: () => [...billSimulationKeys.all, "stats"],
+  detail: (id) => [...billSimulationKeys.all, "detail", id],
 };
 
 export const authKeys = {

@@ -9,6 +9,7 @@ import {
   calculateEmi,
   calculateBillProjection,
 } from "../utils/emiCalculator.js";
+import { daysUntil, startOfDay } from "../utils/subscriptionHelpers.js";
 
 const findOwnedSimulation = (id, userId) =>
   findOwnedDocument(BillSimulation, id, userId, {
@@ -17,12 +18,80 @@ const findOwnedSimulation = (id, userId) =>
     forbiddenMessage: "Not authorized to access this simulation",
   });
 
+const parseReminderFields = (body) => {
+  const reminderEnabled = Boolean(body.reminderEnabled);
+
+  if (!reminderEnabled) {
+    return {
+      reminderEnabled: false,
+      nextDueDate: null,
+      reminderDaysBefore: 3,
+    };
+  }
+
+  if (!body.nextDueDate) {
+    return { error: "Next due date is required when reminder is enabled" };
+  }
+
+  const nextDueDate = new Date(body.nextDueDate);
+  if (Number.isNaN(nextDueDate.getTime())) {
+    return { error: "Invalid next due date" };
+  }
+
+  let reminderDaysBefore = 3;
+  if (
+    body.reminderDaysBefore !== undefined &&
+    body.reminderDaysBefore !== null &&
+    body.reminderDaysBefore !== ""
+  ) {
+    reminderDaysBefore = Number(body.reminderDaysBefore);
+    if (
+      Number.isNaN(reminderDaysBefore) ||
+      reminderDaysBefore < 0 ||
+      reminderDaysBefore > 30
+    ) {
+      return { error: "Reminder days must be between 0 and 30" };
+    }
+  }
+
+  return {
+    reminderEnabled: true,
+    nextDueDate: startOfDay(nextDueDate),
+    reminderDaysBefore,
+  };
+};
+
+const withReminderMeta = (doc, from = new Date()) => {
+  const plain = doc.toObject ? doc.toObject() : { ...doc };
+  if (!plain.reminderEnabled || !plain.nextDueDate) {
+    return {
+      ...plain,
+      daysUntilDue: null,
+      isDue: false,
+      isUpcomingReminder: false,
+    };
+  }
+
+  const daysLeft = daysUntil(plain.nextDueDate, from);
+  const reminderWindow = Number(plain.reminderDaysBefore ?? 3);
+
+  return {
+    ...plain,
+    daysUntilDue: daysLeft,
+    isDue: daysLeft <= 0,
+    isUpcomingReminder: daysLeft > 0 && daysLeft <= reminderWindow,
+  };
+};
+
 const buildComputedFields = (body) => {
   const billType = body.billType;
 
   if (!BILL_TYPES.includes(billType)) {
     return { error: "Invalid bill type" };
   }
+
+  const reminder = parseReminderFields(body);
+  if (reminder.error) return { error: reminder.error };
 
   if (isEmiBillType(billType)) {
     const result = calculateEmi({
@@ -40,6 +109,7 @@ const buildComputedFields = (body) => {
       paidEmis: result.paidEmis,
       billAmount: null,
       frequency: "monthly",
+      ...reminder,
       monthlyEmi: result.monthlyEmi,
       totalInterest: result.totalInterest,
       totalPayment: result.totalPayment,
@@ -72,6 +142,7 @@ const buildComputedFields = (body) => {
     paidEmis: 0,
     billAmount: Number(body.billAmount),
     frequency,
+    ...reminder,
     monthlyEmi: null,
     totalInterest: null,
     totalPayment: null,
@@ -137,7 +208,7 @@ export const getBillSimulations = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      simulations: items,
+      simulations: items.map((item) => withReminderMeta(item)),
       totalCount,
       totalPages: Math.max(1, Math.ceil(totalCount / limit)),
       currentPage: page,
@@ -177,6 +248,27 @@ export const getBillSimulationStats = async (req, res, next) => {
   }
 };
 
+export const getBillSimulationById = async (req, res, next) => {
+  try {
+    const { simulation, status, message } = await findOwnedSimulation(
+      req.params.id,
+      req.user._id
+    );
+
+    if (!simulation) {
+      res.status(status);
+      throw new Error(message);
+    }
+
+    res.status(200).json({
+      success: true,
+      simulation: withReminderMeta(simulation),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createBillSimulation = async (req, res, next) => {
   try {
     if (!req.body.title?.trim()) {
@@ -203,7 +295,49 @@ export const createBillSimulation = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Simulation saved",
-      simulation,
+      simulation: withReminderMeta(simulation),
+      schedulePreview: schedule?.slice(0, 12) || [],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateBillSimulation = async (req, res, next) => {
+  try {
+    const { simulation, status, message } = await findOwnedSimulation(
+      req.params.id,
+      req.user._id
+    );
+
+    if (!simulation) {
+      res.status(status);
+      throw new Error(message);
+    }
+
+    if (!req.body.title?.trim()) {
+      res.status(400);
+      throw new Error("Title is required");
+    }
+
+    const computed = buildComputedFields(req.body);
+    if (computed.error) {
+      res.status(400);
+      throw new Error(computed.error);
+    }
+
+    const { schedule, ...snapshot } = computed;
+
+    simulation.title = String(req.body.title).trim();
+    simulation.billType = req.body.billType;
+    simulation.notes = req.body.notes ? String(req.body.notes).trim() : "";
+    Object.assign(simulation, snapshot);
+    await simulation.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Simulation updated",
+      simulation: withReminderMeta(simulation),
       schedulePreview: schedule?.slice(0, 12) || [],
     });
   } catch (error) {

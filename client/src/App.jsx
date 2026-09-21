@@ -30,6 +30,8 @@ import Subscriptions from "./pages/Subscriptions";
 import AddSubscription from "./pages/AddSubscription";
 import EditSubscription from "./pages/EditSubscription";
 import BillEmiSimulator from "./pages/BillEmiSimulator";
+import AddSimulation from "./pages/AddSimulation";
+import EditSimulation from "./pages/EditSimulation";
 import PaymentMethods from "./pages/PaymentMethods";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
@@ -99,6 +101,8 @@ const App = () => (
             element={<EditSubscription />}
           />
           <Route path="/simulator" element={<BillEmiSimulator />} />
+          <Route path="/simulator/add" element={<AddSimulation />} />
+          <Route path="/simulator/:id/edit" element={<EditSimulation />} />
           <Route path="/wealth" element={<Wealth />} />
           <Route path="/wealth/savings/add" element={<AddSaving />} />
           <Route path="/wealth/savings/:id/edit" element={<EditSaving />} />

@@ -80,8 +80,13 @@ export const PAGE_META = {
   },
   "/simulator": {
     title: "Bill & EMI Simulator",
-    subtitle: "Estimate bills and calculate loan or credit-card EMI",
+    subtitle: "Saved EMI and bill scenarios with reminders",
     breadcrumb: ["Home", "Bill & EMI"],
+  },
+  "/simulator/add": {
+    title: "New scenario",
+    subtitle: "Calculate EMI or bill cost and save with a reminder",
+    breadcrumb: ["Home", "Bill & EMI", "New"],
   },
   "/wealth": {
     title: "Savings & Investments",
