@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import PageBackHeader from "../components/common/PageBackHeader";
-import SubscriptionForm from "../components/subscriptions/SubscriptionForm";
+import PageBackHeader from "../common/PageBackHeader";
+import SubscriptionForm from "./SubscriptionForm";
 import {
   emptySubscriptionForm,
   subscriptionToForm,
-} from "../components/subscriptions/subscriptionHelpers";
-import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
-import subscriptionService from "../services/subscriptionService";
-import categoryService from "../services/categoryService";
-import paymentMethodService from "../services/paymentMethodService";
+} from "./subscriptionHelpers";
+import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
+import subscriptionService from "../../services/subscriptionService";
+import categoryService from "../../services/categoryService";
+import paymentMethodService from "../../services/paymentMethodService";
 import {
   subscriptionKeys,
   categoryKeys,
   paymentMethodKeys,
   expenseKeys,
-} from "../services/queryKeys";
+} from "../../services/queryKeys";
 
 const SubscriptionEditor = ({ mode = "add", subscriptionId }) => {
   const navigate = useNavigate();
