@@ -7,6 +7,7 @@ export const NAV_ITEMS = [
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
   { key: "budgets", to: "/budgets", label: "Budgets" },
+  { key: "subscriptions", to: "/subscriptions", label: "Subscriptions" },
   { key: "wealth", to: "/wealth", label: "Wealth" },
   { key: "categories", to: "/categories", label: "Categories" },
   { key: "settings", to: "/settings", label: "Settings" },
@@ -17,7 +18,7 @@ export const MOBILE_NAV_ITEMS = [
   { key: "dashboard", to: "/dashboard", label: "Dashboard", end: true },
   { key: "expenses", to: "/expenses", label: "Expenses" },
   { key: "incomes", to: "/incomes", label: "Incomes" },
-  { key: "wealth", to: "/wealth", label: "Wealth" },
+  { key: "subscriptions", to: "/subscriptions", label: "Subscriptions" },
   { key: "settings", to: "/settings", label: "Settings" },
 ];
 
@@ -65,6 +66,11 @@ export const PAGE_META = {
     title: "Budget planning",
     subtitle: "Set monthly limits and track category spending",
     breadcrumb: ["Home", "Budgets"],
+  },
+  "/subscriptions": {
+    title: "Subscriptions",
+    subtitle: "Track recurring bills and auto-add expenses on billing day",
+    breadcrumb: ["Home", "Subscriptions"],
   },
   "/wealth": {
     title: "Savings & Investments",

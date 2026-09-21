@@ -7,6 +7,7 @@ import paymentMethodRoutes from "./paymentMethodRoutes.js";
 import budgetRoutes from "./budgetRoutes.js";
 import savingRoutes from "./savingRoutes.js";
 import investmentRoutes from "./investmentRoutes.js";
+import subscriptionRoutes from "./subscriptionRoutes.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/payment-methods", paymentMethodRoutes);
 router.use("/budgets", budgetRoutes);
 router.use("/savings", savingRoutes);
 router.use("/investments", investmentRoutes);
+router.use("/subscriptions", subscriptionRoutes);
 
 export default router;
