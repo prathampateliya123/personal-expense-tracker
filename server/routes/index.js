@@ -10,6 +10,7 @@ import investmentRoutes from "./investmentRoutes.js";
 import subscriptionRoutes from "./subscriptionRoutes.js";
 import billSimulationRoutes from "./billSimulationRoutes.js";
 import tripRoutes from "./tripRoutes.js";
+import reportRoutes from "./reportRoutes.js";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use("/investments", investmentRoutes);
 router.use("/subscriptions", subscriptionRoutes);
 router.use("/bill-simulations", billSimulationRoutes);
 router.use("/trips", tripRoutes);
+router.use("/reports", reportRoutes);
 
 export default router;

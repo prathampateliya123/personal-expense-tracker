@@ -10,6 +10,7 @@ export const queryKeys = {
   subscriptions: ["subscriptions"],
   billSimulations: ["billSimulations"],
   trips: ["trips"],
+  reports: ["reports"],
   auth: ["auth"],
 };
 
