@@ -6,13 +6,13 @@ import {
   AccountReport,
   CategoryReport,
   IncomeExpenseChart,
-  ReportStatCards,
+  ReportHero,
+  ReportStatStrip,
 } from "../components/reports/ReportSections";
 import { handleApiError, showSuccessToast } from "../hooks/useHandleError";
 import reportService from "../services/reportService";
 import { reportKeys } from "../services/queryKeys";
 import {
-  REPORT_PERIODS,
   MONTH_OPTIONS,
   buildYearOptions,
   CSV_SECTIONS,
@@ -57,71 +57,97 @@ const Reports = () => {
     }
   };
 
-  const handlePdfExport = () => {
-    window.print();
-  };
-
   return (
     <div className="dashboard-page flex w-full min-w-0 flex-col gap-6">
       <div className="flex w-full flex-col gap-4 print:hidden lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-textPrimary sm:text-3xl">
-            Reports
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accentGreen">
+            Analytics
+          </p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-textPrimary sm:text-3xl">
+            Financial reports
           </h1>
           <p className="mt-1 text-sm text-textSecondary">
-            Monthly and yearly financial reports — income vs expense, category
-            and account breakdowns, export CSV or PDF
+            Deep dive into cash flow, categories, and accounts — then export
           </p>
+        </div>
+
+        <div className="inline-flex rounded-lg border border-border bg-white p-1">
+          {[
+            { value: "monthly", label: "Monthly" },
+            { value: "yearly", label: "Yearly" },
+          ].map((opt) => {
+            const active = period === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setPeriod(opt.value)}
+                className={`rounded-md px-4 py-2 text-sm font-semibold transition ${
+                  active
+                    ? "bg-primaryDark text-white"
+                    : "text-textSecondary hover:bg-surfaceLight hover:text-textPrimary"
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="card flex flex-col gap-4 p-4 print:hidden sm:p-5">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Select
-            id="report-period"
-            label="Report type"
-            value={period}
-            onChange={(e) => setPeriod(e.target.value)}
-            options={REPORT_PERIODS}
-          />
-          <Select
-            id="report-year"
-            label="Year"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            options={yearOptions}
-          />
-          {period === "monthly" ? (
+      <div className="overflow-hidden rounded-lg border border-border bg-white print:hidden">
+        <div className="flex flex-col gap-4 border-b border-border bg-surfaceLight/50 px-4 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-5">
+          <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <Select
-              id="report-month"
-              label="Month"
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-              options={MONTH_OPTIONS}
+              id="report-year"
+              label="Year"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              options={yearOptions}
+              size="sm"
             />
-          ) : (
-            <div className="hidden lg:block" />
-          )}
-          <Select
-            id="report-csv-section"
-            label="CSV section"
-            value={csvSection}
-            onChange={(e) => setCsvSection(e.target.value)}
-            options={CSV_SECTIONS}
-          />
-        </div>
-        <div className="flex flex-wrap gap-2 sm:justify-end">
-          <Button
-            type="button"
-            variant="secondary"
-            loading={exporting}
-            onClick={handleCsvExport}
-          >
-            Export CSV
-          </Button>
-          <Button type="button" onClick={handlePdfExport}>
-            Export PDF
-          </Button>
+            {period === "monthly" ? (
+              <Select
+                id="report-month"
+                label="Month"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                options={MONTH_OPTIONS}
+                size="sm"
+              />
+            ) : (
+              <div className="rounded-lg border border-dashed border-border bg-white/60 px-3 py-2 text-xs text-textSecondary sm:flex sm:items-center">
+                Full calendar year selected
+              </div>
+            )}
+            <Select
+              id="report-csv-section"
+              label="CSV export scope"
+              value={csvSection}
+              onChange={(e) => setCsvSection(e.target.value)}
+              options={CSV_SECTIONS}
+              size="sm"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              loading={exporting}
+              onClick={handleCsvExport}
+            >
+              Export CSV
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => window.print()}
+            >
+              Export PDF
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -136,30 +162,31 @@ const Reports = () => {
         </div>
 
         {reportQuery.isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="h-28 animate-pulse rounded-lg bg-surfaceGray"
-              />
-            ))}
+          <div className="space-y-4">
+            <div className="h-56 animate-pulse rounded-lg bg-surfaceGray" />
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="h-24 animate-pulse rounded-lg bg-surfaceGray"
+                />
+              ))}
+            </div>
+            <div className="h-64 animate-pulse rounded-lg bg-surfaceGray" />
           </div>
         ) : reportQuery.isError ? (
-          <div className="card p-6 text-sm text-red-500">
+          <div className="rounded-lg border border-red-200 bg-red-50 px-5 py-6 text-sm text-red-600">
             Failed to load report. Try another period.
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between gap-3 print:hidden">
-              <p className="text-sm font-medium text-textSecondary">
-                Showing{" "}
-                <span className="text-textPrimary">
-                  {report?.period?.label}
-                </span>
-              </p>
-            </div>
+            <ReportHero
+              periodLabel={report?.period?.label}
+              summary={report?.summary}
+              periodType={period}
+            />
 
-            <ReportStatCards summary={report?.summary} />
+            <ReportStatStrip summary={report?.summary} />
 
             <IncomeExpenseChart
               series={report?.incomeVsExpense || []}
@@ -169,13 +196,17 @@ const Reports = () => {
             <div className="grid gap-4 xl:grid-cols-2">
               <CategoryReport
                 title="Expense by category"
+                subtitle="Where money went"
                 items={report?.byCategory?.expense || []}
                 emptyLabel="No expenses in this period"
+                variant="expense"
               />
               <CategoryReport
                 title="Income by category"
+                subtitle="Where money came from"
                 items={report?.byCategory?.income || []}
                 emptyLabel="No incomes in this period"
+                variant="income"
               />
             </div>
 
