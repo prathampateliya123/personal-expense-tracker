@@ -37,6 +37,7 @@ import Trips from "./pages/Trips";
 import AddTrip from "./pages/AddTrip";
 import EditTrip from "./pages/EditTrip";
 import TripDetail from "./pages/TripDetail";
+import Reports from "./pages/Reports";
 import PaymentMethods from "./pages/PaymentMethods";
 import AddExpense from "./pages/AddExpense";
 import EditExpense from "./pages/EditExpense";
@@ -100,6 +101,7 @@ const App = () => (
           <Route path="/trips/add" element={<AddTrip />} />
           <Route path="/trips/:id" element={<TripDetail />} />
           <Route path="/trips/:id/edit" element={<EditTrip />} />
+          <Route path="/reports" element={<Reports />} />
           <Route path="/incomes" element={<Incomes />} />
           <Route path="/incomes/add" element={<AddIncome />} />
           <Route path="/incomes/:id/edit" element={<EditIncome />} />

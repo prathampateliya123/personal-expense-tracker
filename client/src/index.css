@@ -350,3 +350,25 @@
     }
   }
 }
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  aside,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .dashboard-page {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .card {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}
