@@ -44,6 +44,7 @@ const billSimulationSchema = new mongoose.Schema(
     loanAmount: { type: Number, default: null },
     interestRate: { type: Number, default: null },
     tenureMonths: { type: Number, default: null },
+    paidEmis: { type: Number, default: 0 },
     // Flat bill inputs
     billAmount: { type: Number, default: null },
     frequency: {
@@ -55,6 +56,11 @@ const billSimulationSchema = new mongoose.Schema(
     monthlyEmi: { type: Number, default: null },
     totalInterest: { type: Number, default: null },
     totalPayment: { type: Number, default: null },
+    outstandingPrincipal: { type: Number, default: null },
+    remainingEmis: { type: Number, default: null },
+    remainingInterest: { type: Number, default: null },
+    remainingPayment: { type: Number, default: null },
+    paidAmount: { type: Number, default: null },
     monthlyEquivalent: { type: Number, default: null },
     yearlyCost: { type: Number, default: null },
   },

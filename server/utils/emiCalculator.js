@@ -4,10 +4,12 @@ export const calculateEmi = ({
   loanAmount,
   interestRate,
   tenureMonths,
+  paidEmis = 0,
 }) => {
   const P = Number(loanAmount);
   const annualRate = Number(interestRate);
   const n = parseInt(tenureMonths, 10);
+  const paid = Math.max(0, parseInt(paidEmis, 10) || 0);
 
   if (!P || P <= 0 || Number.isNaN(P)) {
     return { error: "Enter a valid loan amount" };
@@ -21,6 +23,12 @@ export const calculateEmi = ({
   if (n > 600) {
     return { error: "Tenure cannot exceed 600 months" };
   }
+  if (paid > n) {
+    return { error: "Paid EMIs cannot exceed total tenure" };
+  }
+  if (paid === n) {
+    return { error: "All EMIs are already paid for this loan" };
+  }
 
   let emi;
   if (annualRate === 0) {
@@ -30,9 +38,6 @@ export const calculateEmi = ({
     const factor = Math.pow(1 + r, n);
     emi = (P * r * factor) / (factor - 1);
   }
-
-  const totalPayment = emi * n;
-  const totalInterest = totalPayment - P;
 
   const schedule = [];
   let balance = P;
@@ -56,14 +61,50 @@ export const calculateEmi = ({
       principal: round2(principal),
       interest: round2(interest),
       balance,
+      status: month <= paid ? "paid" : "upcoming",
     });
   }
 
+  const paidRows = schedule.filter((row) => row.status === "paid");
+  const upcomingRows = schedule.filter((row) => row.status === "upcoming");
+
+  const paidPrincipal = round2(
+    paidRows.reduce((sum, row) => sum + row.principal, 0)
+  );
+  const paidInterest = round2(
+    paidRows.reduce((sum, row) => sum + row.interest, 0)
+  );
+  const paidAmount = round2(paidPrincipal + paidInterest);
+
+  const remainingInterest = round2(
+    upcomingRows.reduce((sum, row) => sum + row.interest, 0)
+  );
+  const remainingPrincipal = round2(
+    upcomingRows.reduce((sum, row) => sum + row.principal, 0)
+  );
+  const remainingPayment = round2(remainingPrincipal + remainingInterest);
+  const outstandingPrincipal =
+    paid > 0 ? schedule[paid - 1].balance : round2(P);
+
+  const totalPayment = round2(emi * n);
+  const totalInterest = round2(totalPayment - P);
+
   return {
     monthlyEmi: round2(emi),
-    totalInterest: round2(totalInterest),
-    totalPayment: round2(totalPayment),
-    schedule,
+    totalInterest,
+    totalPayment,
+    paidEmis: paid,
+    remainingEmis: n - paid,
+    tenureMonths: n,
+    outstandingPrincipal,
+    paidPrincipal,
+    paidInterest,
+    paidAmount,
+    remainingPrincipal,
+    remainingInterest,
+    remainingPayment,
+    schedule: upcomingRows,
+    fullSchedule: schedule,
   };
 };
 

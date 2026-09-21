@@ -98,6 +98,7 @@ const BillEmiSimulator = () => {
         loanAmount: Number(emiForm.loanAmount),
         interestRate: Number(emiForm.interestRate),
         tenureMonths: Number(emiForm.tenureMonths),
+        paidEmis: Number(emiForm.paidEmis || 0),
       });
     } else {
       Object.assign(payload, {
@@ -118,8 +119,9 @@ const BillEmiSimulator = () => {
           Bill & EMI Simulator
         </h1>
         <p className="mt-1 text-sm text-textSecondary">
-          Estimate electricity, rent, insurance, and internet bills — or
-          calculate loan and credit-card EMI with interest breakdown
+          For ongoing loans, enter how many EMIs are already paid — outstanding
+          balance and remaining schedule stay accurate. Also estimate
+          monthly/yearly cost for regular bills.
         </p>
       </div>
 

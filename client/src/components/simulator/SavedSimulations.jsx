@@ -51,9 +51,19 @@ const SavedSimulations = ({ items = [], loading = false, onDelete, deleting = fa
               <p className="mt-2 text-sm text-textSecondary">
                 {isEmiBillType(item.billType) ? (
                   <>
-                    EMI {formatCurrency(item.monthlyEmi)} · Interest{" "}
-                    {formatCurrency(item.totalInterest)} · Total{" "}
-                    {formatCurrency(item.totalPayment)}
+                    EMI {formatCurrency(item.monthlyEmi)}
+                    {item.paidEmis > 0
+                      ? ` · ${item.paidEmis} paid · ${item.remainingEmis ?? "—"} left`
+                      : null}
+                    {" · "}
+                    Outstanding{" "}
+                    {formatCurrency(
+                      item.outstandingPrincipal ?? item.loanAmount
+                    )}
+                    {" · Remaining "}
+                    {formatCurrency(
+                      item.remainingPayment ?? item.totalPayment
+                    )}
                   </>
                 ) : (
                   <>

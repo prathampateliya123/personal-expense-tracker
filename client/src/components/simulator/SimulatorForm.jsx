@@ -30,7 +30,8 @@ const SimulatorForm = ({
       <div>
         <h2 className="text-base font-semibold text-textPrimary">Simulator</h2>
         <p className="mt-1 text-xs text-textSecondary">
-          Choose a bill type. EMI types unlock loan calculator fields.
+          Choose a bill type. For ongoing EMIs, enter how many installments
+          are already paid.
         </p>
       </div>
 
@@ -58,53 +59,77 @@ const SimulatorForm = ({
       </div>
 
       {isEmi ? (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div>
-            <label htmlFor="loan-amount" className={labelClass}>
-              Loan amount (₹)
-            </label>
-            <input
-              id="loan-amount"
-              type="number"
-              min="0"
-              step="0.01"
-              className="fintech-input"
-              value={emiForm.loanAmount}
-              onChange={(e) => onEmiChange({ loanAmount: e.target.value })}
-              placeholder="500000"
-            />
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <label htmlFor="loan-amount" className={labelClass}>
+                Original loan amount (₹)
+              </label>
+              <input
+                id="loan-amount"
+                type="number"
+                min="0"
+                step="0.01"
+                className="fintech-input"
+                value={emiForm.loanAmount}
+                onChange={(e) => onEmiChange({ loanAmount: e.target.value })}
+                placeholder="500000"
+              />
+            </div>
+            <div>
+              <label htmlFor="interest-rate" className={labelClass}>
+                Interest rate (% p.a.)
+              </label>
+              <input
+                id="interest-rate"
+                type="number"
+                min="0"
+                step="0.01"
+                className="fintech-input"
+                value={emiForm.interestRate}
+                onChange={(e) => onEmiChange({ interestRate: e.target.value })}
+                placeholder="10.5"
+              />
+            </div>
+            <div>
+              <label htmlFor="tenure" className={labelClass}>
+                Total tenure (months)
+              </label>
+              <input
+                id="tenure"
+                type="number"
+                min="1"
+                max="600"
+                step="1"
+                className="fintech-input"
+                value={emiForm.tenureMonths}
+                onChange={(e) => onEmiChange({ tenureMonths: e.target.value })}
+                placeholder="36"
+              />
+            </div>
+            <div>
+              <label htmlFor="paid-emis" className={labelClass}>
+                EMIs already paid
+              </label>
+              <input
+                id="paid-emis"
+                type="number"
+                min="0"
+                max="600"
+                step="1"
+                className="fintech-input"
+                value={emiForm.paidEmis}
+                onChange={(e) => onEmiChange({ paidEmis: e.target.value })}
+                placeholder="5"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="interest-rate" className={labelClass}>
-              Interest rate (% p.a.)
-            </label>
-            <input
-              id="interest-rate"
-              type="number"
-              min="0"
-              step="0.01"
-              className="fintech-input"
-              value={emiForm.interestRate}
-              onChange={(e) => onEmiChange({ interestRate: e.target.value })}
-              placeholder="10.5"
-            />
-          </div>
-          <div>
-            <label htmlFor="tenure" className={labelClass}>
-              Tenure (months)
-            </label>
-            <input
-              id="tenure"
-              type="number"
-              min="1"
-              max="600"
-              step="1"
-              className="fintech-input"
-              value={emiForm.tenureMonths}
-              onChange={(e) => onEmiChange({ tenureMonths: e.target.value })}
-              placeholder="36"
-            />
-          </div>
+          <p className="rounded-lg border border-border bg-surfaceLight/50 px-3 py-2 text-xs text-textSecondary">
+            Already mid-loan? Enter total tenure and{" "}
+            <span className="font-medium text-textPrimary">EMIs already paid</span>{" "}
+            — we calculate outstanding balance and the remaining schedule from
+            there, not from month 1.
+          </p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
