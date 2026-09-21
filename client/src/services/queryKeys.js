@@ -8,6 +8,7 @@ export const queryKeys = {
   savings: ["savings"],
   investments: ["investments"],
   subscriptions: ["subscriptions"],
+  billSimulations: ["billSimulations"],
   auth: ["auth"],
 };
 
@@ -85,6 +86,13 @@ export const subscriptionKeys = {
   details: () => [...subscriptionKeys.all, "detail"],
   detail: (id) => [...subscriptionKeys.details(), String(id || "")],
   stats: () => [...subscriptionKeys.all, "stats"],
+};
+
+export const billSimulationKeys = {
+  all: queryKeys.billSimulations,
+  lists: () => [...billSimulationKeys.all, "list"],
+  list: (filters = {}) => [...billSimulationKeys.lists(), filters],
+  stats: () => [...billSimulationKeys.all, "stats"],
 };
 
 export const authKeys = {
