@@ -162,7 +162,7 @@ export const removeChunkedCookie = (baseName) => {
         parts = Number(meta[CHUNK_META_KEY]);
       }
     } catch {
-      // ignore
+
     }
   }
 

@@ -162,7 +162,7 @@ export const normalizeReportListResponse = (payload) => {
       ? root.data
       : root;
 
-  // Prefer explicit rows when already normalized (e.g. dashboard list)
+
   let rows = [];
   if (Array.isArray(payload?.rows)) {
     rows = payload.rows;

@@ -176,7 +176,7 @@ export const MinusIcon = ({ className, strokeWidth = 1.5 }) => (
   </Icon>
 );
 
-/** Google Maps–style “my location” (crosshair + ring + center dot) */
+
 export const LocateIcon = ({ className, strokeWidth = 1.75 }) => (
   <Icon className={className} strokeWidth={strokeWidth}>
     <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none" />

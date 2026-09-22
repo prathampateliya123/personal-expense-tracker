@@ -24,7 +24,7 @@ export function computeDropdownStyle(
     Math.min(Number(maxMenuWidth) || 320, vw - pad * 2)
   );
 
-  // Width = content/min size, and optionally at least the trigger width.
+
   const preferredWidth = Math.min(
     Math.max(floor, rawWidth, matchWidth ? triggerWidth : 0),
     maxAvailable

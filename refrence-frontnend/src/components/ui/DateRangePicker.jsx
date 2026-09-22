@@ -10,7 +10,7 @@ const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const PANEL_GAP = 10;
 const VIEWPORT_PAD = 12;
 const YEAR_GRID_SIZE = 12;
-/** Keeps day / month / year views the same size so the panel does not jump. */
+
 const CALENDAR_BODY_CLASS = "h-[248px] sm:h-[268px]";
 const DUAL_CALENDAR_MIN_WIDTH = 768;
 
@@ -18,7 +18,7 @@ function startOfYearGrid(year) {
   return Math.floor(Number(year) / YEAR_GRID_SIZE) * YEAR_GRID_SIZE;
 }
 
-/** Between + dual calendars: left = previous month, right = current (max) month. */
+
 function getMaxLeftMonth(maxDate, { betweenDual = false } = {}) {
   const current = startOfMonth(maxDate);
   if (!current) return null;
@@ -39,7 +39,7 @@ function resolveViewLeftMonth({
     return maxLeft || current;
   }
   if (betweenDual) {
-    // Keep selection visible on the right calendar when possible.
+
     const rightTarget = clampToMaxMonth(anchor, maxDate) || current;
     return (
       clampToMaxMonth(addMonths(rightTarget, -1), maxLeft) || maxLeft || current
@@ -79,7 +79,7 @@ function HeaderSelectButton({
   );
 }
 
-/** Absolute menu under trigger — for Filter type (short list, stays in panel). */
+
 function AsideFieldSelect({
   value,
   onChange,

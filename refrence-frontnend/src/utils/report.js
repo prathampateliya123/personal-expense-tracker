@@ -126,7 +126,7 @@ export function isAfterDay(a, b) {
   return left.getTime() > right.getTime();
 }
 
-/** Returns the earlier of two calendar days. */
+
 export function minDay(a, b) {
   const left = toDateOnly(a);
   const right = toDateOnly(b);
@@ -135,7 +135,7 @@ export function minDay(a, b) {
   return left.getTime() <= right.getTime() ? left : right;
 }
 
-/** Clamp a day so it is never after maxDate. */
+
 export function clampToMaxDay(date, maxDate) {
   const value = toDateOnly(date);
   const max = toDateOnly(maxDate);
@@ -144,7 +144,7 @@ export function clampToMaxDay(date, maxDate) {
   return isAfterDay(value, max) ? max : value;
 }
 
-/** Clamp a month (1st of month) so it is never after maxDate's month. */
+
 export function clampToMaxMonth(date, maxDate) {
   const value = startOfMonth(date);
   const max = startOfMonth(maxDate);

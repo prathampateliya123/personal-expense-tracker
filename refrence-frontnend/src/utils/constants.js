@@ -231,7 +231,6 @@ export const WIZARD_STEPS = [
   }
 ];
 
-/** Account-level rules skip Target Type (step 2) and Products (step 4). */
 export function getVisibleWizardSteps(ruleLevel = "") {
   const level = String(ruleLevel || "").trim().toLowerCase();
   const isAccount = level === "account" || level.includes("account");

@@ -197,8 +197,7 @@ input:-webkit-autofill:active {
   background-color: var(--ink-subtle);
 }
 
-/* Table / list cards: ring via box-shadow so rounded corners stay continuous
-   when overflow is visible (absolute dropdown menus). */
+
 .table-panel {
   min-width: 0;
   max-width: 100%;
@@ -209,7 +208,7 @@ input:-webkit-autofill:active {
     0 1px 2px rgba(17, 24, 39, 0.04);
 }
 
-/* Report table toolbar: adapts to panel width, not just viewport. */
+
 .table-toolbar {
   container-type: inline-size;
   container-name: table-toolbar;
@@ -317,7 +316,7 @@ input:-webkit-autofill:active {
   min-width: 0;
 }
 
-/* Narrow toolbar: date trigger is icon-only (no truncated "Select da..."). */
+
 .table-toolbar__date .date-range-picker__label {
   display: none;
 }
@@ -330,7 +329,7 @@ input:-webkit-autofill:active {
   padding-inline: 0.625rem;
 }
 
-/* Keep mid-width row compact: icon-first actions until there is room. */
+
 .table-toolbar__actions {
   display: inline-flex;
   align-items: center;
@@ -543,4 +542,3 @@ input:-webkit-autofill:active {
   }
 }
 
-/* Condition org-chart uses SVG curved connectors (see OrgTreeBranch.jsx). */

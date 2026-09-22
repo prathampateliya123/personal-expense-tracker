@@ -75,7 +75,7 @@ export default function SignIn() {
         MessageBox("info", "Account not found. Please continue with Amazon to register.");
         return;
       }
-      // Interceptor usually toasts; keep a fallback if it didn't.
+
       handleApiError(error);
     }
   });

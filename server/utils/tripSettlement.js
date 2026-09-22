@@ -1,9 +1,5 @@
 export const round2 = (value) => Math.round((Number(value) || 0) * 100) / 100;
 
-/**
- * Build per-member balances from expenses + recorded settlements.
- * Positive = is owed money; negative = owes money.
- */
 export const computeMemberBalances = (members = [], expenses = [], settlements = []) => {
   const balances = {};
   for (const member of members) {

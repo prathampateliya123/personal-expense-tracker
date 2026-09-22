@@ -40,19 +40,16 @@ const billSimulationSchema = new mongoose.Schema(
       default: "",
       maxlength: [300, "Notes cannot exceed 300 characters"],
     },
-    // EMI inputs
     loanAmount: { type: Number, default: null },
     interestRate: { type: Number, default: null },
     tenureMonths: { type: Number, default: null },
     paidEmis: { type: Number, default: 0 },
-    // Flat bill inputs
     billAmount: { type: Number, default: null },
     frequency: {
       type: String,
       enum: BILL_FREQUENCIES,
       default: "monthly",
     },
-    // Reminder
     reminderEnabled: { type: Boolean, default: false },
     nextDueDate: { type: Date, default: null },
     reminderDaysBefore: {
@@ -62,7 +59,6 @@ const billSimulationSchema = new mongoose.Schema(
       max: [30, "Reminder days cannot exceed 30"],
     },
     lastReminderAt: { type: Date, default: null },
-    // Computed snapshot
     monthlyEmi: { type: Number, default: null },
     totalInterest: { type: Number, default: null },
     totalPayment: { type: Number, default: null },

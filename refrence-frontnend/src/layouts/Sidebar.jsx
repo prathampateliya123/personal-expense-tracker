@@ -287,7 +287,7 @@ export default function Sidebar({ open, onClose }) {
           </div>
         </div>
 
-        {/* Mobile / tablet: profile lives in sidebar instead of header */}
+        
         <div className="shrink-0 border-b border-white/10 px-3 py-3 lg:hidden">
           <div className="flex min-w-0 items-center gap-2.5 rounded-[7px] bg-white/[0.06] px-2.5 py-2.5">
             <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] bg-[var(--brand-orange)] text-[14px] font-semibold text-white">
@@ -350,14 +350,14 @@ export default function Sidebar({ open, onClose }) {
               </li>
             ))}
 
-            {/* Mobile / tablet: My Profile in sidebar */}
+            
             <li className="lg:hidden">
               <NavItem link={PROFILE_LINK} onNavigate={onClose} />
             </li>
           </ul>
         </nav>
 
-        {/* Mobile / tablet: sticky logout */}
+        
         <div className="shrink-0 border-t border-white/10 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden">
           <button
             type="button"

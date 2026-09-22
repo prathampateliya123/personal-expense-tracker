@@ -23,7 +23,7 @@ export function getDashboardNavigationType() {
   return entry?.type || "navigate";
 }
 
-/** Read active dashboard tab + period from URL search params. */
+
 export function readDashboardNavFromSearchParams(searchParams) {
   const section = searchParams?.get?.("section") ?? null;
   const period = searchParams?.get?.("period") ?? null;
@@ -113,7 +113,7 @@ export function buildDashboardPayload(input = {}) {
   return payload;
 }
 
-/** Shared payload for dashboard tab list APIs (search-terms-list, placements-list, …). */
+
 export function buildDashboardTabListPayload(input = {}) {
   let storeId = Number(input.store_id || input.storeId);
   if (!Number.isFinite(storeId) || storeId === 0) {
@@ -156,7 +156,7 @@ export function buildDashboardTabListPayload(input = {}) {
   return payload;
 }
 
-/** @deprecated alias — use buildDashboardTabListPayload */
+
 export function buildSearchTermsListPayload(input = {}) {
   return buildDashboardTabListPayload(input);
 }
@@ -186,7 +186,7 @@ export function pickRangeSlice(source, range = "wow") {
     if (source[key] != null) return source[key];
   }
 
-  // single nested period object without matching key
+
   const keys = Object.keys(source);
   if (keys.length === 1) return source[keys[0]];
   return null;
@@ -207,7 +207,7 @@ function hasKpiFields(obj) {
   );
 }
 
-/** API metric cell: { current, previous, change, change_pct, lower_is_better } */
+
 function isMetricCell(value) {
   return (
     value != null &&
@@ -231,11 +231,8 @@ function metricChangeKey(metricKey) {
   return `${metricKey}_chg`;
 }
 
-/**
- * Flatten summary.kpis shape:
- * { spend: { current, previous, change_pct }, sales: {...}, ... }
- * into flat current + previous objects with *_chg percent fields.
- */
+
+
 export function flattenNestedKpis(kpis) {
   if (!kpis || typeof kpis !== "object" || Array.isArray(kpis)) {
     return { cur: null, prev: null };
@@ -275,7 +272,7 @@ export function flattenNestedKpis(kpis) {
 export function normalizeKpiFields(raw = {}) {
   if (!raw || typeof raw !== "object") return {};
 
-  // If this object itself is nested metric map, flatten first
+
   const nested = flattenNestedKpis(raw);
   const source = nested.cur || raw;
 
@@ -363,7 +360,7 @@ export function unwrapDashboardData(payload) {
 
   let root = payload?.data !== undefined ? payload.data : payload;
 
-  // peel { status, message, data } — but keep list envelopes that carry rows + pagination
+
   for (let i = 0; i < 3; i += 1) {
     if (
       root &&
@@ -461,7 +458,7 @@ function normalizeDashboardListRow(row) {
 function extractSeriesArray(root, range = "wow") {
   if (Array.isArray(root)) return root;
 
-  // API shape: { chart: { series: [{ report_date, ... }] }, current_from, current_to }
+
   if (Array.isArray(root?.chart?.series)) return root.chart.series;
   if (Array.isArray(root?.chart?.data)) return root.chart.data;
   if (Array.isArray(root?.chart?.points)) return root.chart.points;
@@ -505,7 +502,7 @@ function extractSeriesArray(root, range = "wow") {
     }
   }
 
-  // Chart.js style: labels + datasets[{label,data}]
+
   if (Array.isArray(root?.labels) && Array.isArray(root?.datasets)) {
     return root.labels.map((label, index) => {
       const point = { period: label, label };
@@ -546,7 +543,7 @@ function extractSeriesArray(root, range = "wow") {
     }));
   }
 
-  // labels + plain numeric data array
+
   if (
     Array.isArray(root?.labels) &&
     Array.isArray(root?.data) &&
@@ -563,7 +560,7 @@ function extractSeriesArray(root, range = "wow") {
     }));
   }
 
-  // parallel metric arrays: { labels, spend:[], sales:[] }
+
   if (Array.isArray(root?.labels)) {
     const metricKeys = ["ad_surplus", "spend", "sales", "acos", "wasted_spend", "cpc", "cvr", "roas"];
     const hasParallel = metricKeys.some((key) => Array.isArray(root[key]));
@@ -609,11 +606,11 @@ export function normalizeKpiSummary(payload, range = "wow") {
   const root = unwrapDashboardData(payload);
   let scoped = root;
 
-  // Preferred API shape: data.kpis.{spend:{current,previous,change_pct}, ...}
+
   const nestedFromRoot = flattenNestedKpis(root?.kpis);
   const nestedFromScoped = nestedFromRoot.cur ? null : flattenNestedKpis(root);
 
-  // cards array (new summary shape) or legacy kpis object
+
   const fromCards = extractKpisFromCards(root.cards || root.metrics || root.kpi_cards);
 
   if (nestedFromRoot.cur) {
@@ -794,7 +791,7 @@ export function normalizeChartSeries(payload, range = "wow") {
   };
 }
 
-/** Accept raw array or { series } chart payload */
+
 export function asChartSeries(value) {
   if (Array.isArray(value)) return value;
   if (Array.isArray(value?.series)) return value.series;
@@ -916,7 +913,7 @@ export function normalizeDashboardBundle(payload, range = "wow") {
     root.chart_ad_surplus || root.ad_surplus || { chart: root.chart_ad_surplus, ...root },
     range
   );
-  // Prefer nested chart payloads when present on bundle
+
   const pickChart = (key, fallbackMetrics = {}) => {
     if (root[key]) return normalizeChartSeries(root[key], range);
     if (root.charts?.[key]) return normalizeChartSeries(root.charts[key], range);
@@ -929,7 +926,7 @@ export function normalizeDashboardBundle(payload, range = "wow") {
   const chartCpc = pickChart("chart_cpc", seriesRoot);
   const chartCvr = pickChart("chart_cvr", seriesRoot);
 
-  // If top-level looks like a single chart response, use it for surplus
+
   const surplusFromRoot =
     Array.isArray(root?.chart?.series) ? normalizeChartSeries(root, range) : chartSurplus;
 
@@ -1135,7 +1132,7 @@ export function formatChartLabel(period, rangeId = "wow") {
   const d = new Date(/^\d{4}-\d{2}-\d{2}/.test(raw) ? `${raw.slice(0, 10)}T00:00:00` : raw);
   if (Number.isNaN(d.getTime())) return raw;
 
-  // WoW chart points are often daily within the week window
+
   if (rangeId === "wow" || rangeId === "daily") {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   }
@@ -1163,7 +1160,7 @@ export function withChartLabels(series = [], rangeId = "wow") {
     .sort((a, b) => String(a.period || "").localeCompare(String(b.period || "")));
 }
 
-/** Match TableView list query keys so chart prefetch and table share one cache entry. */
+
 export function buildDashboardTableQueryKey(prefix, options = {}) {
   const {
     storeId,

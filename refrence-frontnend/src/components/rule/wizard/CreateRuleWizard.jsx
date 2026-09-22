@@ -163,7 +163,7 @@ export default function CreateRuleWizard() {
     return findRuleReportByName(ruleReports, form.targetType || form.source) || null;
   }, [isAccountLevel, ruleReports, form.reportId, form.targetType, form.source]);
 
-  // Account level skips Target Type + Products — bounce off those steps
+
   useEffect(() => {
     if (!isAccountLevel) return;
     if (step === 2 || step === 4) {
@@ -173,7 +173,7 @@ export default function CreateRuleWizard() {
     }
   }, [isAccountLevel, step, form.ruleLevel]);
 
-  // Account level: no product selection
+
   useEffect(() => {
     if (!isAccountLevel) return;
     if (!form.selectedProductIds?.length && !form.selectedProducts?.length) return;
@@ -184,7 +184,7 @@ export default function CreateRuleWizard() {
     }));
   }, [isAccountLevel, form.selectedProductIds, form.selectedProducts]);
 
-  // Account level: auto-select Group Campaign report (hidden step 2 default)
+
   useEffect(() => {
     if (!isAccountLevel || !ruleReports.length) return;
     const defaults = applyAccountDefaultSource({}, ruleReports);

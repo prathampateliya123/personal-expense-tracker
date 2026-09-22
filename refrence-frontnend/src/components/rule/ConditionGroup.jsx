@@ -145,7 +145,7 @@ export default function ConditionGroup({
   const isNested = depth > 0;
   const theme = getGroupTheme(isRoot, colorIndex);
   const nextAncestors = isRoot ? [] : [...ancestorIndexes, colorIndex];
-  // Shared list for this render tree — every nested group gets a globally unique index
+
   const treeUsedColors = isRoot ? [] : usedColorIndexes || [];
   const usedSiblingIndexes = [];
 

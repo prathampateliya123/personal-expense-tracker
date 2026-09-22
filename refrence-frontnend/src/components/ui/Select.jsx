@@ -59,8 +59,7 @@ export default function Select({
     const contentWidth = Math.max(minW || 72, Math.ceil(longestLabelLen * 8.5 + 56));
     const triggerWidth = Math.max(0, rect.width || 0);
 
-    // matchWidth / full-width fields: at least as wide as the trigger.
-    // Compact fields (limit): size to content only — never follow a stretched trigger.
+
     const targetWidth = matchWidth || (!autoWidth && triggerWidth > 0)
       ? Math.max(contentWidth, triggerWidth, minW || 0)
       : Math.max(contentWidth, minW || 72);
@@ -97,8 +96,7 @@ export default function Select({
     const isInside = (target) =>
       rootRef.current?.contains(target) || menuRef.current?.contains(target);
 
-    // Capture phase so parents that stopPropagation (e.g. date picker panel)
-    // cannot block outside-dismiss.
+
     const handleOutsideClick = (event) => {
       if (!isInside(event.target)) setOpen(false);
     };

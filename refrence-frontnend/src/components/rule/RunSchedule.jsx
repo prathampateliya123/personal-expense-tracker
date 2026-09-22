@@ -29,7 +29,7 @@ function getChipClass({ active, hasError, readOnly }) {
 function normalizeFrequency(value, options = WIZARD_SCHEDULE_FREQUENCIES) {
   const key = String(value || "").trim().toLowerCase();
   if (options.some((item) => item.value === key)) return key;
-  // Legacy "daily" / hours UI removed — fall back to weekly days structure
+
   return "weekly";
 }
 

@@ -74,10 +74,10 @@ export function hueFromIndex(index = 0) {
 
 function themeFromHue(hue, index = 0) {
   const h = wrapHue(hue);
-  const sat = 52 + (Math.abs(Number(index)) % 5) * 4; // 52–68%
-  const softLight = 91 + (Math.abs(Number(index)) % 3); // 91–93%
-  const borderLight = 40 + (Math.abs(Number(index)) % 4) * 2; // 40–46%
-  const lineLight = 42 + (Math.abs(Number(index)) % 3) * 2; // 42–46%
+  const sat = 52 + (Math.abs(Number(index)) % 5) * 4;
+  const softLight = 91 + (Math.abs(Number(index)) % 3);
+  const borderLight = 40 + (Math.abs(Number(index)) % 4) * 2;
+  const lineLight = 42 + (Math.abs(Number(index)) % 3) * 2;
 
   return {
     soft: `hsl(${h.toFixed(1)}, ${sat}%, ${softLight}%)`,

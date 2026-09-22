@@ -233,12 +233,7 @@ export default function RuleList() {
           </span>
         )
       },
-      // {
-      //   key: "group_name",
-      //   label: "Group Name",
-      //   sortKey: "group_name",
-      //   accessor: (row) => row.group_name || "—"
-      // },
+
       {
         key: "actions",
         label: "Action",

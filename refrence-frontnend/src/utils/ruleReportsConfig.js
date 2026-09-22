@@ -55,7 +55,7 @@ export function ruleLevelValueFromName(name = "") {
   return slug;
 }
 
-/** Normalize form/API level to `account` | `product`. */
+
 export function normalizeRuleLevel(value = "") {
   const key = String(value || "").trim().toLowerCase();
   if (!key) return "";
@@ -137,7 +137,7 @@ export function findRuleReportById(reports = [], reportId) {
   );
 }
 
-/** Default target for account-level rules (step 2 is skipped): Campaign Group. */
+
 export function findAccountDefaultReport(reports = []) {
   if (!Array.isArray(reports) || !reports.length) return null;
 

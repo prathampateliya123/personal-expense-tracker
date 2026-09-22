@@ -75,8 +75,7 @@ export function StoreProvider({ children }) {
     () => ({
       stores,
       selectedStore,
-      // Prefer resolved store object id; fall back to cookie/state id so
-      // consumers do not briefly see storeId=0 while stores are loading.
+
       selectedStoreId: selectedStore?.id || selectedStoreId || null,
       selectStore,
       ensureLoaded,

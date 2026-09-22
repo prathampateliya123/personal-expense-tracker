@@ -18,7 +18,7 @@ export default function SyncProgress({
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - percentage / 100);
 
-  // Keep "100%" inside the ring with padding from the stroke.
+
   const innerDiameter = Math.max(size - strokeWidth * 2 - 6, 12);
   const percentFontSize = Math.min(11, Math.max(8, Math.floor(innerDiameter * 0.42)));
 
