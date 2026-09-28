@@ -74,7 +74,10 @@ const validateBody = async (body, userId, { isUpdate = false } = {}) => {
     return "Service name cannot be empty";
   }
 
-  if (amount !== undefined && amount !== null && amount !== "") {
+  if (amount !== undefined) {
+    if (amount === null || amount === "") {
+      return "Amount must be a positive number";
+    }
     const num = Number(amount);
     if (Number.isNaN(num) || num <= 0) return "Amount must be a positive number";
   }

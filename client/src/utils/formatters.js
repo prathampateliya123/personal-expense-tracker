@@ -1,3 +1,5 @@
+import { formatIsoDate } from "./dateRange";
+
 export const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -23,7 +25,7 @@ export const formatExpenseTime = formatTime;
 
 export const toDateInputValue = (date, { fallbackToday = false } = {}) => {
   if (!date) {
-    return fallbackToday ? new Date().toISOString().split("T")[0] : "";
+    return fallbackToday ? formatIsoDate(new Date()) : "";
   }
-  return new Date(date).toISOString().split("T")[0];
+  return formatIsoDate(date);
 };

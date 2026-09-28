@@ -1,4 +1,4 @@
-import { toDateInputValue } from "../../utils/wealthConstants";
+import { toDateInputValue } from "./wealthConstants";
 
 export const TABS = [
   { key: "savings", label: "Savings" },

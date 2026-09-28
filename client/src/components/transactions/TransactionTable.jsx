@@ -16,9 +16,9 @@ import { DEFAULT_DEBOUNCE_MS } from "../../utils/constants";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
 import Select from "../ui/Select";
 import DateRangePicker from "../ui/DateRangePicker";
-import ConfirmModal from "../modal/ConfirmModal";
-import TableSearch from "../table/TableSearch";
-import TablePager, { TableLimit } from "../table/TablePager";
+import ConfirmModal from "../ui/ConfirmModal";
+import TableSearch from "../ui/TableSearch";
+import TablePager, { TableLimit } from "../ui/TablePager";
 import NoDataFound from "../ui/NoDataFound";
 
 const TransactionAvatar = ({ category, colorMap }) => (

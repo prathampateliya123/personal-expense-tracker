@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import NoDataFound from "../ui/NoDataFound";
 import { IconPlus } from "../ui/Icons";
-import ProgressBar from "../common/ProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 import {
   getCategoryAvatarClass,
   getCategoryChipClass,

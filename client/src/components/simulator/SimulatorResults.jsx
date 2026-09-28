@@ -1,5 +1,5 @@
 import { formatCurrency } from "../../utils/formatters";
-import { isEmiBillType } from "../../utils/billSimulator";
+import { isEmiBillType } from "./billSimulator";
 
 const ResultCard = ({ label, value, hint, accent = false }) => (
   <div

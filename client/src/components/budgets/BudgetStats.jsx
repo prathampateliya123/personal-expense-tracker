@@ -1,5 +1,5 @@
-import CircularProgress from "../common/CircularProgress";
-import StatCard from "../common/StatCard";
+import CircularProgress from "../ui/CircularProgress";
+import StatCard from "../ui/StatCard";
 import { formatCurrency } from "../../utils/formatters";
 
 const BudgetStats = ({

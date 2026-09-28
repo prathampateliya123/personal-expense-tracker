@@ -4,7 +4,7 @@ import { formatCurrency, formatDate } from "../../utils/formatters";
 import {
   getBillTypeLabel,
   isEmiBillType,
-} from "../../utils/billSimulator";
+} from "./billSimulator";
 
 const dueHint = (item) => {
   if (!item.reminderEnabled) return null;

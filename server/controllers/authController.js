@@ -173,6 +173,8 @@ export const verifyOtp = async (req, res, next) => {
     }
 
     if (purpose === "login") {
+      await user.save();
+
       const token = generateToken(user._id);
       setTokenCookie(res, token);
 

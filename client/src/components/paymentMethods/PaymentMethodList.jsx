@@ -1,5 +1,5 @@
-import TableSearch from "../table/TableSearch";
-import TablePager, { TableLimit } from "../table/TablePager";
+import TableSearch from "../ui/TableSearch";
+import TablePager, { TableLimit } from "../ui/TablePager";
 import NoDataFound from "../ui/NoDataFound";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
 

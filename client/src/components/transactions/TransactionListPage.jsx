@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import StatCard from "../common/StatCard";
+import StatCard from "../ui/StatCard";
 import TransactionTable from "./TransactionTable";
 import { formatCurrency } from "../../utils/formatters";
 import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";

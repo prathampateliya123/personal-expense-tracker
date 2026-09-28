@@ -1,13 +1,13 @@
 import Select from "../ui/Select";
-import TableSearch from "../table/TableSearch";
-import TablePager, { TableLimit } from "../table/TablePager";
+import TableSearch from "../ui/TableSearch";
+import TablePager, { TableLimit } from "../ui/TablePager";
 import NoDataFound from "../ui/NoDataFound";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 import {
   INVESTMENT_TYPE_OPTIONS,
   getInvestmentTypeLabel,
-} from "../../utils/wealthConstants";
+} from "./wealthConstants";
 
 const InvestmentsSection = ({
   investments,

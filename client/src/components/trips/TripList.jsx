@@ -11,7 +11,7 @@ import {
   getTripStatusLabel,
   tripStatusBadgeClass,
   TRIP_EXPENSE_CATEGORIES,
-} from "../../utils/tripConstants";
+} from "./tripConstants";
 
 const CATEGORY_ACCENT = {
   Food: "bg-amber-400",

@@ -1,6 +1,7 @@
 import PaymentMethod from "../models/PaymentMethod.js";
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
+import Subscription from "../models/Subscription.js";
 import {
   normalizeName,
   escapeRegex,
@@ -207,15 +208,23 @@ export const updatePaymentMethod = async (req, res, next) => {
           { userId: req.user._id, paymentMode: previousName },
           { $set: { paymentMode: nextName } }
         ),
+        Subscription.updateMany(
+          { userId: req.user._id, paymentMode: previousName },
+          { $set: { paymentMode: nextName } }
+        ),
       ]);
     }
 
-    const [expenseCount, incomeCount] = await Promise.all([
+    const [expenseCount, incomeCount, subscriptionCount] = await Promise.all([
       Expense.countDocuments({
         userId: req.user._id,
         paymentMode: paymentMethod.name,
       }),
       Income.countDocuments({
+        userId: req.user._id,
+        paymentMode: paymentMethod.name,
+      }),
+      Subscription.countDocuments({
         userId: req.user._id,
         paymentMode: paymentMethod.name,
       }),
@@ -225,7 +234,7 @@ export const updatePaymentMethod = async (req, res, next) => {
       success: true,
       paymentMethod: {
         ...paymentMethod.toObject(),
-        expenseCount: expenseCount + incomeCount,
+        expenseCount: expenseCount + incomeCount + subscriptionCount,
       },
     });
   } catch (error) {
@@ -251,7 +260,7 @@ export const deletePaymentMethod = async (req, res, next) => {
       throw new Error(message);
     }
 
-    const [expenseCount, incomeCount] = await Promise.all([
+    const [expenseCount, incomeCount, subscriptionCount] = await Promise.all([
       Expense.countDocuments({
         userId: req.user._id,
         paymentMode: paymentMethod.name,
@@ -260,13 +269,17 @@ export const deletePaymentMethod = async (req, res, next) => {
         userId: req.user._id,
         paymentMode: paymentMethod.name,
       }),
+      Subscription.countDocuments({
+        userId: req.user._id,
+        paymentMode: paymentMethod.name,
+      }),
     ]);
-    const usageCount = expenseCount + incomeCount;
+    const usageCount = expenseCount + incomeCount + subscriptionCount;
 
     if (usageCount > 0) {
       res.status(400);
       throw new Error(
-        `Cannot delete "${paymentMethod.name}" — ${usageCount} transaction${
+        `Cannot delete "${paymentMethod.name}" — ${usageCount} record${
           usageCount === 1 ? "" : "s"
         } still use it. Reassign those first.`
       );

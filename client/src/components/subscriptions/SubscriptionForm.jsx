@@ -4,7 +4,7 @@ import DateInput from "../ui/DateInput";
 import {
   BILLING_CYCLE_OPTIONS,
   SUBSCRIPTION_STATUS_OPTIONS,
-} from "../../utils/subscriptionConstants";
+} from "./subscriptionConstants";
 import { labelClass } from "./subscriptionHelpers";
 
 const SubscriptionForm = ({

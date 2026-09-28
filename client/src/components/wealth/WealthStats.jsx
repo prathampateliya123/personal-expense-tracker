@@ -1,7 +1,7 @@
-import CircularProgress from "../common/CircularProgress";
-import StatCard from "../common/StatCard";
+import CircularProgress from "../ui/CircularProgress";
+import StatCard from "../ui/StatCard";
 import { formatCurrency } from "../../utils/formatters";
-import { getInvestmentTypeLabel } from "../../utils/wealthConstants";
+import { getInvestmentTypeLabel } from "./wealthConstants";
 
 const WealthStats = ({ variant = "savings", stats }) => {
   if (variant === "investments") {

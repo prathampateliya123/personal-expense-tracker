@@ -1,7 +1,7 @@
 import Button from "../ui/Button";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
-import { INVESTMENT_TYPE_OPTIONS } from "../../utils/wealthConstants";
+import { INVESTMENT_TYPE_OPTIONS } from "./wealthConstants";
 import { labelClass } from "./wealthHelpers";
 
 const InvestmentFormModal = ({

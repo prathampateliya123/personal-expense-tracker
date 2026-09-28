@@ -10,6 +10,10 @@ const getAllowedOrigins = () => {
     process.env.CLIENT_URL?.split(",").map((url) => url.trim()).filter(Boolean) ||
     [];
 
+  if (process.env.NODE_ENV === "production") {
+    return [...new Set(fromEnv)];
+  }
+
   return [...new Set([...fromEnv, ...DEFAULT_DEV_ORIGINS])];
 };
 

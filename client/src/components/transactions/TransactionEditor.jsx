@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import PageBackHeader from "../common/PageBackHeader";
+import PageBackHeader from "../ui/PageBackHeader";
 import TransactionForm from "./TransactionForm";
 import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
 

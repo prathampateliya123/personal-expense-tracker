@@ -1,7 +1,7 @@
 import Button from "../ui/Button";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
-import { TRIP_EXPENSE_CATEGORIES } from "../../utils/tripConstants";
+import { TRIP_EXPENSE_CATEGORIES } from "./tripConstants";
 
 const labelClass = "mb-1.5 block text-sm font-medium text-textPrimary";
 

@@ -1,5 +1,5 @@
 import { formatCurrency } from "../../utils/formatters";
-import { memberNameById } from "../../utils/tripConstants";
+import { memberNameById } from "./tripConstants";
 import { TrashIcon } from "../ui/Icons";
 import Button from "../ui/Button";
 import NoDataFound from "../ui/NoDataFound";

@@ -3,8 +3,8 @@ import {
   TrashIcon,
 } from "../ui/Icons";
 import NoDataFound from "../ui/NoDataFound";
-import TablePager, { TableLimit } from "../table/TablePager";
-import TableSearch from "../table/TableSearch";
+import TablePager, { TableLimit } from "../ui/TablePager";
+import TableSearch from "../ui/TableSearch";
 import Select from "../ui/Select";
 import Button from "../ui/Button";
 import { formatCurrency, formatDate } from "../../utils/formatters";
@@ -13,7 +13,7 @@ import {
   SUBSCRIPTION_STATUS_OPTIONS,
   getBillingCycleLabel,
   getSubscriptionStatusLabel,
-} from "../../utils/subscriptionConstants";
+} from "./subscriptionConstants";
 import { statusBadgeClass } from "./subscriptionHelpers";
 
 const dueHint = (item) => {

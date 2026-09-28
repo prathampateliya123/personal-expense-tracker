@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import PageBackHeader from "../common/PageBackHeader";
+import PageBackHeader from "../ui/PageBackHeader";
 import SimulatorForm from "./SimulatorForm";
 import SimulatorResults from "./SimulatorResults";
 import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
@@ -15,7 +15,7 @@ import {
   emptyReminderForm,
   isEmiBillType,
   simulationToForms,
-} from "../../utils/billSimulator";
+} from "./billSimulator";
 
 const SimulatorEditor = ({ mode = "add", simulationId }) => {
   const navigate = useNavigate();

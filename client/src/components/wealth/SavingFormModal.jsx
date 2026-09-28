@@ -1,7 +1,7 @@
 import Button from "../ui/Button";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
-import { SAVING_STATUS_OPTIONS } from "../../utils/wealthConstants";
+import { SAVING_STATUS_OPTIONS } from "./wealthConstants";
 import { labelClass } from "./wealthHelpers";
 
 const SavingFormModal = ({

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import PageBackHeader from "../common/PageBackHeader";
+import PageBackHeader from "../ui/PageBackHeader";
 import InvestmentFormModal from "./InvestmentFormModal";
 import {
   emptyInvestmentForm,
@@ -10,7 +10,7 @@ import {
 import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
 import investmentService from "../../services/investmentService";
 import { investmentKeys } from "../../services/queryKeys";
-import { toDateInputValue } from "../../utils/wealthConstants";
+import { toDateInputValue } from "./wealthConstants";
 
 const InvestmentEditor = ({ mode = "add", investmentId }) => {
   const navigate = useNavigate();

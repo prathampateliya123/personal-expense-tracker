@@ -2,7 +2,7 @@ import Button from "../ui/Button";
 import Select from "../ui/Select";
 import DateInput from "../ui/DateInput";
 import { IconPlus, IconXMark } from "../ui/Icons";
-import { TRIP_STATUSES } from "../../utils/tripConstants";
+import { TRIP_STATUSES } from "./tripConstants";
 
 const labelClass = "mb-1.5 block text-sm font-medium text-textPrimary";
 

@@ -5,6 +5,7 @@ import Category, {
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
 import Budget from "../models/Budget.js";
+import Subscription from "../models/Subscription.js";
 import {
   normalizeName,
   escapeRegex,
@@ -39,10 +40,19 @@ const findDuplicateCategory = async (
 
 const countUsage = async (userId, category) => {
   const Model = category.type === "income" ? Income : Expense;
-  return Model.countDocuments({
+  const transactionCount = await Model.countDocuments({
     userId,
     category: category.name,
   });
+
+  if (category.type !== "expense") return transactionCount;
+
+  const subscriptionCount = await Subscription.countDocuments({
+    userId,
+    category: category.name,
+  });
+
+  return transactionCount + subscriptionCount;
 };
 
 const withUsageCounts = async (userId, categories) => {
@@ -285,11 +295,17 @@ export const updateCategory = async (req, res, next) => {
       );
 
       if (nextType === "expense") {
-        await Budget.updateMany(
-          { userId: req.user._id, "allocations.category": previousName },
-          { $set: { "allocations.$[elem].category": nextName } },
-          { arrayFilters: [{ "elem.category": previousName }] }
-        );
+        await Promise.all([
+          Budget.updateMany(
+            { userId: req.user._id, "allocations.category": previousName },
+            { $set: { "allocations.$[elem].category": nextName } },
+            { arrayFilters: [{ "elem.category": previousName }] }
+          ),
+          Subscription.updateMany(
+            { userId: req.user._id, category: previousName },
+            { $set: { category: nextName } }
+          ),
+        ]);
       }
     }
 
@@ -327,14 +343,14 @@ export const deleteCategory = async (req, res, next) => {
     }
 
     const usageCount = await countUsage(req.user._id, category);
-    const label = category.type === "income" ? "income" : "expense";
+    const label = category.type === "income" ? "income" : "expense/subscription";
 
     if (usageCount > 0) {
       res.status(400);
       throw new Error(
         `Cannot delete "${category.name}" — ${usageCount} ${label}${
           usageCount === 1 ? "" : "s"
-        } still use it. Reassign those ${label}s first.`
+        } still use it. Reassign those first.`
       );
     }
 

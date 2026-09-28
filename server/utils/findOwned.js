@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export const findOwnedDocument = async (
   Model,
   id,
@@ -8,6 +10,14 @@ export const findOwnedDocument = async (
     forbiddenMessage = "Not authorized",
   } = {}
 ) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return {
+      [key]: null,
+      status: 400,
+      message: "Invalid id",
+    };
+  }
+
   const document = await Model.findById(id);
 
   if (!document) {

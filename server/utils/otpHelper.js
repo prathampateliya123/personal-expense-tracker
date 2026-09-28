@@ -1,9 +1,9 @@
 import crypto from "crypto";
 
-const OTP_EXPIRE_MS = 10 * 60 * 1000; 
+const OTP_EXPIRE_MS = 10 * 60 * 1000;
 
 export const generateOtp = () =>
-  Math.floor(100000 + Math.random() * 900000).toString();
+  crypto.randomInt(100000, 1000000).toString();
 
 export const hashOtp = (otp) =>
   crypto.createHash("sha256").update(String(otp)).digest("hex");
@@ -33,8 +33,19 @@ export const clearUserOtp = (user) => {
   user.otpPurpose = null;
 };
 
+export const attachOtpToResponse = (otp) => {
+  const exposeOtp =
+    process.env.EXPOSE_OTP === "true" ||
+    process.env.NODE_ENV !== "production";
 
-export const attachOtpToResponse = (otp) => ({
-  otp,
-  message: "OTP sent. Use the code below to verify.",
-});
+  if (!exposeOtp) {
+    return {
+      message: "OTP sent. Check your email to verify.",
+    };
+  }
+
+  return {
+    otp,
+    message: "OTP sent. Use the code below to verify.",
+  };
+};

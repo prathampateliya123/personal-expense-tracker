@@ -1,4 +1,4 @@
-import StatCard from "../common/StatCard";
+import StatCard from "../ui/StatCard";
 import { formatCurrency } from "../../utils/formatters";
 
 const SubscriptionStats = ({ stats }) => (

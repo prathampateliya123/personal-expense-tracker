@@ -5,7 +5,7 @@ import {
   BILL_FREQUENCY_OPTIONS,
   BILL_TYPE_OPTIONS,
   isEmiBillType,
-} from "../../utils/billSimulator";
+} from "./billSimulator";
 
 const labelClass = "mb-1.5 block text-sm font-medium text-textPrimary";
 

@@ -1,15 +1,15 @@
 import Button from "../ui/Button";
 import Select from "../ui/Select";
-import TableSearch from "../table/TableSearch";
-import TablePager, { TableLimit } from "../table/TablePager";
+import TableSearch from "../ui/TableSearch";
+import TablePager, { TableLimit } from "../ui/TablePager";
 import NoDataFound from "../ui/NoDataFound";
-import ProgressBar from "../common/ProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 import { PencilSquareIcon, TrashIcon } from "../ui/Icons";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 import {
   SAVING_STATUS_OPTIONS,
   getSavingStatusLabel,
-} from "../../utils/wealthConstants";
+} from "./wealthConstants";
 
 const SavingsSection = ({
   savings,

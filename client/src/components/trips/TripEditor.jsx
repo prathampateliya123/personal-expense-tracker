@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import PageBackHeader from "../common/PageBackHeader";
+import PageBackHeader from "../ui/PageBackHeader";
 import TripForm from "./TripForm";
 import { handleApiError, showSuccessToast } from "../../hooks/useHandleError";
 import tripService from "../../services/tripService";
 import { tripKeys } from "../../services/queryKeys";
-import { emptyTripForm, tripToForm } from "../../utils/tripConstants";
+import { emptyTripForm, tripToForm } from "./tripConstants";
 
 const TripEditor = ({ mode = "add", tripId }) => {
   const navigate = useNavigate();

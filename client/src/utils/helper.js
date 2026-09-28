@@ -8,16 +8,6 @@ export const getInitials = (name) => {
     .slice(0, 2);
 };
 
-export const formatHeaderDate = () =>
-  new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-export const dash = (value) => (value == null || value === "" ? "—" : value);
-
 const flattenErrorValue = (value) => {
   if (value == null) return null;
   if (typeof value === "string") return value.trim() || null;
@@ -62,10 +52,4 @@ export const debounce = (fn, delay = 400) => {
   };
 
   return debounced;
-};
-
-export const getNameFromEmail = (email = "") => {
-  const value = String(email).trim();
-  if (!value.includes("@")) return value;
-  return value.split("@")[0] || "";
 };
