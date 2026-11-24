@@ -20,6 +20,22 @@ const getAllowedOrigins = () => {
 const isLocalDevOrigin = (origin) =>
   /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
+const isTunnelDevOrigin = (origin) => {
+  try {
+    const { hostname } = new URL(origin);
+    return (
+      hostname.includes("ngrok") ||
+      hostname.includes("cloudflare") ||
+      hostname.endsWith(".loca.lt") ||
+      hostname.endsWith(".pinggy.link") ||
+      hostname.endsWith(".app.github.dev") ||
+      hostname.endsWith(".gitpod.io")
+    );
+  } catch {
+    return false;
+  }
+};
+
 const corsOptions = {
   origin(origin, callback) {
     const allowedOrigins = getAllowedOrigins();
@@ -36,7 +52,10 @@ const corsOptions = {
     }
 
     
-    if (process.env.NODE_ENV !== "production" && isLocalDevOrigin(origin)) {
+    if (
+      process.env.NODE_ENV !== "production" &&
+      (isLocalDevOrigin(origin) || isTunnelDevOrigin(origin))
+    ) {
       callback(null, origin);
       return;
     }
