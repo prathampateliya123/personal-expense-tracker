@@ -6,6 +6,7 @@ export const PUBLIC_AUTH_URLS = [
   "/auth/verify-otp",
   "/auth/resend-otp",
   "/auth/reset-password",
+  "/auth/profile",
 ];
 
 export const AUTH_PAGE_PREFIXES = [

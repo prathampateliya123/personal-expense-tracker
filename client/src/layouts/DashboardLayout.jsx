@@ -15,18 +15,23 @@ const DashboardLayout = () => {
   const { user } = useUserProfile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const clearSessionQueries = () => {
+    queryClient.setQueryData(userKeys.profile(), null);
+    queryClient.removeQueries({
+      predicate: (query) => query.queryKey[0] !== userKeys.all[0],
+    });
+  };
+
   const logoutMutation = useMutation({
     mutationKey: authKeys.logout(),
     mutationFn: () => authService.logout(),
     onSuccess: async () => {
-      queryClient.setQueryData(userKeys.profile(), null);
-      queryClient.clear();
+      clearSessionQueries();
       showSuccessToast("Logged out successfully");
       navigate("/login", { replace: true });
     },
     onError: (error) => {
-      queryClient.setQueryData(userKeys.profile(), null);
-      queryClient.clear();
+      clearSessionQueries();
       handleApiError(error);
       navigate("/login", { replace: true });
     },

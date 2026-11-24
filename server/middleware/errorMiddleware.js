@@ -15,8 +15,13 @@ const errorHandler = (err, req, res, next) => {
       .join(", ") || "Validation failed";
   }
 
+  const isExpectedAuthCheck =
+    statusCode === 401 && req.originalUrl?.includes("/api/auth/profile");
+
   if (process.env.NODE_ENV !== "production") {
-    console.error(`[${req.method} ${req.originalUrl}]`, err.message);
+    if (!isExpectedAuthCheck) {
+      console.error(`[${req.method} ${req.originalUrl}]`, err.message);
+    }
   } else if (statusCode >= 500) {
     console.error(`[${req.method} ${req.originalUrl}]`, err.message);
     message = "Internal Server Error";

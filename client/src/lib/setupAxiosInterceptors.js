@@ -21,7 +21,9 @@ export const setupAxiosInterceptors = () => {
 
       if (status === 401 && !isPublicAuthRequest(requestUrl)) {
         queryClient.setQueryData(userKeys.profile(), null);
-        queryClient.clear();
+        queryClient.removeQueries({
+          predicate: (query) => query.queryKey[0] !== userKeys.all[0],
+        });
       }
 
       return Promise.reject(error);
